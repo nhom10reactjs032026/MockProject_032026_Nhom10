@@ -1,0 +1,1 @@
+// Zustand auth store\nexport {};\n
