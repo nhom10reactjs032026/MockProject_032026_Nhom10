@@ -1,1 +1,3 @@
-import axios from "axios";\n\nexport const apiClient = axios.create({\n  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api",\n});\n
+import axios from "axios";
+
+export const apiClient = axios.create({  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api",});

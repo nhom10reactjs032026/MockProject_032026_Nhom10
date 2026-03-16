@@ -1,1 +1,1 @@
-/*\nimport { createBrowserRouter } from "react-router-dom";\nimport { Home } from "../pages/Home";\nimport { Login } from "../pages/Login";\nimport { Products } from "../pages/Products";\n\nexport const router = createBrowserRouter([...])\n*/\n
+/*\nimport { createBrowserRouter } from "react-router-dom";\nimport { Home } from "../pages/Home";\nimport { Login } from "../pages/Login";\nimport { Products } from "../pages/Products";\n\nexport const router = createBrowserRouter([...])\n*/

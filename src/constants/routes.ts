@@ -1,1 +1,1 @@
-export const ROUTES = {\n  HOME: "/",\n  LOGIN: "/login",\n  PRODUCTS: "/products",\n};\n
+export const ROUTES = {  HOME: "/",  LOGIN: "/login",  PRODUCTS: "/products",};
