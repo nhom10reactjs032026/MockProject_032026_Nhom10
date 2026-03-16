@@ -1,1 +1,5 @@
-export const Login = () => <div>Login Page</div>;\n
+import React from 'react';
+
+export const Login = () => {
+  return <div>Login Page</div>;
+};
