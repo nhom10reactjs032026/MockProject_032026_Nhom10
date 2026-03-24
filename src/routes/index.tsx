@@ -3,6 +3,7 @@ import { HomePage } from "../pages/Home";
 import { LoginPage } from "../pages/Login";
 import ProtectedRoute from "./ProtectedRoute";
 
+import { PlanSchedulingPage } from "../features/scheduling/pages/PlanSchedulingPage";
 // Notary Journal Feature
 import {
   NotaryJournalDashboard,
@@ -15,6 +16,10 @@ export const router = createBrowserRouter([
   {
     path: "/",
     element: <HomePage />,
+  },
+  {
+    path: "/planning",
+    element: <PlanSchedulingPage />,
   },
   {
     path: "/account/login",

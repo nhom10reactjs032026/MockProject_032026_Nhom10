@@ -6,9 +6,24 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { Facebook } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 export const LoginPage = () => {
+   const navigate = useNavigate();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = () => {
+
+    // (optional) lưu giả lập
+    localStorage.setItem("user", JSON.stringify({ email }));
+
+    // 👉 chuyển luôn
+    navigate("/planning", { replace: true });
+  };
+
   return (
     <div className="min-h-screen bg-[#f8f8f8] flex flex-col pt-20 transition-colors duration-500 font-['Plus_Jakarta_Sans']">
       <Header />
@@ -76,6 +91,7 @@ export const LoginPage = () => {
             </div>
 
             <Button 
+              onClick={handleLogin}
               type="submit" 
               className="w-full h-11 bg-[#c4a484] hover:bg-[#b08e6d] text-white font-bold uppercase tracking-[0.2em] text-xs rounded-none transition-all shadow-md"
             >
