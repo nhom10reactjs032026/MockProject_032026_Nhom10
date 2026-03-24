@@ -1,0 +1,21 @@
+id,notary_id,doc_category,file_name,upload_date,verified_status,version,is_current_version,file_url
+1,1,COMMISSION_CER,commission_cert_2023.pdf,2023-01-10 09:15:00,APPROVED,1,TRUE,/uploads/docs/1/comm_2023.pdf
+2,1,TRAINING_CER,state_exam_passed.pdf,2022-12-20 14:30:00,APPROVED,1,TRUE,/uploads/docs/1/exam_passed.pdf
+3,1,IDENTITY_VERIFICATION,driver_license_wa.png,2022-12-15 10:00:00,APPROVED,1,TRUE,/uploads/docs/1/dl_wa.png
+4,2,COMMISSION_CER,old_commission_tx.pdf,2018-05-10 11:20:00,APPROVED,1,FALSE,/uploads/docs/2/comm_v1.pdf
+5,2,COMMISSION_CER,renewed_commission_tx.pdf,2022-05-12 08:45:00,APPROVED,2,TRUE,/uploads/docs/2/comm_v2.pdf
+6,2,FINGERSPRINT,livescan_background.pdf,2022-04-30 16:10:00,APPROVED,1,TRUE,/uploads/docs/2/livescan.pdf
+7,3,IDENTITY_VERIFICATION,us_passport_scan.jpg,2023-03-05 09:30:00,APPROVED,1,TRUE,/uploads/docs/3/passport.jpg
+8,3,COMMISSION_CER,il_notary_commission.pdf,2023-03-10 13:15:00,PENDING,1,TRUE,/uploads/docs/3/comm_il.pdf
+9,4,TRAINING_CER,nna_training_cert.pdf,2021-08-20 10:05:00,APPROVED,1,TRUE,/uploads/docs/4/nna_cert.pdf
+10,4,IDENTITY_VERIFICATION,id_card_front.png,2021-08-22 15:40:00,APPROVED,1,TRUE,/uploads/docs/4/id_front.png
+11,4,FINGERSPRINT,fbi_background_check.pdf,2021-08-25 11:00:00,APPROVED,1,TRUE,/uploads/docs/4/fbi_bg.pdf
+12,5,COMMISSION_CER,ma_commission_2020.pdf,2020-11-10 09:50:00,APPROVED,1,TRUE,/uploads/docs/5/comm_ma.pdf
+13,5,IDENTITY_VERIFICATION,dl_expired.jpg,2020-10-15 14:20:00,REJECTED,1,FALSE,/uploads/docs/5/dl_old.jpg
+14,5,IDENTITY_VERIFICATION,dl_renewed.jpg,2020-10-20 08:30:00,APPROVED,2,TRUE,/uploads/docs/5/dl_new.jpg
+15,6,TRAINING_CER,fl_state_course.pdf,2024-01-02 10:15:00,PENDING,1,TRUE,/uploads/docs/6/course_fl.pdf
+16,6,FINGERSPRINT,livescan_receipt.png,2024-01-05 13:45:00,PENDING,1,TRUE,/uploads/docs/6/livescan_rcpt.png
+17,7,COMMISSION_CER,az_commission_cert.pdf,2019-05-10 11:10:00,APPROVED,1,TRUE,/uploads/docs/7/comm_az.pdf
+18,8,IDENTITY_VERIFICATION,ga_driver_license.jpg,2022-08-01 09:25:00,APPROVED,1,TRUE,/uploads/docs/8/dl_ga.jpg
+19,8,TRAINING_CER,online_notary_course.pdf,2022-08-05 16:50:00,APPROVED,1,TRUE,/uploads/docs/8/online_course.pdf
+20,9,COMMISSION_CER,tx_commission_wrong.pdf,2023-10-25 14:00:00,REJECTED,1,FALSE,/uploads/docs/9/comm_wrong.pdf

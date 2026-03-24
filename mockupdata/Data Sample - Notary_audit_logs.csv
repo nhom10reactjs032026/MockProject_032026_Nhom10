@@ -1,0 +1,21 @@
+id,notary_id,table_name,record_id,action,old_value,new_value,change_by,created_at
+1,7,Notaries,7,UPDATE,"{""status"": ""ACTIVE""}","{""status"": ""BLOCKED"", ""internal_notes"": ""Policy violation reported""}",999,2025-10-12 09:00:00
+2,15,Notaries,15,UPDATE,"{""status"": ""ACTIVE""}","{""status"": ""BLOCKED"", ""internal_notes"": ""Customer complaints""}",999,2025-11-05 14:30:00
+3,4,Notaries,4,UPDATE,"{""status"": ""ACTIVE""}","{""status"": ""INACTIVE"", ""internal_notes"": ""On maternity leave""}",998,2025-12-01 10:15:00
+4,6,Notaries,6,UPDATE,"{""status"": ""ACTIVE""}","{""status"": ""INACTIVE"", ""internal_notes"": ""Pending state license""}",999,2024-02-01 08:45:00
+5,18,Notaries,18,UPDATE,"{""status"": ""ACTIVE""}","{""status"": ""INACTIVE"", ""internal_notes"": ""Personal leave""}",998,2023-07-01 11:20:00
+6,1,Notaries,1,UPDATE,"{""internal_notes"": null}","{""internal_notes"": ""Top performer 2022""}",999,2023-01-15 16:00:00
+7,3,Notaries,3,UPDATE,"{""internal_notes"": ""Background check pending""}","{""internal_notes"": ""Background check renewed""}",998,2024-03-10 09:10:00
+8,9,Notaries,9,UPDATE,"{""internal_notes"": null}","{""internal_notes"": ""Bilingual (Spanish)""}",999,2023-11-15 14:00:00
+9,10,Notaries,10,UPDATE,"{""internal_notes"": null}","{""internal_notes"": ""Senior Notary""}",999,2024-05-20 10:30:00
+10,13,Notaries,13,UPDATE,"{""internal_notes"": null}","{""internal_notes"": ""Branch Manager""}",998,2021-06-10 15:45:00
+11,2,Notaries,2,INSERT,null,"{""status"": ""ACTIVE"", ""employment_type"": ""FULL_TIME""}",999,2022-01-15 08:00:00
+12,12,Notaries,12,INSERT,null,"{""status"": ""ACTIVE"", ""employment_type"": ""INDEPENDENT_CONTRACT""}",998,2024-02-10 09:30:00
+13,7,Notary_incidents,1,INSERT,null,"{""status"": ""UNDER_REVIEW"", ""incident_type"": ""POLICY_VIOLATION""}",999,2025-10-10 11:00:00
+14,15,Notary_incidents,2,INSERT,null,"{""status"": ""OPEN"", ""incident_type"": ""CUSTOMER_COMPLAINT""}",998,2025-11-01 13:15:00
+15,1,Notary_incidents,3,UPDATE,"{""status"": ""OPEN""}","{""status"": ""DISMISSED"", ""resolved_at"": ""2022-08-15 10:30:00""}",999,2022-08-15 10:30:00
+16,3,Notary_incidents,4,UPDATE,"{""status"": ""UNDER_REVIEW""}","{""status"": ""RESOLVED"", ""resolved_at"": ""2023-05-20 14:00:00""}",998,2023-05-20 14:00:00
+17,10,Notaries,10,UPDATE,"{""residential_address"": ""123 Old St""}","{""residential_address"": ""951 Spruce Dr, San Diego, CA 92101""}",1010,2023-09-12 09:25:00
+18,14,Notaries,14,UPDATE,"{""phone"": ""(555) 000-0000""}","{""phone"": ""(555) 444-5566""}",1014,2023-10-05 14:10:00
+19,8,Notary_incidents,6,UPDATE,"{""status"": ""OPEN""}","{""status"": ""RESOLVED"", ""resolved_at"": ""2023-01-10 16:45:00""}",999,2023-01-10 16:45:00
+20,18,Notary_incidents,9,UPDATE,"{""status"": ""UNDER_REVIEW""}","{""status"": ""DISMISSED"", ""resolved_at"": ""2023-08-20 11:00:00""}",998,2023-08-20 11:00:00

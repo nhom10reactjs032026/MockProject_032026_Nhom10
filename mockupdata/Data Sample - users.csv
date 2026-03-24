@@ -1,0 +1,21 @@
+ id,email,password_hash,phone_number,status,created_at,full_name,dob,address,Id_role
+1,admin.sys@mail.com,$2a$10$xYz123AbCdEfGhIjKlMnOp,(555) 100-0001,active,2023-01-15 08:30:00,James Carter,1980-05-12,"100 Capitol Blvd, WA 98501",1
+2,admin.ops@mail.com,$2a$10$aBc456DeFgHiJkLmNoPqRs,(555) 100-0002,active,2023-02-10 09:15:00,Sarah Jenkins,1985-11-20,"200 State St, NY 12207",1
+3,disp.mike@mail.com,$2a$10$qWe789RtYuIoPaSdFgHjKl,(555) 200-1111,active,2023-03-05 10:00:00,Michael Rivera,1990-03-15,"305 Dispatch Way, IL 60601",2
+4,disp.lisa@mail.com,$2a$10$zXc012VbNmMqWeRtYuIoPa,(555) 200-2222,active,2023-03-12 11:45:00,Lisa Wong,1988-07-22,"412 Logistics Ave, TX 75201",2
+5,disp.john@mail.com,$2a$10$lKj345HgFdSaQwErTyUiOp,(555) 200-3333,suspended,2023-04-01 14:20:00,John Davies,1992-09-08,"550 Fleet St, CA 90001",2
+6,disp.emma@mail.com,$2a$10$mNb678VcXzAsDfGhJkLqWe,(555) 200-4444,active,2023-05-18 08:00:00,Emma Thompson,1995-12-01,"680 Route Dr, FL 32801",2
+7,cust.smith@mail.com,$2a$10$rTy901UiOpAsDfGhJkLzXc,(555) 300-5001,active,2023-06-10 16:30:00,David Smith,1982-02-14,"123 Maple Ln, OH 43215",3
+8,cust.jones@mail.com,$2a$10$vBn234MqWeRtYuIoPaSdFg,(555) 300-5002,active,2023-06-15 09:10:00,Mary Jones,1978-08-30,"456 Oak Dr, PA 19104",3
+9,cust.brown@mail.com,$2a$10$hGf567DsAaQwErTyUiOpLk,(555) 300-5003,active,2023-07-02 11:25:00,Robert Brown,1991-04-18,"789 Pine St, MI 48226",3
+10,cust.davis@mail.com,$2a$10$jKl890MnBvCxZaSqWeRtYu,(555) 300-5004,active,2023-07-20 13:40:00,Jennifer Davis,1986-10-05,"321 Cedar Ct, GA 30301",3
+11,cust.wilson@mail.com,$2a$10$uIo123PaSdFgHjKlZxCvBn,(555) 300-5005,deleted,2023-08-05 15:55:00,William Wilson,1994-01-25,"654 Birch Rd, AZ 85001",3
+12,cust.moore@mail.com,$2a$10$yTr456EwQqAsDfGhJkLzXc,(555) 300-5006,active,2023-08-22 10:15:00,Patricia Moore,1989-06-12,"987 Elm Blvd, CO 80202",3
+13,cust.taylor@mail.com,$2a$10$pOi789UyTrEwQqAsDfGhJk,(555) 300-5007,active,2023-09-11 14:05:00,Richard Taylor,1975-11-03,"159 Walnut Ave, NC 28202",3
+14,cust.ander@mail.com,$2a$10$lKj012HgFdSaQwErTyUiOp,(555) 300-5008,active,2023-09-30 08:50:00,Linda Anderson,1983-05-28,"753 Cherry Way, TN 37203",3
+15,cust.thomas@mail.com,$2a$10$mNb345VcXzAsDfGhJkLqWe,(555) 300-5009,suspended,2023-10-14 12:30:00,Charles Thomas,1997-09-16,"852 Ash Pl, OR 97204",3
+16,cust.white@mail.com,$2a$10$rTy678UiOpAsDfGhJkLzXc,(555) 300-5010,active,2023-11-02 16:10:00,Susan White,1981-12-08,"951 Spruce Dr, NV 89101",3
+17,cust.harris@mail.com,$2a$10$vBn901MqWeRtYuIoPaSdFg,(555) 300-5011,active,2023-11-25 09:45:00,Christopher Harris,1990-07-04,"124 King St, MA 02108",3
+18,cust.martin@mail.com,$2a$10$hGf234DsAaQwErTyUiOpLk,(555) 300-5012,active,2023-12-10 11:20:00,Karen Martin,1987-03-22,"567 Queen Ave, VA 23219",3
+19,cust.lee@mail.com,$2a$10$jKl567MnBvCxZaSqWeRtYu,(555) 300-5013,active,2024-01-05 15:00:00,Matthew Lee,1993-08-14,"890 Prince Rd, MO 65101",3
+20,cust.garcia@mail.com,$2a$10$uIo890PaSdFgHjKlZxCvBn,(555) 300-5014,active,2024-01-20 10:35:00,Jessica Garcia,1984-10-31,"234 Main St, WI 53703",3
