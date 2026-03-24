@@ -4,13 +4,22 @@ import { LoginPage } from "../pages/LoginPage";
 import { ErrorPage } from "../pages/ErrorPage";
 import ProtectedRoute from "./ProtectedRoute";
 import { AdminLayout } from "../components/layout/AdminLayout";
-import { NotaryManagementPage, NotaryDetailsPage } from "@/features/notary-profile-management";
+import {
+  NotaryManagementPage,
+  NotaryDetailsPage,
+} from "@/features/notary-profile-management";
 
 // Notary Journal Feature
 import {
   NotaryJournalDashboard,
-  JournalEntryDetail
+  JournalEntryDetail,
 } from "../features/notarial-journal";
+// CRM Management Feature
+import {
+  CrmDashboard,
+  CustomerListPage,
+  CustomerDetailPage,
+} from "../features/crm-management";
 
 export const router = createBrowserRouter([
   {
@@ -42,7 +51,9 @@ export const router = createBrowserRouter([
           {
             path: "history",
             element: (
-              <div className="p-20 text-center font-bold">📝 LỊCH SỬ GIAO DỊCH</div>
+              <div className="p-20 text-center font-bold">
+                📝 LỊCH SỬ GIAO DỊCH
+              </div>
             ),
           },
         ],
@@ -171,7 +182,26 @@ export const router = createBrowserRouter([
           },
         ],
       },
-      // 6. CATCH-ALL ROUTE
+      // 6. CRM MANAGEMENT FEATURE
+      {
+        path: "crm",
+        element: <Outlet />,
+        children: [
+          {
+            index: true,
+            element: <CrmDashboard />,
+          },
+          {
+            path: "customers",
+            element: <CustomerListPage />,
+          },
+          {
+            path: "customers/:id",
+            element: <CustomerDetailPage />,
+          },
+        ],
+      },
+      // 7. CATCH-ALL ROUTE
       {
         path: "*",
         element: <ErrorPage />,
