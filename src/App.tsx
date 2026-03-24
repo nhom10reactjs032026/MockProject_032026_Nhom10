@@ -5,6 +5,8 @@ import heroImg from './assets/hero.png'
 
 import LoginPage from './pages/Login'
 
+import JournalPage from './pages/Journal'
+
 function App() {
   // const [count, setCount] = useState(0)
 
@@ -118,7 +120,8 @@ function App() {
   //   </>
   // )
 
-  return <LoginPage />
+  // return <LoginPage />
+  return <JournalPage />
 }
 
 export default App
