@@ -1,1 +1,1 @@
-export const EmptyState = () => <div>No Data Found</div>;\n
+export const EmptyState = () => <div>No Data Found</div>;
