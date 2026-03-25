@@ -1,14 +1,14 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  BookOpen, 
-  FileText, 
-  Settings, 
-  History, 
-  ShieldCheck, 
-  AlertTriangle, 
-  Users, 
+import {
+  LayoutDashboard,
+  BookOpen,
+  FileText,
+  Settings,
+  History,
+  ShieldCheck,
+  AlertTriangle,
+  Users,
   PenTool
 } from 'lucide-react';
 
@@ -34,11 +34,10 @@ export const Sidebar = () => {
               <NavLink
                 key={item.label}
                 to={item.path}
-                className={({ isActive }) => 
-                  `flex items-center gap-4 px-8 py-4 text-sm font-semibold transition-colors ${
-                    isActive 
-                      ? 'text-white' 
-                      : 'text-white/70 hover:text-white hover:bg-white/10'
+                className={({ isActive }) =>
+                  `flex items-center gap-4 px-8 py-4 text-sm font-semibold transition-colors ${isActive
+                    ? 'text-white'
+                    : 'text-white/70 hover:text-white hover:bg-white/10'
                   }`
                 }
                 end={item.path === '/notary-journal'}

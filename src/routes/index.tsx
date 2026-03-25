@@ -12,6 +12,16 @@ import {
   JournalEntryDetail
 } from "../features/notarial-journal";
 
+// Notary Act Feature
+import { 
+  ActListPage, 
+  NotaryActLayout, 
+  ActOverviewPage,
+  ActSetupPage,
+  ActSignersPage,
+  ActExecutionPage
+} from "../features/notary-act";
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -171,7 +181,62 @@ export const router = createBrowserRouter([
           },
         ],
       },
-      // 6. CATCH-ALL ROUTE
+      // 6. NOTARY ACT FEATURE
+      {
+        path: "notary-acts",
+        element: <NotaryActLayout />,
+        children: [
+          {
+            index: true,
+            element: <ActListPage />
+          },
+          {
+            path: "registry",
+            element: <ErrorPage />
+          },
+          {
+            path: "detail",
+            element: <ErrorPage />
+          },
+          {
+            path: "technical",
+            element: <ErrorPage />
+          },
+          {
+            path: "traceability",
+            element: <ErrorPage />
+          },
+          {
+            path: "security",
+            element: <ErrorPage />
+          },
+          {
+            path: "risk",
+            element: <ErrorPage />
+          },
+          {
+            path: "oversight",
+            element: <ErrorPage />
+          },
+          {
+            path: ":id",
+            element: <ActOverviewPage />
+          },
+          {
+            path: ":id/setup",
+            element: <ActSetupPage />
+          },
+          {
+            path: ":id/signers",
+            element: <ActSignersPage />
+          },
+          {
+            path: ":id/execution",
+            element: <ActExecutionPage />
+          }
+        ]
+      },
+      // 7. CATCH-ALL ROUTE
       {
         path: "*",
         element: <ErrorPage />,
