@@ -9,7 +9,9 @@ import { NotaryManagementPage, NotaryDetailsPage } from "@/features/notary-profi
 // Notary Journal Feature
 import {
   NotaryJournalDashboard,
-  JournalEntryDetail
+  JournalEntryDetail,
+  JournalManagerPage,
+  DashboardLayout as JournalLayout,
 } from "../features/notarial-journal";
 
 export const router = createBrowserRouter([
@@ -111,11 +113,15 @@ export const router = createBrowserRouter([
       // 5. NOTARY JOURNAL FEATURE
       {
         path: "notary-journal",
-        element: <Outlet />,
+        element: <JournalLayout />,
         children: [
           {
             index: true,
             element: <NotaryJournalDashboard />,
+          },
+          {
+            path: "manager",
+            element: <JournalManagerPage />,
           },
           {
             path: "registry",

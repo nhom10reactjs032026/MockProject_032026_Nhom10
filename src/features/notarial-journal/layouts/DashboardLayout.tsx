@@ -1,16 +1,99 @@
-import React from 'react';
-import { Outlet } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Outlet, NavLink } from 'react-router-dom';
 import { Sidebar } from '../components/Sidebar';
 import { TopBar } from '../components/TopBar';
+import { Footer } from '../../../components/layout/Footer';
+import {
+  LayoutDashboard,
+  BookOpen,
+  Users,
+  Stamp,
+} from 'lucide-react';
+import type { SidebarNavItem } from '../components/Sidebar';
+
+const mainNavItems: SidebarNavItem[] = [
+  { icon: Users, label: 'Notary Profile', path: '/admin/notaries' },
+  { icon: LayoutDashboard, label: 'Dashboard', path: '/admin/dashboard' },
+  { icon: BookOpen, label: 'Journal', path: '/notary-journal', end: true },
+  { icon: Stamp, label: 'Seal & Digital Signature', path: '/notary-journal/seal' },
+];
 
 export const DashboardLayout = () => {
+  // Mobile: sidebar slides in as overlay
+  const [mobileOpen, setMobileOpen] = useState(false);
+  // Desktop: sidebar collapses to icon-only
+  const [collapsed, setCollapsed] = useState(false);
+
   return (
-    <div className="flex h-screen w-full bg-[#f8fafc] overflow-hidden font-sans">
-      <Sidebar />
+    <div className="flex h-screen w-full bg-[#f8f8f8] overflow-hidden font-['Plus_Jakarta_Sans']">
+      {/* Mobile backdrop */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 bg-black/40 z-20 lg:hidden"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <Sidebar
+        navItems={mainNavItems}
+        collapsed={collapsed}
+        mobileOpen={mobileOpen}
+        onCloseMobile={() => setMobileOpen(false)}
+      />
+
       <div className="flex-1 flex flex-col h-full overflow-hidden">
-        <TopBar />
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-[#f8fafc] p-8">
+        <TopBar
+          onToggleSidebar={() => {
+            // On mobile: toggle mobile overlay; on desktop: toggle collapse
+            if (window.innerWidth < 1024) {
+              setMobileOpen((v) => !v);
+            } else {
+              setCollapsed((v) => !v);
+            }
+          }}
+        />
+
+        {/* Sub-nav: Dashboard / Journal Manager */}
+        <div className="bg-white border-b border-[#ebebeb] shrink-0">
+          <div className="px-6 flex items-center gap-8">
+            <NavLink
+              to="/notary-journal"
+              end
+              className={({ isActive }) =>
+                `py-3.5 text-sm font-bold uppercase tracking-widest transition-colors relative ${
+                  isActive ? 'text-[#c4a484]' : 'text-muted-foreground hover:text-foreground'
+                }`
+              }
+            >
+              {({ isActive }) => (
+                <>
+                  Dashboard
+                  {isActive && <span className="absolute bottom-0 left-0 w-full h-[2px] bg-[#c4a484]" />}
+                </>
+              )}
+            </NavLink>
+            <NavLink
+              to="/notary-journal/manager"
+              className={({ isActive }) =>
+                `py-3.5 text-sm font-bold uppercase tracking-widest transition-colors relative ${
+                  isActive ? 'text-[#c4a484]' : 'text-muted-foreground hover:text-foreground'
+                }`
+              }
+            >
+              {({ isActive }) => (
+                <>
+                  Journal Manager
+                  {isActive && <span className="absolute bottom-0 left-0 w-full h-[2px] bg-[#c4a484]" />}
+                </>
+              )}
+            </NavLink>
+          </div>
+        </div>
+
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-[#f8f8f8]">
           <Outlet />
+          <Footer />
         </main>
       </div>
     </div>
