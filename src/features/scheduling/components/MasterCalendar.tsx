@@ -1,139 +1,145 @@
-import React, { useState } from "react";
+import React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { mockJobs } from "../data/mockData";
-  
-type Cell = {
-  day: number | null;
-  key: string;
+import { mockCalendarJobs } from "../data/mockData";
+
+const HOURS = Array.from({ length: 10 }, (_, i) => i + 8); // 8 → 17
+const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+const typeColor: Record<string, string> = {
+  Mobile: "bg-blue-100 text-blue-700 border-blue-300",
+  RON: "bg-orange-100 text-orange-700 border-orange-300",
+  "Loan Signing": "bg-green-100 text-green-700 border-green-300",
+  Conflict: "bg-red-100 text-red-600 border-red-300",
 };
 
-const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const MONTHS = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
-];
-
-function getDaysInMonth(year: number, month: number) {
-  return new Date(year, month + 1, 0).getDate();
-}
-
-function getFirstDayOfMonth(year: number, month: number) {
-  return new Date(year, month, 1).getDay();
-}
-
 export const MasterCalendar: React.FC = () => {
-    const today = new Date();
-    const [current, setCurrent] = useState({ year: today.getFullYear(), month: today.getMonth() });
+  return (
+    <div className="flex flex-col lg:flex-row gap-4">
 
-    const daysInMonth = getDaysInMonth(current.year, current.month);
-    const firstDay = getFirstDayOfMonth(current.year, current.month);
+      {/* ================= SIDEBAR ================= */}
+      <div className="w-full lg:w-64 bg-white border rounded-2xl p-4 shadow-sm">
+        <h3 className="text-sm font-semibold text-gray-700 mb-3">
+          FILTER PANEL
+        </h3>
 
-    const prevMonth = () =>
-        setCurrent((c) =>
-        c.month === 0 ? { year: c.year - 1, month: 11 } : { ...c, month: c.month - 1 }
-        );
-    const nextMonth = () =>
-        setCurrent((c) =>
-        c.month === 11 ? { year: c.year + 1, month: 0 } : { ...c, month: c.month + 1 }
-        );
+        <div className="space-y-4 text-sm">
+          <div>
+            <p className="text-xs text-gray-400 mb-1">Branch / Region</p>
+            <select className="w-full border rounded-lg px-3 py-2 bg-gray-50">
+              <option>All Regions</option>
+            </select>
+          </div>
 
-    const getJobsForDay = (day: number) => {
-        const dateStr = `${current.year}-${String(current.month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-        return mockJobs.filter((j) => j.date === dateStr);
-    };
+          <div>
+            <p className="text-xs text-gray-400 mb-1">Notary</p>
+            <select className="w-full border rounded-lg px-3 py-2 bg-gray-50">
+              <option>All Notaries</option>
+            </select>
+          </div>
 
-    const emptyCells: Cell[] = Array.from({ length: firstDay }, (_, i) => ({
-    day: null,
-    key: `e-${i}`,
-    }));
+          <div>
+            <p className="text-xs text-gray-400 mb-1">Service Type</p>
+            <div className="flex flex-wrap gap-2">
+              <span className="px-2 py-1 bg-blue-100 text-blue-600 rounded-full text-xs">Mobile</span>
+              <span className="px-2 py-1 bg-orange-100 text-orange-600 rounded-full text-xs">RON</span>
+              <span className="px-2 py-1 bg-green-100 text-green-600 rounded-full text-xs">Loan</span>
+            </div>
+          </div>
 
-    const dayCells: Cell[] = Array.from({ length: daysInMonth }, (_, i) => ({
-    day: i + 1,
-    key: `d-${i + 1}`,
-    }));
-
-    const cells: Cell[] = [...emptyCells, ...dayCells];
-
-    const isToday = (day: number | null) =>
-        day !== null &&
-        day === today.getDate() &&
-        current.month === today.getMonth() &&
-        current.year === today.getFullYear();
-
-    return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 h-full flex flex-col">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-bold text-gray-800">
-          {MONTHS[current.month]} {current.year}
-        </h2>
-        <div className="flex gap-1">
-          <button
-            onClick={prevMonth}
-            className="w-8 h-8 flex items-center justify-center rounded-xl border border-gray-200 hover:bg-gray-50 text-gray-500 transition-all"
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-          <button
-            onClick={nextMonth}
-            className="w-8 h-8 flex items-center justify-center rounded-xl border border-gray-200 hover:bg-gray-50 text-gray-500 transition-all"
-          >
-            <ChevronRight className="w-4 h-4" />
-          </button>
+          <div>
+            <p className="text-xs text-gray-400 mb-1">Status</p>
+            <div className="flex flex-wrap gap-2">
+              <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded-full text-xs">New</span>
+              <span className="px-2 py-1 bg-yellow-100 text-yellow-600 rounded-full text-xs">Pending</span>
+              <span className="px-2 py-1 bg-green-100 text-green-600 rounded-full text-xs">Confirmed</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Day headers */}
-      <div className="grid grid-cols-7 mb-2">
-        {DAYS.map((d) => (
-          <div key={d} className="text-center text-[11px] font-semibold text-gray-400 uppercase tracking-wider py-2">
-            {d}
-          </div>
-        ))}
-      </div>
+      {/* ================= MAIN ================= */}
+      <div className="flex-1 bg-white border rounded-2xl shadow-sm overflow-hidden">
 
-      {/* Calendar grid */}
-      <div className="grid grid-cols-7 gap-1 flex-1">
-        {cells.map(({ day, key }) => {
-          const jobs = day ? getJobsForDay(day) : [];
-          return (
-            <div
-              key={key}
-              className={`relative rounded-xl p-2 min-h-[80px] transition-all ${
-                day ? "hover:bg-blue-50/50 cursor-pointer" : ""
-              } ${isToday(day) ? "bg-blue-600 text-white" : "bg-gray-50/40"}`}
-            >
-              {day && (
-                <>
-                  <span
-                    className={`text-sm font-semibold ${isToday(day) ? "text-white" : "text-gray-700"}`}
-                  >
-                    {day}
-                  </span>
-                  <div className="mt-1 flex flex-col gap-0.5">
-                    {jobs.slice(0, 2).map((job) => (
+        {/* HEADER */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between p-4 border-b gap-3">
+          <div className="flex items-center gap-2">
+            <button className="w-8 h-8 border rounded-lg flex items-center justify-center">
+              <ChevronLeft size={16} />
+            </button>
+
+            <h2 className="font-semibold text-gray-800">
+              Oct 16 – 22, 2023
+            </h2>
+
+            <button className="w-8 h-8 border rounded-lg flex items-center justify-center">
+              <ChevronRight size={16} />
+            </button>
+
+            <button className="ml-2 px-3 py-1 border rounded-lg text-sm">
+              Today
+            </button>
+          </div>
+
+          <div className="text-xs text-gray-400">
+            Drag to reschedule / reassign
+          </div>
+        </div>
+
+        {/* CALENDAR */}
+        <div className="overflow-x-auto">
+          <div className="min-w-[900px]">
+
+            {/* DAYS HEADER */}
+            <div className="grid grid-cols-8 border-b text-xs text-gray-400">
+              <div></div>
+              {DAYS.map((d, i) => (
+                <div key={i} className="text-center py-2 border-l">
+                  {d}
+                </div>
+              ))}
+            </div>
+
+            {/* BODY */}
+            <div className="grid grid-cols-8">
+              {/* HOURS */}
+              <div className="flex flex-col">
+                {HOURS.map((h) => (
+                  <div key={h} className="h-20 text-[10px] text-gray-400 flex items-start justify-end pr-2">
+                    {h}:00
+                  </div>
+                ))}
+              </div>
+
+              {/* DAYS GRID */}
+              {DAYS.map((_, dayIndex) => (
+                <div key={dayIndex} className="relative border-l">
+                  {HOURS.map((hour) => (
+                    <div key={hour} className="h-20 border-t"></div>
+                  ))}
+
+                  {/* JOBS */}
+                  {mockCalendarJobs
+                    .filter((j) => j.day === dayIndex)
+                    .map((job) => (
                       <div
                         key={job.id}
-                        className={`text-[10px] font-medium px-1.5 py-0.5 rounded-md truncate ${
-                          isToday(day)
-                            ? "bg-white/20 text-white"
-                            : "bg-blue-100 text-blue-700"
+                        className={`absolute left-1 right-1 rounded-lg border px-2 py-1 text-xs shadow-sm ${
+                          typeColor[job.type]
                         }`}
+                        style={{
+                          top: (job.startHour - 8) * 80,
+                          height: job.duration * 80,
+                        }}
                       >
-                        {job.timeStart} {job.customerName}
+                        <div className="font-semibold">{job.id}</div>
+                        <div className="text-[10px]">{job.customer}</div>
                       </div>
                     ))}
-                    {jobs.length > 2 && (
-                      <div className={`text-[10px] font-medium ${isToday(day) ? "text-white/80" : "text-gray-400"}`}>
-                        +{jobs.length - 2} more
-                      </div>
-                    )}
-                  </div>
-                </>
-              )}
+                </div>
+              ))}
             </div>
-          );
-        })}
+          </div>
+        </div>
       </div>
     </div>
   );

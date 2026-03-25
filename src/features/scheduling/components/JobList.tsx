@@ -1,124 +1,200 @@
-import React, { useState } from "react";
-import { Search, Filter, ChevronDown } from "lucide-react";
-import type { Job, JobStatus } from "../types/scheduling.types";
+import React from "react";
 import { mockJobs } from "../data/mockData";
 
-const statusColors: Record<JobStatus, string> = {
-  NEW: "bg-green-50 text-green-700 border-green-200",
-  PENDING: "bg-yellow-50 text-yellow-700 border-yellow-200",
-  IN_PROGRESS: "bg-blue-50 text-blue-700 border-blue-200",
-  COMPLETED: "bg-gray-100 text-gray-600 border-gray-200",
-  CANCELLED: "bg-red-50 text-red-600 border-red-200",
-};
-
-const statusDots: Record<JobStatus, string> = {
-  NEW: "bg-green-500",
-  PENDING: "bg-yellow-500",
-  IN_PROGRESS: "bg-blue-500",
-  COMPLETED: "bg-gray-400",
-  CANCELLED: "bg-red-500",
-};
-
 export const JobList: React.FC = () => {
-  const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState<JobStatus | "ALL">("ALL");
-
-  const filtered = mockJobs.filter((job) => {
-    const matchSearch =
-      job.customerName.toLowerCase().includes(search.toLowerCase()) ||
-      job.id.toLowerCase().includes(search.toLowerCase());
-    const matchFilter = filter === "ALL" || job.status === filter;
-    return matchSearch && matchFilter;
-  });
-
   return (
-    <div className="flex flex-col gap-4 h-full">
-      {/* Toolbar */}
-      <div className="flex items-center gap-3 bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Search by name or job ID..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-all"
-          />
-        </div>
-        <div className="relative">
-          <select
-            value={filter}
-            onChange={(e) => setFilter(e.target.value as JobStatus | "ALL")}
-            className="appearance-none pl-9 pr-8 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-all cursor-pointer"
-          >
-            <option value="ALL">All Status</option>
-            <option value="NEW">New</option>
-            <option value="PENDING">Pending</option>
-            <option value="IN_PROGRESS">In Progress</option>
-            <option value="COMPLETED">Completed</option>
-            <option value="CANCELLED">Cancelled</option>
-          </select>
-          <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-          <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+    <div className="flex flex-col gap-6">
+
+      {/* ================= FILTER ================= */}
+      <div className="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          {["Client", "Service", "State", "Status", "Date"].map((label) => (
+            <div key={label} className="flex flex-col gap-1">
+              <span className="text-[11px] text-gray-400 font-semibold uppercase">
+                {label}
+              </span>
+              <select className="px-3 py-2 rounded-lg border border-gray-200 bg-gray-50 text-sm text-gray-600 w-full">
+                <option>All</option>
+              </select>
+            </div>
+          ))}
+
+          <div className="flex items-end">
+            <button className="w-full lg:w-auto px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700">
+              Apply Filters
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex-1">
+      {/* ================= STATS ================= */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="bg-gray-50 border rounded-2xl p-5">
+          <p className="text-xs text-gray-400 font-semibold uppercase">
+            Unassigned Jobs
+          </p>
+          <h2 className="text-2xl font-bold text-gray-800 mt-1">12</h2>
+          <p className="text-xs text-gray-400 mt-1">
+            4 requiring immediate action
+          </p>
+        </div>
+
+        <div className="bg-gray-50 border rounded-2xl p-5">
+          <p className="text-xs text-gray-400 font-semibold uppercase">
+            Pending Acceptance
+          </p>
+          <h2 className="text-2xl font-bold text-gray-800 mt-1">08</h2>
+          <p className="text-xs text-gray-400 mt-1">
+            Awaiting notary confirmation
+          </p>
+        </div>
+
+        <div className="bg-gray-50 border rounded-2xl p-5">
+          <p className="text-xs text-gray-400 font-semibold uppercase">
+            Avg. Fulfillment
+          </p>
+          <h2 className="text-2xl font-bold text-gray-800 mt-1">42m</h2>
+          <p className="text-xs text-gray-400 mt-1">
+            From request to assignment
+          </p>
+        </div>
+      </div>
+
+      {/* ================= MOBILE CARD ================= */}
+      <div className="block md:hidden space-y-3">
+        {mockJobs.map((job) => (
+          <div
+            key={job.id}
+            className="bg-white p-4 rounded-xl border shadow-sm"
+          >
+            <div className="flex justify-between items-center">
+              <span className="font-semibold text-blue-600">
+                #{job.id}
+              </span>
+              <span className="text-xs px-2 py-1 rounded-full bg-yellow-50 text-yellow-600">
+                {job.status}
+              </span>
+            </div>
+
+            <div className="mt-2 text-sm font-medium text-gray-800">
+              {job.customerName}
+            </div>
+            <div className="text-xs text-gray-400">{job.state}</div>
+
+            <div className="mt-2 text-xs text-gray-500">
+              {job.date} • {job.timeStart} – {job.timeEnd}
+            </div>
+
+            <div className="mt-2 text-xs text-gray-500">
+              Notary: {job.assignedNotary || "—"}
+            </div>
+
+            <div className="flex gap-2 mt-3">
+              <button className="flex-1 border rounded-lg py-2 text-sm">
+                View
+              </button>
+              <button className="flex-1 border rounded-lg py-2 text-sm">
+                Assign
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* ================= TABLE DESKTOP ================= */}
+      <div className="hidden md:block bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+        <div className="p-4 border-b text-sm font-semibold text-gray-700">
+          Recent Requests
+        </div>
+
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-gray-100 bg-gray-50/80">
-                <th className="text-left text-[11px] font-semibold text-gray-400 uppercase tracking-wider px-5 py-3.5">Job ID</th>
-                <th className="text-left text-[11px] font-semibold text-gray-400 uppercase tracking-wider px-4 py-3.5">Customer</th>
-                <th className="text-left text-[11px] font-semibold text-gray-400 uppercase tracking-wider px-4 py-3.5">Type</th>
-                <th className="text-left text-[11px] font-semibold text-gray-400 uppercase tracking-wider px-4 py-3.5">Service</th>
-                <th className="text-left text-[11px] font-semibold text-gray-400 uppercase tracking-wider px-4 py-3.5">State</th>
-                <th className="text-left text-[11px] font-semibold text-gray-400 uppercase tracking-wider px-4 py-3.5">Date & Time</th>
-                <th className="text-left text-[11px] font-semibold text-gray-400 uppercase tracking-wider px-4 py-3.5">Notary</th>
-                <th className="text-left text-[11px] font-semibold text-gray-400 uppercase tracking-wider px-4 py-3.5">Status</th>
+          <table className="w-full text-sm">
+            <thead className="bg-gray-50 text-gray-400 text-xs uppercase">
+              <tr>
+                <th className="px-4 py-3 text-left">Job ID</th>
+                <th className="px-4 py-3 text-left">Client</th>
+                <th className="px-4 py-3 text-left">Service</th>
+                <th className="px-4 py-3 text-left">Location</th>
+                <th className="px-4 py-3 text-left">Time</th>
+                <th className="px-4 py-3 text-left">Status</th>
+                <th className="px-4 py-3 text-left">Notary</th>
+                <th className="px-4 py-3 text-left">Actions</th>
               </tr>
             </thead>
+
             <tbody>
-              {filtered.length === 0 ? (
-                <tr>
-                  <td colSpan={8} className="text-center py-16 text-gray-300 text-sm">
-                    No jobs found
+              {mockJobs.map((job, index) => (
+                <tr
+                  key={job.id}
+                  className={`border-t hover:bg-gray-50 ${
+                    index % 2 ? "bg-gray-50/30" : ""
+                  }`}
+                >
+                  <td className="px-4 py-4 font-semibold text-blue-600">
+                    #{job.id}
+                  </td>
+
+                  <td className="px-4 py-4">
+                    <div className="font-medium text-gray-800">
+                      {job.customerName}
+                    </div>
+                    <div className="text-xs text-gray-400">
+                      {job.state}
+                    </div>
+                  </td>
+
+                  <td className="px-4 py-4 text-gray-600">
+                    {job.serviceType}
+                  </td>
+
+                  <td className="px-4 py-4">
+                    <span className="text-xs px-2 py-1 rounded-full bg-blue-50 text-blue-600">
+                      Onsite
+                    </span>
+                  </td>
+
+                  <td className="px-4 py-4">
+                    <div className="text-gray-700 font-medium">
+                      {job.date}
+                    </div>
+                    <div className="text-xs text-gray-400">
+                      {job.timeStart} – {job.timeEnd}
+                    </div>
+                  </td>
+
+                  <td className="px-4 py-4">
+                    <span className="px-2 py-1 text-xs rounded-full bg-yellow-50 text-yellow-600">
+                      {job.status}
+                    </span>
+                  </td>
+
+                  <td className="px-4 py-4 text-gray-500">
+                    {job.assignedNotary || "—"}
+                  </td>
+
+                  <td className="px-4 py-4 flex gap-2">
+                    <button className="px-3 py-1.5 border rounded-lg text-sm hover:bg-gray-50">
+                      View
+                    </button>
+                    <button className="px-3 py-1.5 border rounded-lg text-sm hover:bg-gray-50">
+                      Assign
+                    </button>
                   </td>
                 </tr>
-              ) : (
-                filtered.map((job, i) => (
-                  <tr
-                    key={job.id}
-                    className={`border-b border-gray-50 hover:bg-blue-50/30 cursor-pointer transition-colors ${
-                      i % 2 === 0 ? "bg-white" : "bg-gray-50/30"
-                    }`}
-                  >
-                    <td className="px-5 py-4 text-xs font-mono font-semibold text-blue-600">{job.id}</td>
-                    <td className="px-4 py-4 text-sm font-medium text-gray-800">{job.customerName}</td>
-                    <td className="px-4 py-4">
-                      <span className="text-xs font-semibold text-gray-500 bg-gray-100 px-2 py-1 rounded-lg">
-                        {job.customerType}
-                      </span>
-                    </td>
-                    <td className="px-4 py-4 text-sm text-gray-600">{job.serviceType}</td>
-                    <td className="px-4 py-4 text-sm text-gray-600">{job.state}</td>
-                    <td className="px-4 py-4">
-                      <div className="text-sm text-gray-700 font-medium">{job.date}</div>
-                      <div className="text-xs text-gray-400">{job.timeStart} – {job.timeEnd}</div>
-                    </td>
-                    <td className="px-4 py-4 text-sm text-gray-500">{job.assignedNotary || "—"}</td>
-                    <td className="px-4 py-4">
-                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold border ${statusColors[job.status]}`}>
-                        <span className={`w-1.5 h-1.5 rounded-full ${statusDots[job.status]}`} />
-                        {job.status.replace("_", " ")}
-                      </span>
-                    </td>
-                  </tr>
-                ))
-              )}
+              ))}
             </tbody>
           </table>
+        </div>
+
+        {/* FOOTER */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-3 border-t text-sm text-gray-500">
+          <span>Showing 1–8 of 24 results</span>
+
+          <div className="flex gap-2">
+            <button className="px-3 py-1 border rounded-md">1</button>
+            <button className="px-3 py-1 border rounded-md">2</button>
+            <button className="px-3 py-1 border rounded-md">3</button>
+          </div>
         </div>
       </div>
     </div>

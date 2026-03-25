@@ -5,6 +5,7 @@
     import { JobList } from "../components/JobList";
     import { MasterCalendar } from "../components/MasterCalendar";
     import { Dispatch } from "../components/Dispatch";
+    import { JobDetail } from "../components/JobDetail";
 
     type Tab = "create" | "list" | "calendar" | "dispatch" | "detail" | "timeline";
 
@@ -32,15 +33,7 @@
         case "dispatch":
             return <Dispatch />;
         case "detail":
-            return (
-            <div className="flex items-center justify-center h-full text-gray-300">
-                <div className="text-center">
-                <div className="text-5xl mb-3">📋</div>
-                <p className="text-lg font-semibold">Job Detail</p>
-                <p className="text-sm mt-1">Select a job from the list to view details</p>
-                </div>
-            </div>
-            );
+            return <JobDetail />;
         case "timeline":
             return (
             <div className="flex items-center justify-center h-full text-gray-300">

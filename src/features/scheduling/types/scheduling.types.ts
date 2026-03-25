@@ -26,3 +26,30 @@ export interface CreateJobForm {
   timeEnd: string;
   note: string;
 }
+
+// ── Dispatch ──────────────────────────────────────────────────
+
+export interface DispatchJob {
+  id: string;
+  service: string;
+  client: string;
+  location: string;
+  time: string;
+  signers: string;
+  type: string;
+  note?: string;
+}
+
+export interface SuitableNotary {
+  id: string;
+  name: string;
+  rating: number;
+  distance: string;
+  services: string;
+  jobs: number;
+  available: string;
+  exp: string;
+  avatarInitials: string;
+  avatarColor: string;
+  verified: boolean;
+}
