@@ -39,11 +39,11 @@ export const NotaryTable = ({ notaries, isLoading }: NotaryTableProps) => {
         </TableHeader>
         <TableBody>
           {notaries.map((notary) => (
-            <TableRow key={notary.id} className="hover:bg-gray-50 transition-colors">
+            <TableRow key={notary.id} className="hover:bg-[#f8f8f8] transition-colors">
               <TableCell className="py-4">
                 <div className="flex items-center gap-3">
-                  <span className="text-blue-500 font-semibold">#{notary.id}</span>
-                  <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center border border-gray-100 italic text-[10px] text-gray-300">
+                  <span className="text-[#c4a484] font-semibold">#{notary.id}</span>
+                  <div className="w-10 h-10 bg-gray-100 rounded-sm flex items-center justify-center border border-gray-100 italic text-[10px] text-gray-300">
                     Image
                   </div>
                 </div>
@@ -56,7 +56,7 @@ export const NotaryTable = ({ notaries, isLoading }: NotaryTableProps) => {
               <TableCell>
                 <Badge 
                   variant="outline" 
-                  className={`border-none ${
+                  className={`border-none rounded-sm uppercase tracking-widest text-[10px] font-bold ${
                     notary.status === 'Active' 
                       ? 'bg-emerald-50 text-emerald-600' 
                       : 'bg-rose-50 text-rose-600'
@@ -68,14 +68,14 @@ export const NotaryTable = ({ notaries, isLoading }: NotaryTableProps) => {
               <TableCell className="text-right">
                   <div className="flex justify-end gap-1">
                     <Link to={`/admin/notaries/${notary.id}`}>
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-blue-500 hover:text-blue-700 hover:bg-blue-50">
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-[#c4a484] hover:text-[#b09376] hover:bg-[#fdf6ef] rounded-sm">
                         <Eye size={16} />
                       </Button>
                     </Link>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-emerald-500 hover:text-emerald-700 hover:bg-emerald-50">
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-emerald-500 hover:text-emerald-700 hover:bg-emerald-50 rounded-sm">
                     <Pencil size={16} />
                   </Button>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-rose-400 hover:text-rose-600 hover:bg-rose-50">
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-rose-400 hover:text-rose-600 hover:bg-rose-50 rounded-sm">
                     <Trash2 size={16} />
                   </Button>
                 </div>
