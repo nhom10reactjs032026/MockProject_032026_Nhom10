@@ -79,7 +79,7 @@ export const router = createBrowserRouter([
         element: <ProtectedRoute allowedRoles={["admin"]} />,
         children: [
           {
-            element: <AdminLayout />,
+            element: <JournalLayout />,
             children: [
               {
                 path: "dashboard",

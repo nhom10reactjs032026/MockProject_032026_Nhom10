@@ -59,7 +59,7 @@ export const NotaryFilters = () => {
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
           <Input 
-            className="pl-9 bg-white border-gray-100 text-slate-600 shadow-sm h-10 focus-visible:ring-blue-400" 
+            className="pl-9 bg-white border-gray-100 text-slate-600 shadow-sm h-10 rounded-sm focus-visible:ring-1 focus-visible:ring-[#c4a484]/50" 
             placeholder="Search Notaries..." 
           />
         </div>
