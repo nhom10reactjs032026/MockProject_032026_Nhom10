@@ -1,4 +1,4 @@
-import type { Customer, Contact, Activity } from "../types";
+import type { Customer, Contact, Activity, TopClientData } from "../types";
 
 export const mockCustomers: Customer[] = [
   {
@@ -139,9 +139,76 @@ export const mockDashboardData = {
     b2b: 250,
     b2c: 750,
   },
+
+  jobs: {
+    b2b: 2750,
+    b2c: 1250,
+  },
+
   topClients: [
     { name: "Bank of America", value: "$1.2M" },
     { name: "Law Firm XYZ", value: "$850K" },
     { name: "Real Estate ABC", value: "$640k" },
   ],
+};
+
+export const mockTimelineActivities: Activity[] = [
+  {
+    id: "1",
+    title: "Contract Renewed - Enterprise Tier",
+    description:
+      "Renewal agreement finalized for FY24 including high-priority SLA and expanded API access limits.",
+    date: "Oct 24, 2023",
+    isRecent: true,
+  },
+  {
+    id: "2",
+    title: "Support Ticket Resolved",
+    description:
+      "Integration delay in the EMEA region resolved by engineering. Root cause: regional webhook timeout.",
+    date: "Oct 18, 2023",
+    isRecent: false,
+  },
+  {
+    id: "3",
+    title: "Q3 Business Review Completed",
+    description:
+      "Strategic alignment session with Sarah Chen. Customer satisfied with overall 12% increase in efficiency.",
+    date: "Sept 30, 2023",
+    isRecent: false,
+  },
+];
+
+export const mockTopClients: TopClientData[] = [
+  { name: "Bank of America", value: "$1.2M", iconType: "bank" },
+  { name: "Law Firm XYZ", value: "$850K", iconType: "law" },
+  { name: "Real Estate ABC", value: "$640k", iconType: "building" },
+];
+
+export const mockOverdueInvoices = [
+  { client: "Oracle Corp", amount: "$12,400", status: "12 Days Late" },
+  { client: "Morgan Stanley", amount: "$8,900", status: "4 Days Late" },
+  { client: "FedEx Express", amount: "$3,250", status: "18 Days Late" },
+];
+
+export const mockContractsExpiring = [
+  { contract: "SaaS Renewal - Adobe", expiration: "Oct 24, 2023" },
+  { contract: "Cloud Infra - AWS", expiration: "Nov 02, 2023" },
+  { contract: "Security - Crowdstrike", expiration: "Nov 15, 2023" },
+];
+
+export const mockCustomerProfileDetail = {
+  name: "Global Logistics Corp",
+  status: "ACTIVE",
+  type: "B2B",
+  volume: "High-Volume",
+  address: "1221 Avenue of the Americas, Floor 42, New York, NY 10020",
+  industry: "Supply Chain & Freight",
+  taxId: "NY-882-9910-X",
+  contactInitials: "SC",
+  contactName: "Sarah Chen",
+  contactRole: "Director of Operations",
+  annualJobs: 1422,
+  annualRevenue: "$2.84M",
+  avgTurnaround: 4.2,
 };

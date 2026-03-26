@@ -1,19 +1,16 @@
 import React from "react";
 import { AlertTriangle, Clock, MoreVertical } from "lucide-react";
+import type { OverdueInvoice, ContractExpiring } from "../types";
 
-const OVERDUE_INVOICES = [
-  { client: "Oracle Corp", amount: "$12,400", status: "12 Days Late" },
-  { client: "Morgan Stanley", amount: "$8,900", status: "4 Days Late" },
-  { client: "FedEx Express", amount: "$3,250", status: "18 Days Late" },
-];
+interface IssueCardsProps {
+  invoices: OverdueInvoice[];
+  contracts: ContractExpiring[];
+}
 
-const CONTRACTS_EXPIRING = [
-  { contract: "SaaS Renewal - Adobe", expiration: "Oct 24, 2023" },
-  { contract: "Cloud Infra - AWS", expiration: "Nov 02, 2023" },
-  { contract: "Security - Crowdstrike", expiration: "Nov 15, 2023" },
-];
-
-export const IssueCards: React.FC = () => {
+export const IssueCards: React.FC<IssueCardsProps> = ({
+  invoices,
+  contracts,
+}) => {
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
       <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
@@ -37,7 +34,7 @@ export const IssueCards: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {OVERDUE_INVOICES.map((item, idx) => (
+              {invoices.map((item, idx) => (
                 <tr key={idx}>
                   <td className="px-4 py-4 font-bold text-slate-900 md:px-6">
                     {item.client}
@@ -80,7 +77,7 @@ export const IssueCards: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {CONTRACTS_EXPIRING.map((item, idx) => (
+              {contracts.map((item, idx) => (
                 <tr key={idx}>
                   <td className="px-4 py-4 font-bold text-slate-900 md:px-6">
                     {item.contract}

@@ -27,5 +27,55 @@ export type Activity = {
   title: string;
   description: string;
   date: string;
-  type: "contract" | "support" | "review";
+  type?: "contract" | "support" | "review";
+  isRecent?: boolean;
 };
+
+export type TopClientData = {
+  name: string;
+  value: string;
+  iconType: "bank" | "law" | "building";
+};
+
+export type OverdueInvoice = {
+  client: string;
+  amount: string;
+  status: string;
+};
+
+export type ContractExpiring = {
+  contract: string;
+  expiration: string;
+};
+
+export type CustomerProfileDetail = {
+  name: string;
+  status: string;
+  type: string;
+  volume: string;
+  address: string;
+  industry: string;
+  taxId: string;
+  contactInitials: string;
+  contactName: string;
+  contactRole: string;
+  annualJobs: number;
+  annualRevenue: string;
+  avgTurnaround: number;
+};
+
+export interface DashboardMetrics {
+  totalCustomers: number;
+  totalRevenue: number;
+  jobsByCustomers: number;
+  b2bRevenue: number;
+  b2cRevenue: number;
+  customers: {
+    b2b: number;
+    b2c: number;
+  };
+  jobs: {
+    b2b: number;
+    b2c: number;
+  };
+}
