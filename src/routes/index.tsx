@@ -11,8 +11,8 @@ import {
   NotaryJournalDashboard,
   JournalEntryDetail,
   JournalManagerPage,
-  DashboardLayout as JournalLayout,
 } from "../features/notarial-journal";
+import { DashboardLayout as JournalLayout } from "../components/layout/DashboardLayout";
 
 export const router = createBrowserRouter([
   {
