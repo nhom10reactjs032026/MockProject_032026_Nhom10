@@ -28,19 +28,19 @@ export const CustomerProfile = ({
               {customer.name}
             </h2>
             <span className="rounded-full bg-green-600 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white">
-                {customer.status}
-                </span>
+              {customer.status}
+            </span>
           </div>
           <div className="flex flex-wrap gap-2 text-[11px] font-semibold text-slate-600">
             <span className="rounded bg-slate-200 px-2 py-1">
-                {customer.type}
-                </span>
+              {customer.type}
+            </span>
             <span className="rounded bg-slate-200 px-2 py-1">
-                {customer.volume}
-                </span>
+              {customer.volume}
+            </span>
           </div>
         </div>
-        <Button className="w-full flex items-center justify-center gap-2 rounded-lg bg-[#1e3a8a] px-5 font-semibold text-white hover:bg-blue-800 md:w-auto">
+        <Button className="w-full flex items-center justify-center gap-2 rounded-lg bg-[#1a1a1a] px-5 font-semibold text-white hover:bg-black md:w-auto">
           <Edit2 className="h-4 w-4" />
           Edit
         </Button>
@@ -101,7 +101,7 @@ export const CustomerProfile = ({
           </CardContent>
         </Card>
 
-        <Card className="relative overflow-hidden border-none bg-[#0a1e62] shadow-sm">
+        <Card className="relative overflow-hidden border-none bg-[#1a1a1a] shadow-sm">
           <CardHeader className="pb-6">
             <CardTitle className="text-[15px] font-normal text-white">
               Annual Performance
@@ -110,19 +110,19 @@ export const CustomerProfile = ({
           <CardContent className="relative z-10 flex items-end justify-between">
             <div className="space-y-6">
               <div>
-                <p className="mb-1 text-[10px] font-bold uppercase tracking-wider text-blue-200">
+                <p className="mb-1 text-[10px] font-bold uppercase tracking-wider text-[#c4a47c]">
                   TOTAL JOBS COMPLETED
                 </p>
                 <p className="text-3xl font-bold text-white">1,422</p>
               </div>
               <div>
-                <p className="mb-1 text-[10px] font-bold uppercase tracking-wider text-blue-200">
+                <p className="mb-1 text-[10px] font-bold uppercase tracking-wider text-[#c4a47c]">
                   GENERATED REVENUE
                 </p>
                 <p className="text-3xl font-bold text-white">$2.84M</p>
               </div>
               <div>
-                <p className="mb-1 text-[10px] font-bold uppercase tracking-wider text-blue-200">
+                <p className="mb-1 text-[10px] font-bold uppercase tracking-wider text-[#c4a47c]">
                   AVG. TURNAROUND TIME
                 </p>
                 <p className="text-3xl font-bold text-white">
@@ -179,7 +179,7 @@ export const CustomerProfile = ({
               >
                 <span
                   className={`absolute -left-[9px] top-1 h-4 w-4 rounded-full border-[3px] border-white ${
-                    activity.isRecent ? "bg-[#1e3a8a]" : "bg-slate-300"
+                    activity.isRecent ? "bg-[#c4a47c]" : "bg-slate-300"
                   }`}
                 ></span>
 

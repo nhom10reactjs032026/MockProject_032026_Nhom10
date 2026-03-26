@@ -84,7 +84,7 @@ export const CustomerTable = ({ customers }: CustomerTableProps) => {
                   {customer.jobs}
                 </td>
 
-                <td className="px-6 py-4 font-bold text-blue-700 text-sm">
+                <td className="px-6 py-4 font-bold text-[#1a1a1a] text-sm">
                   ${customer.revenue.toLocaleString()}
                 </td>
 
@@ -118,7 +118,7 @@ export const CustomerTable = ({ customers }: CustomerTableProps) => {
           <button className="flex items-center justify-center w-8 h-8 rounded hover:bg-slate-100 text-slate-400">
             <ChevronLeft className="w-5 h-5" />
           </button>
-          <button className="w-8 h-8 bg-[#1e3a8a] text-white rounded font-bold text-sm">
+          <button className="w-8 h-8 bg-[#1a1a1a] text-white rounded font-bold text-sm">
             1
           </button>
           <button className="w-8 h-8 rounded hover:bg-slate-100 text-slate-600 font-medium text-sm">

@@ -15,7 +15,7 @@ export const CRMHeader: React.FC<CRMHeaderProps> = ({
       <div className="mx-auto flex max-w-[1400px] flex-col items-center justify-between gap-4 px-4 py-4 md:h-16 md:flex-row md:gap-0 md:px-6 md:py-0">
         <div className="flex w-full items-center justify-between md:w-1/4 md:justify-start md:gap-3">
           <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded bg-[#1e3a8a]">
+            <div className="flex h-8 w-8 items-center justify-center rounded bg-[#1a1a1a]">
               <svg
                 className="h-5 w-5 -rotate-45 transform text-white"
                 fill="none"
@@ -44,13 +44,13 @@ export const CRMHeader: React.FC<CRMHeaderProps> = ({
         <div className="flex w-full flex-1 items-center gap-8 overflow-x-auto md:justify-center">
           <Link
             to="/crm"
-            className={`whitespace-nowrap border-b-2 pb-2 md:pb-4 md:mt-4 text-sm font-bold ${currentTab === "dashboard" ? "border-blue-700 text-blue-700" : "border-transparent text-slate-500 hover:text-slate-800"}`}
+            className={`whitespace-nowrap border-b-2 pb-2 md:pb-4 md:mt-4 text-sm font-bold ${currentTab === "dashboard" ? "border-[#c4a47c] text-[#c4a47c]" : "border-transparent text-slate-500 hover:text-slate-800"}`}
           >
             Dashboard
           </Link>
           <Link
             to="/crm/customers"
-            className={`whitespace-nowrap border-b-2 pb-2 md:pb-4 md:mt-4 text-sm font-medium ${currentTab === "customers" ? "border-blue-700 text-blue-700" : "border-transparent text-slate-500 hover:text-slate-800"}`}
+            className={`whitespace-nowrap border-b-2 pb-2 md:pb-4 md:mt-4 text-sm font-medium ${currentTab === "customers" ? "border-[#c4a47c] text-[#c4a47c]" : "border-transparent text-slate-500 hover:text-slate-800"}`}
           >
             Customer List
           </Link>
@@ -58,14 +58,14 @@ export const CRMHeader: React.FC<CRMHeaderProps> = ({
 
         <div className="flex w-full items-center justify-between md:w-1/3 md:justify-end md:gap-4">
           <div className="flex gap-2">
-            <Button className="flex h-9 items-center gap-2 rounded-lg bg-[#1e3a8a] px-3 font-semibold text-white hover:bg-[#152c6e] md:h-10 md:px-4">
+            <Button className="flex h-9 items-center gap-2 rounded-lg bg-[#c4a47c] px-3 font-semibold text-white hover:bg-[#b08d65] md:h-10 md:px-4 transition-colors">
               <User size={16} />
               <span className="hidden sm:inline">Add new customer</span>
             </Button>
 
             <Button
               variant="outline"
-              className="flex h-9 items-center gap-2 rounded-lg border-blue-700 px-3 font-semibold text-blue-700 hover:bg-blue-50 md:h-10 md:px-4"
+              className="flex h-9 items-center gap-2 rounded-lg border-[#c4a47c] px-3 font-semibold text-[#c4a47c] hover:bg-[#fbf9f6] md:h-10 md:px-4 transition-colors"
             >
               <FileText size={16} />
               <span className="hidden sm:inline">Create new job</span>

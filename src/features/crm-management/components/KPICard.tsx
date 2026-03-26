@@ -24,7 +24,7 @@ export const KPICard = ({
             {title}
           </p>
           {icon && (
-            <div className="w-8 h-8 rounded bg-[#eff6ff] text-[#1e40af] flex items-center justify-center">
+            <div className="w-8 h-8 rounded bg-[#fbf9f6] text-[#1a1a1a] flex items-center justify-center">
               {icon}
             </div>
           )}
@@ -66,7 +66,7 @@ export const PieChart = ({
 }: {
   percentage: number;
   color: string;
-  secondaryColor?: string; // <-- Sửa lỗi ở ngay dòng này
+  secondaryColor?: string;
 }) => {
   const radius = 32;
   const circumference = 2 * Math.PI * radius;

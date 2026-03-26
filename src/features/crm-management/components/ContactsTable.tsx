@@ -48,14 +48,14 @@ export const ContactsTable = ({ contacts }: ContactsTableProps) => {
     <Card className="border-slate-100 shadow-sm overflow-hidden">
       <div className="flex justify-between items-center p-6 border-b border-slate-100">
         <div>
-          <h3 className="text-[15px] font-bold text-[#1e3a8a]">
+          <h3 className="text-[15px] font-bold text-[#c4a47c]">
             Contacts Management
           </h3>
           <p className="text-sm font-medium text-slate-500 mt-0.5">
             View and manage primary touchpoints.
           </p>
         </div>
-        <Button className="bg-[#1e3a8a] hover:bg-[#152c6e] text-white font-semibold px-5 h-10 flex items-center gap-2 rounded-lg transition-colors">
+        <Button className="bg-[#c4a47c] hover:bg-[#b08d65] text-white font-semibold px-5 h-10 flex items-center gap-2 rounded-lg transition-colors">
           <Plus size={18} strokeWidth={2.5} />
           Add
         </Button>
@@ -136,7 +136,7 @@ export const ContactsTable = ({ contacts }: ContactsTableProps) => {
                   <td className="px-6 py-5 text-slate-600 font-medium">
                     {contact.role}
                   </td>
-                  <td className="px-6 py-5 text-[#1e3a8a] font-medium">
+                  <td className="px-6 py-5 text-[#c4a47c] font-medium">
                     {contact.email}
                   </td>
                   <td className="px-6 py-5 text-slate-600 font-medium whitespace-nowrap">
@@ -148,7 +148,7 @@ export const ContactsTable = ({ contacts }: ContactsTableProps) => {
                       type="checkbox"
                       checked={contact.isPrimary || false}
                       readOnly
-                      className="w-4 h-4 rounded text-[#1e3a8a] focus:ring-[#1e3a8a] accent-[#1e3a8a] cursor-pointer"
+                      className="w-4 h-4 rounded text-[#c4a47c] focus:ring-[#c4a47c] accent-[#c4a47c] cursor-pointer"
                     />
                   </td>
                   <td className="px-2 py-5">
@@ -156,7 +156,7 @@ export const ContactsTable = ({ contacts }: ContactsTableProps) => {
                       <button
                         className={
                           contact.notificationPreferences
-                            ? "text-[#1e3a8a]"
+                            ? "text-[#c4a47c]"
                             : "text-slate-300"
                         }
                       >
@@ -165,7 +165,7 @@ export const ContactsTable = ({ contacts }: ContactsTableProps) => {
                       <button
                         className={
                           contact.notificationPreferences
-                            ? "text-[#1e3a8a]"
+                            ? "text-[#c4a47c]"
                             : "text-slate-300"
                         }
                       >
@@ -197,7 +197,7 @@ export const ContactsTable = ({ contacts }: ContactsTableProps) => {
           <button className="flex h-8 w-8 items-center justify-center rounded text-slate-400 hover:bg-slate-100">
             <ChevronLeft className="h-5 w-5" />
           </button>
-          <button className="h-8 w-8 rounded bg-[#1e3a8a] text-sm font-bold text-white">
+          <button className="h-8 w-8 rounded bg-[#c4a47c] text-sm font-bold text-white">
             1
           </button>
           <button className="h-8 w-8 rounded text-sm font-medium text-slate-600 hover:bg-slate-100">

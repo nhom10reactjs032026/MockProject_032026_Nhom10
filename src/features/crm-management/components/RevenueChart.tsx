@@ -26,8 +26,8 @@ export const RevenueChart: React.FC = () => {
         >
           <defs>
             <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.25" />
-              <stop offset="100%" stopColor="#3b82f6" stopOpacity="0" />
+              <stop offset="0%" stopColor="#c4a47c" stopOpacity="0.25" />
+              <stop offset="100%" stopColor="#c4a47c" stopOpacity="0" />
             </linearGradient>
           </defs>
 
@@ -39,7 +39,7 @@ export const RevenueChart: React.FC = () => {
           <path
             d="M 0 170 C 100 160, 150 140, 200 140 C 300 140, 320 110, 400 110 C 500 110, 530 60, 600 60 C 750 60, 800 35, 900 35 C 1000 35, 1050 5, 1100 0"
             fill="none"
-            stroke="#3b82f6"
+            stroke="#c4a47c"
             strokeWidth="4"
             strokeLinecap="round"
           />
@@ -49,7 +49,7 @@ export const RevenueChart: React.FC = () => {
             cy="140"
             r="5"
             fill="white"
-            stroke="#3b82f6"
+            stroke="#c4a47c"
             strokeWidth="3"
           />
           <circle
@@ -57,7 +57,7 @@ export const RevenueChart: React.FC = () => {
             cy="110"
             r="5"
             fill="white"
-            stroke="#3b82f6"
+            stroke="#c4a47c"
             strokeWidth="3"
           />
           <circle
@@ -65,7 +65,7 @@ export const RevenueChart: React.FC = () => {
             cy="60"
             r="5"
             fill="white"
-            stroke="#3b82f6"
+            stroke="#c4a47c"
             strokeWidth="3"
           />
           <circle
@@ -73,10 +73,10 @@ export const RevenueChart: React.FC = () => {
             cy="35"
             r="5"
             fill="white"
-            stroke="#3b82f6"
+            stroke="#c4a47c"
             strokeWidth="3"
           />
-          <circle cx="1100" cy="0" r="6" fill="#3b82f6" />
+          <circle cx="1100" cy="0" r="6" fill="#c4a47c" />
         </svg>
       </div>
 
