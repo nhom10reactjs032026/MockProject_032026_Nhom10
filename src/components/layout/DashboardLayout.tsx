@@ -1,21 +1,20 @@
-import React, { useState } from 'react';
-import { Outlet, NavLink, useLocation } from 'react-router-dom';
-import { Sidebar } from '../components/Sidebar';
-import { TopBar } from '../components/TopBar';
-import { Footer } from '../../../components/layout/Footer';
-import {
-  LayoutDashboard,
-  BookOpen,
-  Users,
-  Stamp,
-} from 'lucide-react';
-import type { SidebarNavItem } from '../components/Sidebar';
+import React, { useState } from "react";
+import { Outlet, NavLink, useLocation } from "react-router-dom";
+import { Sidebar } from "./Sidebar";
+import { TopBar } from "./TopBar";
+import { Footer } from "./Footer";
+import { LayoutDashboard, BookOpen, Users, Stamp } from "lucide-react";
+import type { SidebarNavItem } from "./Sidebar";
 
 const mainNavItems: SidebarNavItem[] = [
-  { icon: Users, label: 'Notary Profile', path: '/admin/notaries' },
-  { icon: LayoutDashboard, label: 'Dashboard', path: '/admin/dashboard' },
-  { icon: BookOpen, label: 'Journal', path: '/notary-journal', end: true },
-  { icon: Stamp, label: 'Seal & Digital Signature', path: '/notary-journal/seal' },
+  { icon: Users, label: "Notary Profile", path: "/admin/notaries" },
+  { icon: LayoutDashboard, label: "Dashboard", path: "/admin/dashboard" },
+  { icon: BookOpen, label: "Journal", path: "/notary-journal", end: true },
+  {
+    icon: Stamp,
+    label: "Seal & Digital Signature",
+    path: "/notary-journal/seal",
+  },
 ];
 
 export const DashboardLayout = () => {
@@ -56,7 +55,7 @@ export const DashboardLayout = () => {
         />
 
         {/* Sub-nav: Dashboard / Journal Manager */}
-        {location.pathname.startsWith('/notary-journal') && (
+        {location.pathname.startsWith("/notary-journal") && (
           <div className="bg-white border-b border-[#ebebeb] shrink-0">
             <div className="px-6 flex items-center gap-8">
               <NavLink
@@ -64,14 +63,18 @@ export const DashboardLayout = () => {
                 end
                 className={({ isActive }) =>
                   `py-3.5 text-sm font-bold uppercase tracking-widest transition-colors relative ${
-                    isActive ? 'text-[#c4a484]' : 'text-muted-foreground hover:text-foreground'
+                    isActive
+                      ? "text-[#c4a484]"
+                      : "text-muted-foreground hover:text-foreground"
                   }`
                 }
               >
                 {({ isActive }) => (
                   <>
                     Dashboard
-                    {isActive && <span className="absolute bottom-0 left-0 w-full h-[2px] bg-[#c4a484]" />}
+                    {isActive && (
+                      <span className="absolute bottom-0 left-0 w-full h-[2px] bg-[#c4a484]" />
+                    )}
                   </>
                 )}
               </NavLink>
@@ -79,14 +82,18 @@ export const DashboardLayout = () => {
                 to="/notary-journal/manager"
                 className={({ isActive }) =>
                   `py-3.5 text-sm font-bold uppercase tracking-widest transition-colors relative ${
-                    isActive ? 'text-[#c4a484]' : 'text-muted-foreground hover:text-foreground'
+                    isActive
+                      ? "text-[#c4a484]"
+                      : "text-muted-foreground hover:text-foreground"
                   }`
                 }
               >
                 {({ isActive }) => (
                   <>
                     Journal Manager
-                    {isActive && <span className="absolute bottom-0 left-0 w-full h-[2px] bg-[#c4a484]" />}
+                    {isActive && (
+                      <span className="absolute bottom-0 left-0 w-full h-[2px] bg-[#c4a484]" />
+                    )}
                   </>
                 )}
               </NavLink>
