@@ -13,14 +13,18 @@ import {
 } from "../features/notarial-journal";
 
 // Notary Act Feature
-import { 
-  ActListPage, 
-  NotaryActLayout, 
+import {
+  ActListPage,
+  NotaryActLayout,
   ActOverviewPage,
   ActSetupPage,
   ActSignersPage,
-  ActExecutionPage
+  ActExecutionPage,
+  ActCertificatePage,
+  ActJournalPage,
+  ActStatusPage
 } from "../features/notary-act";
+import { ActExportPage } from "@/features/notary-act/pages/ActExportPage";
 
 export const router = createBrowserRouter([
   {
@@ -233,6 +237,22 @@ export const router = createBrowserRouter([
           {
             path: ":id/execution",
             element: <ActExecutionPage />
+          },
+          {
+            path: ":id/certificate",
+            element: <ActCertificatePage />
+          },
+          {
+            path: ":id/journal",
+            element: <ActJournalPage />
+          },
+          {
+            path: ":id/status",
+            element: <ActStatusPage />
+          },
+          {
+            path:":id/export",
+            element: <ActExportPage/>
           }
         ]
       },
