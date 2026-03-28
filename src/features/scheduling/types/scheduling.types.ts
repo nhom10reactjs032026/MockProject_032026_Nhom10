@@ -4,6 +4,7 @@ export type JobStatus = "NEW" | "PENDING" | "IN_PROGRESS" | "COMPLETED" | "CANCE
 
 export interface Job {
   id: string;
+  title?: string;
   customerType: CustomerType;
   customerName: string;
   serviceType: ServiceType;
@@ -14,6 +15,10 @@ export interface Job {
   note?: string;
   status: JobStatus;
   assignedNotary?: string;
+  createdBy?: number;
+  createdAt?: string;
+  originalDocUrl?: string;
+  finalDocUrl?: string;
 }
 
 export interface CreateJobForm {
@@ -27,7 +32,26 @@ export interface CreateJobForm {
   note: string;
 }
 
-// ── Dispatch ──────────────────────────────────────────────────
+export interface Notary {
+  id: string;
+  userId?: number;
+  name: string;
+  fullName?: string;
+  email?: string;
+  phone?: string;
+  status?: string;
+  commissionNumber?: string;
+  expirationDate?: string;
+  rating?: number;
+  distance?: string;
+  services?: string;
+  jobs?: number;
+  available?: string;
+  exp?: string;
+  avatarInitials: string;
+  avatarColor: string;
+  verified: boolean;
+}
 
 export interface DispatchJob {
   id: string;
@@ -40,16 +64,15 @@ export interface DispatchJob {
   note?: string;
 }
 
-export interface SuitableNotary {
-  id: string;
-  name: string;
-  rating: number;
-  distance: string;
-  services: string;
-  jobs: number;
-  available: string;
-  exp: string;
-  avatarInitials: string;
-  avatarColor: string;
-  verified: boolean;
+export interface DigitalSignature {
+  id: number;
+  jobId: number;
+  userId: number;
+  certificateId: number;
+  deviceId: number;
+  signatureValue: string;
+  documentHash: string;
+  signedAt: string;
+  ipAddress: string;
+  verificationStatus: string;
 }
