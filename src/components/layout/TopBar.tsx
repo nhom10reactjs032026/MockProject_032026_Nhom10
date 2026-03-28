@@ -1,9 +1,17 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Search, Bell, Menu, User, Settings, LogOut, ChevronDown } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Input } from '@/components/ui/input';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuthStore } from '@/store/useAuthStore';
+import { useState, useRef, useEffect } from "react";
+import {
+  Search,
+  Bell,
+  Menu,
+  User,
+  Settings,
+  LogOut,
+  ChevronDown,
+} from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Input } from "@/components/ui/input";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuthStore } from "@/store/useAuthStore";
 
 interface TopBarProps {
   onToggleSidebar?: () => void;
@@ -18,18 +26,21 @@ export const TopBar = ({ onToggleSidebar }: TopBarProps) => {
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsDropdownOpen(false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const handleLogout = () => {
     logout();
     setIsDropdownOpen(false);
-    navigate('/');
+    navigate("/");
   };
 
   return (
@@ -63,7 +74,10 @@ export const TopBar = ({ onToggleSidebar }: TopBarProps) => {
         </button>
 
         {/* User / Login Section */}
-        <div className="flex items-center pl-3 border-l border-[#ebebeb]" ref={dropdownRef}>
+        <div
+          className="flex items-center pl-3 border-l border-[#ebebeb]"
+          ref={dropdownRef}
+        >
           {isAuthenticated ? (
             <div className="relative">
               <button
@@ -75,16 +89,24 @@ export const TopBar = ({ onToggleSidebar }: TopBarProps) => {
                     {user?.name}
                   </span>
                   <span className="text-[10px] text-muted-foreground font-medium leading-tight">
-                    {user?.role === 'notary' ? 'Notary Public' : user?.role === 'admin' ? 'Administrator' : 'User'}
+                    {user?.role === "notary"
+                      ? "Notary Public"
+                      : user?.role === "admin"
+                        ? "Administrator"
+                        : "User"}
                   </span>
                 </div>
                 <Avatar className="w-9 h-9 rounded-none border border-[#ebebeb] group-hover:border-[#c4a484] transition-colors">
-                  <AvatarImage src={`https://i.pravatar.cc/150?u=${user?.email}`} />
+                  <AvatarImage
+                    src={`https://i.pravatar.cc/150?u=${user?.email}`}
+                  />
                   <AvatarFallback className="rounded-none bg-[#fdf6ef] text-[#c4a484] font-bold text-xs">
-                    {user?.name?.substring(0, 2).toUpperCase() || 'UN'}
+                    {user?.name?.substring(0, 2).toUpperCase() || "UN"}
                   </AvatarFallback>
                 </Avatar>
-                <ChevronDown className={`w-3.5 h-3.5 text-muted-foreground transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown
+                  className={`w-3.5 h-3.5 text-muted-foreground transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`}
+                />
               </button>
 
               {/* Dropdown Menu */}
@@ -92,17 +114,23 @@ export const TopBar = ({ onToggleSidebar }: TopBarProps) => {
                 <div className="absolute right-0 top-12 w-48 bg-white border border-[#ebebeb] shadow-lg py-1 z-50 animate-in fade-in zoom-in-95 duration-200 origin-top-right">
                   <div className="px-3 py-2 border-b border-[#ebebeb] mb-1 sm:hidden">
                     <p className="text-sm font-bold truncate">{user?.name}</p>
-                    <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {user?.email}
+                    </p>
                   </div>
                   <button
-                    onClick={() => { setIsDropdownOpen(false); /* navigate('/profile') */ }}
+                    onClick={() => {
+                      setIsDropdownOpen(false); /* navigate('/profile') */
+                    }}
                     className="w-full flex items-center gap-3 px-3 py-2 text-sm text-muted-foreground hover:text-[#c4a484] hover:bg-[#fdf6ef] transition-colors font-medium"
                   >
                     <User className="w-4 h-4" />
                     Profile
                   </button>
                   <button
-                    onClick={() => { setIsDropdownOpen(false); /* navigate('/settings') */ }}
+                    onClick={() => {
+                      setIsDropdownOpen(false); /* navigate('/settings') */
+                    }}
                     className="w-full flex items-center gap-3 px-3 py-2 text-sm text-muted-foreground hover:text-[#c4a484] hover:bg-[#fdf6ef] transition-colors font-medium"
                   >
                     <Settings className="w-4 h-4" />
@@ -125,7 +153,9 @@ export const TopBar = ({ onToggleSidebar }: TopBarProps) => {
               className="flex items-center gap-2 h-9 px-3 text-sm font-bold text-[#c4a484] bg-[#fdf6ef] hover:bg-[#f5ebd8] transition-colors"
             >
               <User className="w-4 h-4" />
-              <span className="uppercase tracking-widest hidden sm:inline">Login</span>
+              <span className="uppercase tracking-widest hidden sm:inline">
+                Login
+              </span>
             </Link>
           )}
         </div>
@@ -133,4 +163,3 @@ export const TopBar = ({ onToggleSidebar }: TopBarProps) => {
     </header>
   );
 };
-

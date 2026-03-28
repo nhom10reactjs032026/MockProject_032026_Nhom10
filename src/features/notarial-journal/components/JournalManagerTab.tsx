@@ -1,8 +1,11 @@
-import React from "react";
-import { 
-  Search, Filter, Download, Plus, MoreVertical, 
-  Calendar, ChevronLeft, ChevronRight, AlertTriangle, 
-  AlertCircle, Lock, Circle 
+import { useMemo, useState } from "react";
+import {
+  Calendar,
+  ChevronLeft,
+  ChevronRight,
+  AlertTriangle,
+  AlertCircle,
+  Lock,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,83 +20,84 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 
-const journalEntries = [
-  {
-    id: '#8829',
-    alert: null,
-    dateTime: 'Oct 24, 10:30 AM',
-    notary: 'Jane Doe',
-    actType: 'Acknowledgment',
-    signerName: 'John Smith',
-    fee: '$25.00',
-    status: 'Completed',
-    statusType: 'success',
-    riskFlags: 'None',
-  },
-  {
-    id: '#8828',
-    alert: 'warning',
-    dateTime: 'Oct 24, 09:15 AM',
-    notary: 'Jane Doe',
-    actType: 'Jurat',
-    signerName: 'Mary Ellis',
-    fee: '$15.00',
-    status: 'Draft',
-    statusType: 'draft',
-    riskFlags: 'Warning',
-  },
-  {
-    id: '#8827',
-    alert: null,
-    dateTime: 'Oct 23, 04:45 PM',
-    notary: 'Robert Fox',
-    actType: 'Oaths',
-    signerName: 'Alice Wong',
-    fee: '-',
-    status: 'Locked',
-    statusType: 'locked',
-    riskFlags: 'None',
-  },
-  {
-    id: '#8826',
-    alert: null,
-    dateTime: 'Oct 23, 02:00 PM',
-    notary: 'Jane Doe',
-    actType: 'Deed',
-    signerName: 'Charles Reed',
-    fee: '$50.00',
-    status: 'Completed',
-    statusType: 'success',
-    riskFlags: 'None',
-  },
-  {
-    id: '#8825',
-    alert: 'error',
-    dateTime: 'Oct 22, 11:30 AM',
-    notary: 'Robert Fox',
-    actType: 'Deed',
-    signerName: 'Linda White',
-    fee: '$25.00',
-    status: 'Action Required',
-    statusType: 'error',
-    riskFlags: 'Warning',
-  }
-];
+import {
+  useActTypes,
+  useJournalEntries,
+  useStates,
+  type ListJournalEntriesParams,
+} from "../api";
+import { formatCurrency, formatDateTime } from "../utils/format";
+
+function formatActTypeLabel(value: string) {
+  const normalized = (value ?? "").trim();
+  if (!normalized) return "-";
+  return normalized
+    .replace(/_/g, " ")
+    .toLowerCase()
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
 
 export const JournalManagerTab = () => {
   const navigate = useNavigate();
+  const [status, setStatus] = useState<
+    "All Statuses" | "Completed" | "Draft" | "Action Required"
+  >("All Statuses");
+  const [actType, setActType] = useState<string>("All Acts");
+  const [stateCode, setStateCode] = useState<string>("All States");
+  const [notaryQuery, setNotaryQuery] = useState<string>("");
+
+  const { data: actTypesData } = useActTypes();
+  const actTypes = actTypesData ?? [];
+
+  const { data: statesData } = useStates();
+  const states = statesData ?? [];
+
+  const queryParams: ListJournalEntriesParams = useMemo(() => {
+    const mappedStatus: ListJournalEntriesParams["status"] =
+      status === "All Statuses" ? "All" : status;
+    const mappedActType: ListJournalEntriesParams["actType"] =
+      actType === "All Acts" ? "All" : actType;
+    const mappedStateCode: ListJournalEntriesParams["stateCode"] =
+      stateCode === "All States" ? "All" : stateCode;
+
+    return {
+      page: 1,
+      pageSize: 20,
+      status: mappedStatus,
+      actType: mappedActType,
+      stateCode: mappedStateCode,
+      notaryQuery:
+        notaryQuery.trim().length > 0 ? notaryQuery.trim() : undefined,
+    };
+  }, [status, actType, stateCode, notaryQuery]);
+
+  const { data } = useJournalEntries(queryParams);
+  const journalEntries = data?.items ?? [];
 
   return (
     <div className="space-y-8">
-
       {/* Table Container */}
       <div className="bg-white border border-[#ebebeb] rounded-none shadow-sm flex flex-col mt-4">
         {/* Toolbar - SC_002 Accurate */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 p-6 border-b border-[#ebebeb]">
           {/* Status */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">STATUS</label>
-            <select className="h-10 border border-[#ebebeb] bg-white px-3 outline-none focus:ring-1 focus:ring-[#c4a484] text-sm text-foreground">
+            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+              STATUS
+            </label>
+            <select
+              value={status}
+              onChange={(e) =>
+                setStatus(
+                  e.target.value as
+                    | "All Statuses"
+                    | "Completed"
+                    | "Draft"
+                    | "Action Required",
+                )
+              }
+              className="h-10 border border-[#ebebeb] bg-white px-3 outline-none focus:ring-1 focus:ring-[#c4a484] text-sm text-foreground"
+            >
               <option>All Statuses</option>
               <option>Completed</option>
               <option>Draft</option>
@@ -102,7 +106,9 @@ export const JournalManagerTab = () => {
           </div>
           {/* DATE RANGE */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">DATE RANGE</label>
+            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+              DATE RANGE
+            </label>
             <div className="relative h-10 border border-[#ebebeb] bg-white flex items-center px-3 cursor-pointer">
               <span className="text-sm text-foreground">Last 30 Days</span>
               <Calendar className="absolute right-3 w-4 h-4 text-muted-foreground" />
@@ -110,32 +116,64 @@ export const JournalManagerTab = () => {
           </div>
           {/* ACT TYPE */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">ACT TYPE</label>
-            <select className="h-10 border border-[#ebebeb] bg-white px-3 outline-none focus:ring-1 focus:ring-[#c4a484] text-sm text-foreground">
-              <option>All Acts</option>
-              <option>Acknowledgment</option>
-              <option>Jurat</option>
-              <option>Oaths</option>
+            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+              ACT TYPE
+            </label>
+            <select
+              value={actType}
+              onChange={(e) => setActType(e.target.value)}
+              className="h-10 border border-[#ebebeb] bg-white px-3 outline-none focus:ring-1 focus:ring-[#c4a484] text-sm text-foreground"
+            >
+              <option value="All Acts">All Acts</option>
+              {actTypes.map((t) => (
+                <option key={t} value={t}>
+                  {formatActTypeLabel(t)}
+                </option>
+              ))}
             </select>
           </div>
           {/* NOTARY */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">NOTARY</label>
-            <Input placeholder="Name or ID" className="h-10 border border-[#ebebeb] bg-white px-3 outline-none focus-visible:ring-[#c4a484] text-sm rounded-none text-foreground placeholder:text-muted-foreground" />
+            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+              NOTARY
+            </label>
+            <Input
+              placeholder="Name or ID"
+              value={notaryQuery}
+              onChange={(e) => setNotaryQuery(e.target.value)}
+              className="h-10 border border-[#ebebeb] bg-white px-3 outline-none focus-visible:ring-[#c4a484] text-sm rounded-none text-foreground placeholder:text-muted-foreground"
+            />
           </div>
           {/* STATE */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">STATE</label>
-            <select className="h-10 border border-[#ebebeb] bg-white px-3 outline-none focus:ring-1 focus:ring-[#c4a484] text-sm text-foreground">
-              <option>All States</option>
-              <option>Texas</option>
-              <option>California</option>
-              <option>New York</option>
+            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+              STATE
+            </label>
+            <select
+              value={stateCode}
+              onChange={(e) => setStateCode(e.target.value)}
+              className="h-10 border border-[#ebebeb] bg-white px-3 outline-none focus:ring-1 focus:ring-[#c4a484] text-sm text-foreground"
+            >
+              <option value="All States">All States</option>
+              {states.map((s) => (
+                <option key={s.stateCode} value={s.stateCode}>
+                  {s.stateName}
+                </option>
+              ))}
             </select>
           </div>
           {/* CLEAR BUTTON */}
           <div className="flex flex-col gap-1.5 justify-end">
-            <Button variant="outline" className="h-10 border-[#ebebeb] bg-[#f8f8f8] text-[#c4a484] font-bold uppercase tracking-widest text-[11px] rounded-none hover:bg-[#c4a484]/10 w-full">
+            <Button
+              onClick={() => {
+                setStatus("All Statuses");
+                setActType("All Acts");
+                setStateCode("All States");
+                setNotaryQuery("");
+              }}
+              variant="outline"
+              className="h-10 border-[#ebebeb] bg-[#f8f8f8] text-[#c4a484] font-bold uppercase tracking-widest text-[11px] rounded-none hover:bg-[#c4a484]/10 w-full"
+            >
               CLEAR ALL
             </Button>
           </div>
@@ -183,16 +221,22 @@ export const JournalManagerTab = () => {
                 >
                   <TableCell className="px-6 py-4">
                     <div className="flex items-center gap-2">
-                      <span className="font-bold text-[#c4a484] text-sm">{log.id}</span>
-                      {log.alert === 'warning' && <AlertTriangle className="w-4 h-4 text-yellow-500 fill-yellow-500/20" />}
-                      {log.alert === 'error' && <AlertCircle className="w-4 h-4 text-red-500" />}
+                      <span className="font-bold text-[#c4a484] text-sm">
+                        #{log.id}
+                      </span>
+                      {log.riskFlags === "Warning" && (
+                        <AlertTriangle className="w-4 h-4 text-yellow-500 fill-yellow-500/20" />
+                      )}
+                      {log.status === "Action Required" && (
+                        <AlertCircle className="w-4 h-4 text-red-500" />
+                      )}
                     </div>
                   </TableCell>
                   <TableCell className="text-muted-foreground font-medium py-4 text-sm whitespace-nowrap">
-                    {log.dateTime}
+                    {formatDateTime(log.dateTime)}
                   </TableCell>
                   <TableCell className="text-muted-foreground py-4 text-sm">
-                    {log.notary}
+                    {log.notaryName}
                   </TableCell>
                   <TableCell className="py-4">
                     <span className="inline-flex items-center px-3 py-1 bg-[#f8f8f8] border border-[#ebebeb] text-muted-foreground text-xs font-semibold rounded-none">
@@ -203,42 +247,68 @@ export const JournalManagerTab = () => {
                     {log.signerName}
                   </TableCell>
                   <TableCell className="text-muted-foreground py-4 text-sm">
-                    {log.fee}
+                    {log.fee ? formatCurrency(log.fee) : "-"}
                   </TableCell>
                   <TableCell className="py-4 whitespace-nowrap">
-                    {log.statusType === 'success' && (
-                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 font-bold hover:bg-green-50 rounded-none text-[10px] uppercase tracking-widest px-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-green-500 mr-2 shrink-0"></span> {log.status}
+                    {log.status === "Completed" && (
+                      <Badge
+                        variant="outline"
+                        className="bg-green-50 text-green-700 border-green-200 font-bold hover:bg-green-50 rounded-none text-[10px] uppercase tracking-widest px-2"
+                      >
+                        <span className="w-1.5 h-1.5 rounded-full bg-green-500 mr-2 shrink-0"></span>{" "}
+                        {log.status}
                       </Badge>
                     )}
-                    {log.statusType === 'draft' && (
-                      <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 font-bold hover:bg-blue-50 rounded-none text-[10px] uppercase tracking-widest px-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mr-2 shrink-0"></span> {log.status}
+                    {log.status === "Draft" && (
+                      <Badge
+                        variant="outline"
+                        className="bg-blue-50 text-blue-700 border-blue-200 font-bold hover:bg-blue-50 rounded-none text-[10px] uppercase tracking-widest px-2"
+                      >
+                        <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mr-2 shrink-0"></span>{" "}
+                        {log.status}
                       </Badge>
                     )}
-                    {log.statusType === 'locked' && (
-                      <Badge variant="outline" className="bg-gray-100 text-gray-700 border-gray-200 font-bold hover:bg-gray-100 rounded-none text-[10px] uppercase tracking-widest px-2">
-                        <Lock className="w-3 h-3 mr-1.5 text-gray-500 shrink-0" /> {log.status}
+                    {log.status === "Locked" && (
+                      <Badge
+                        variant="outline"
+                        className="bg-gray-100 text-gray-700 border-gray-200 font-bold hover:bg-gray-100 rounded-none text-[10px] uppercase tracking-widest px-2"
+                      >
+                        <Lock className="w-3 h-3 mr-1.5 text-gray-500 shrink-0" />{" "}
+                        {log.status}
                       </Badge>
                     )}
-                    {log.statusType === 'error' && (
-                      <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200 font-bold hover:bg-red-50 rounded-none text-[10px] uppercase tracking-widest px-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-red-500 mr-2 shrink-0"></span> {log.status}
+                    {log.status === "Action Required" && (
+                      <Badge
+                        variant="outline"
+                        className="bg-red-50 text-red-700 border-red-200 font-bold hover:bg-red-50 rounded-none text-[10px] uppercase tracking-widest px-2"
+                      >
+                        <span className="w-1.5 h-1.5 rounded-full bg-red-500 mr-2 shrink-0"></span>{" "}
+                        {log.status}
                       </Badge>
                     )}
                   </TableCell>
                   <TableCell className="py-4 whitespace-nowrap">
-                    {log.riskFlags === 'None' ? (
-                      <span className="text-sm font-semibold text-foreground">None</span>
+                    {log.riskFlags === "None" ? (
+                      <span className="text-sm font-semibold text-foreground">
+                        None
+                      </span>
                     ) : (
-                      <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200 font-bold hover:bg-yellow-50 rounded-none text-[10px] uppercase tracking-widest px-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-orange-500 mr-2 shrink-0"></span> {log.riskFlags}
+                      <Badge
+                        variant="outline"
+                        className="bg-yellow-50 text-yellow-700 border-yellow-200 font-bold hover:bg-yellow-50 rounded-none text-[10px] uppercase tracking-widest px-2"
+                      >
+                        <span className="w-1.5 h-1.5 rounded-full bg-orange-500 mr-2 shrink-0"></span>{" "}
+                        {log.riskFlags}
                       </Badge>
                     )}
                   </TableCell>
                   <TableCell className="text-right py-4 pr-6 whitespace-nowrap">
-                    <button 
-                      onClick={() => navigate('/notary-journal/detail')}
+                    <button
+                      onClick={() =>
+                        navigate(
+                          `/notary-journal/detail?id=${encodeURIComponent(log.id)}`,
+                        )
+                      }
                       className="text-[12px] font-bold text-[#c4a484] hover:opacity-80 transition-opacity"
                     >
                       View Details
@@ -253,7 +323,12 @@ export const JournalManagerTab = () => {
         {/* Pagination Info */}
         <div className="p-4 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <span className="text-sm text-muted-foreground font-medium text-center sm:text-left">
-            Showing 1 to 5 of 1,248 entries
+            Showing 1 to{" "}
+            {Math.min(
+              journalEntries.length,
+              data?.total ?? journalEntries.length,
+            )}{" "}
+            of {data?.total?.toLocaleString?.() ?? "-"} entries
           </span>
           <div className="flex items-center gap-1">
             <button className="w-8 h-8 flex items-center justify-center text-muted-foreground hover:bg-[#f8f8f8] transition-colors">
