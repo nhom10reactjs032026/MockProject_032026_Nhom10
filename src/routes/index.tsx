@@ -1,8 +1,9 @@
-import { createBrowserRouter } from "react-router-dom";
+import { Outlet, createBrowserRouter } from "react-router-dom";
 import { HomePage } from "../pages/HomePage";
 import { LoginPage } from "../pages/LoginPage";
 import { ErrorPage } from "../pages/ErrorPage";
 import ProtectedRoute from "./ProtectedRoute";
+import { AdminLayout } from "../components/layout/AdminLayout";
 import {
   NotaryManagementPage,
   NotaryDetailsPage,
@@ -26,9 +27,16 @@ import {
   ActExecutionPage,
   ActCertificatePage,
   ActJournalPage,
-  ActStatusPage
+  ActStatusPage,
 } from "../features/notary-act";
 import { ActExportPage } from "@/features/notary-act/pages/ActExportPage";
+
+// CRM Management Feature
+import {
+  CrmDashboard,
+  CustomerListPage,
+  CustomerDetailPage,
+} from "../features/crm-management";
 
 export const router = createBrowserRouter([
   {
@@ -195,6 +203,7 @@ export const router = createBrowserRouter([
           },
         ],
       },
+
       // 6. NOTARY ACT FEATURE
       {
         path: "notary-acts",
@@ -202,69 +211,89 @@ export const router = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <ActListPage />
+            element: <ActListPage />,
           },
           {
             path: "registry",
-            element: <ErrorPage />
+            element: <ErrorPage />,
           },
           {
             path: "detail",
-            element: <ErrorPage />
+            element: <ErrorPage />,
           },
           {
             path: "technical",
-            element: <ErrorPage />
+            element: <ErrorPage />,
           },
           {
             path: "traceability",
-            element: <ErrorPage />
+            element: <ErrorPage />,
           },
           {
             path: "security",
-            element: <ErrorPage />
+            element: <ErrorPage />,
           },
           {
             path: "risk",
-            element: <ErrorPage />
+            element: <ErrorPage />,
           },
           {
             path: "oversight",
-            element: <ErrorPage />
+            element: <ErrorPage />,
           },
           {
             path: ":id",
-            element: <ActOverviewPage />
+            element: <ActOverviewPage />,
           },
           {
             path: ":id/setup",
-            element: <ActSetupPage />
+            element: <ActSetupPage />,
           },
           {
             path: ":id/signers",
-            element: <ActSignersPage />
+            element: <ActSignersPage />,
           },
           {
             path: ":id/execution",
-            element: <ActExecutionPage />
+            element: <ActExecutionPage />,
           },
           {
             path: ":id/certificate",
-            element: <ActCertificatePage />
+            element: <ActCertificatePage />,
           },
           {
             path: ":id/journal",
-            element: <ActJournalPage />
+            element: <ActJournalPage />,
           },
           {
             path: ":id/status",
-            element: <ActStatusPage />
+            element: <ActStatusPage />,
           },
           {
-            path:":id/export",
-            element: <ActExportPage/>
-          }
-        ]
+            path: ":id/export",
+            element: <ActExportPage />,
+          },
+        ],
+      },
+
+      // 6. CRM MANAGEMENT FEATURE
+      {
+        path: "crm",
+        element: <Outlet />,
+        children: [
+          {
+            index: true,
+            element: <CrmDashboard />,
+          },
+          {
+            path: "customers",
+            element: <CustomerListPage />,
+          },
+          {
+            path: "customers/:id",
+            element: <CustomerDetailPage />,
+          },
+        ],
       },
       // 7. CATCH-ALL ROUTE
       {
