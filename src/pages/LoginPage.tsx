@@ -1,29 +1,70 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
-import { Facebook } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Facebook, AlertCircle } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { MOCK_USERS } from '@/mock/mockData';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export const LoginPage = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+  const { user, isAuthenticated, login } = useAuthStore();
+
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      if (user.role === 'admin') navigate('/admin/dashboard');
+      else if (user.role === 'notary') navigate('/notary/dashboard');
+      else navigate('/history');
+    }
+  }, [isAuthenticated, user, navigate]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+
+    const user = MOCK_USERS.find(
+      (u) => u.email === email && u.password === password
+    );
+
+    if (user) {
+      login({
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role as 'admin' | 'notary' | 'user'
+      });
+
+      // Redirect based on role
+      if (user.role === 'admin') navigate('/admin/dashboard');
+      else if (user.role === 'notary') navigate('/notary/dashboard');
+      else navigate('/history');
+    } else {
+      setError('Invalid email or password. Please try admin.sys@mail.com / password123');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#f8f8f8] flex flex-col pt-20 transition-colors duration-500 font-['Plus_Jakarta_Sans']">
       <Header />
-      
+
       {/* Hero Banner Section */}
       <section className="relative h-96 flex flex-col items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-black/60 z-10" />
-          <img 
-            src="https://images.unsplash.com/photo-1497366858526-0766cadbe8fa?auto=format&fit=crop&q=80&w=2301" 
+          <img
+            src="https://images.unsplash.com/photo-1497366858526-0766cadbe8fa?auto=format&fit=crop&q=80&w=2301"
             alt="Banner"
             className="w-full h-full object-cover"
           />
         </div>
-        
+
         <div className="relative z-20 text-center space-y-4 px-6 md:container mx-auto">
           <h1 className="text-4xl sm:text-5xl font-bold text-white uppercase tracking-tight">
             Đăng nhập tài khoản
@@ -44,43 +85,56 @@ export const LoginPage = () => {
               <h2 className="text-2xl font-bold text-foreground mb-6">Đăng nhập</h2>
             </div>
 
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-semibold text-foreground">
-                  Email <span className="text-red-500">*</span>
-                </Label>
-                <Input 
-                  id="email"
-                  type="email" 
-                  placeholder="Nhập Địa chỉ Email" 
-                  className="h-12 border-[#ebebeb] bg-white focus-visible:ring-1 focus-visible:ring-[#c4a484] rounded-none transition-all text-sm"
-                />
+            <form onSubmit={handleSubmit} className="space-y-8">
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-sm font-semibold text-foreground">
+                    Email <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Nhập Địa chỉ Email"
+                    className="h-12 border-[#ebebeb] bg-white focus-visible:ring-1 focus-visible:ring-[#c4a484] rounded-none transition-all text-sm"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="password" className="text-sm font-semibold text-foreground">
+                    Mật khẩu <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Nhập Mật khẩu"
+                    className="h-12 border-[#ebebeb] bg-white focus-visible:ring-1 focus-visible:ring-[#c4a484] rounded-none transition-all text-sm"
+                  />
+                </div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-semibold text-foreground">
-                  Mật khẩu <span className="text-red-500">*</span>
-                </Label>
-                <Input 
-                  id="password"
-                  type="password" 
-                  placeholder="Nhập Mật khẩu" 
-                  className="h-12 border-[#ebebeb] bg-white focus-visible:ring-1 focus-visible:ring-[#c4a484] rounded-none transition-all text-sm"
-                />
-              </div>
-            </div>
+              {error && (
+                <div className="p-3 bg-red-50 border border-red-100 rounded-md flex items-center gap-3 text-red-600 text-sm">
+                  <AlertCircle className="w-4 h-4" />
+                  {error}
+                </div>
+              )}
+
+              <Button
+                type="submit"
+                className="w-full h-11 bg-[#c4a484] hover:bg-[#b08e6d] text-white font-bold uppercase tracking-[0.2em] text-xs rounded-none transition-all shadow-md"
+              >
+                ĐĂNG NHẬP
+              </Button>
+            </form>
 
             <div className="flex justify-between items-center text-[12px] font-medium text-[#c4a484]">
               <a href="#" className="hover:opacity-80 transition-opacity">Quên mật khẩu?</a>
               <Link to="/account/register" className="hover:opacity-80 transition-opacity">Đăng ký tài khoản</Link>
             </div>
-
-            <Button 
-              type="submit" 
-              className="w-full h-11 bg-[#c4a484] hover:bg-[#b08e6d] text-white font-bold uppercase tracking-[0.2em] text-xs rounded-none transition-all shadow-md"
-            >
-              ĐĂNG NHẬP
-            </Button>
 
             <div className="text-center space-y-6">
               <p className="text-[12px] text-muted-foreground leading-relaxed max-w-sm mx-auto">

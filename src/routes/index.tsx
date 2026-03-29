@@ -1,61 +1,71 @@
-import { createBrowserRouter } from "react-router-dom";
-import { HomePage } from "../pages/Home";
-import { LoginPage } from "../pages/Login";
-import ProtectedRoute from "./ProtectedRoute";
+import { createBrowserRouter, Outlet } from "react-router-dom"; // Thêm Outlet vào đây
+import { HomePage } from "../pages/HomePage"
+import { LoginPage } from "../pages/LoginPage";
+import { ErrorPage } from "../pages/ErrorPage";
+
+// Layout tổng của Admin
+import { AdminLayout } from "../components/layout/AdminLayout";
+
+// --- IMPORT MODULE SEAL CỦA ĐAN ---
+import { SealModuleLayout } from "@/features/security-management/pages/SealModuleLayout";
+import SealDashboardPage from "@/features/security-management/pages/SealDashboardPage";
+import SealDetailPage from "@/features/security-management/pages/SealDetailPage";
+import { TraceabilityLayout } from "@/features/security-management/pages/TraceabilityLayout";
+import { IncidentReportPage } from "@/features/security-management/pages/IncidentReportPage";
+import { IncidentDetailPage } from "@/features/security-management/pages/IncidentDetailPage";
+import { SealReplacementPage } from "@/features/security-management/pages/SealReplacementPage";
+import { ReplacementPage } from "@/features/security-management/pages/ReplacementPage";
+import { NotificationLogPage } from "@/features/security-management/pages/NotificationLogPage";
+import { AuditCompliancePage } from "@/features/security-management/pages/AuditCompliancePage";
 
 export const router = createBrowserRouter([
-  // 1. PUBLIC ROUTES (Mọi người đều truy cập được)
   {
     path: "/",
-    element: <HomePage />,
-  },
-  {
-    path: "/account/login",
-    element: <LoginPage />,
-  },
-  
-  // 2. USER ROUTES (Dành cho người dùng đã đăng nhập)
-  {
-    element: <ProtectedRoute allowedRoles={['user', 'admin', 'notary']} />,
+    errorElement: <ErrorPage />,
     children: [
-      {
-        path: "/profile",
-        element: <div className="p-20 text-center font-bold">👤 THÔNG TIN CÁ NHÂN (USER/ADMIN/NOTARY)</div>,
-      },
-      {
-        path: "/history",
-        element: <div className="p-20 text-center font-bold">📝 LỊCH SỬ GIAO DỊCH</div>,
-      },
-    ],
-  },
+      { index: true, element: <HomePage /> },
+      { path: "account/login", element: <LoginPage /> },
 
-  // 3. NOTARY ROUTES (Dành cho công chứng viên)
-  {
-    element: <ProtectedRoute allowedRoles={['notary', 'admin']} />,
-    children: [
+      // --- ADMIN ROUTES ---
       {
-        path: "/notary/dashboard",
-        element: <div className="p-20 text-center font-bold text-blue-600">📜 BẢNG ĐIỀU KHIỂN CÔNG CHỨNG VIÊN</div>,
-      },
-      {
-        path: "/notary/verify",
-        element: <div className="p-20 text-center font-bold text-blue-600">✅ XÁC THỰC HỒ SƠ</div>,
-      },
-    ],
-  },
+        path: "admin",
+        element: <AdminLayout />,
+        children: [
+          // 1. Dashboard tổng
+          {
+            path: "dashboard",
+            element: <div className="p-20 font-bold">🛠️ ADMIN DASHBOARD (PUBLIC)</div>
+          },
 
-  // 4. ADMIN ROUTES (Dành riêng cho Quản trị viên)
-  {
-    element: <ProtectedRoute allowedRoles={['admin']} />,
-    children: [
-      {
-        path: "/admin/dashboard",
-        element: <div className="p-20 text-center font-bold text-red-600">🛠️ QUẢN TRỊ VIÊN - DASHBOARD</div>,
+          // 2. Quản lý khác
+          { path: "users", element: <div className="p-20 font-bold">👥 USERS MANAGEMENT</div> },
+
+          // 3. MODULE SEAL & DIGITAL SIGNATURE
+          {
+            path: "seals",
+            element: <SealModuleLayout />,
+            children: [
+              { index: true, element: <SealDashboardPage /> },
+              { path: "registry", element: <div className="p-20 font-bold">Registry Content</div> },
+              { path: "detail", element: <SealDetailPage /> },
+              {
+                path: "traceability",
+                element: <TraceabilityLayout />,
+                children: [
+                  { index: true, element: <IncidentReportPage /> },
+                  { path: "incident-detail", element: <IncidentDetailPage /> },
+                  { path: "seal-replacement-request", element: <SealReplacementPage /> },
+                  { path: "replacement", element: <ReplacementPage /> },
+                  { path: "notification-log", element: <NotificationLogPage /> },
+                  { path: "audit", element: <AuditCompliancePage /> },
+                ]
+              },
+            ]
+          },
+        ],
       },
-      {
-        path: "/admin/users",
-        element: <div className="p-20 text-center font-bold text-red-600">👥 QUẢN LÝ NGƯỜI DÙNG</div>,
-      },
+
+      { path: "*", element: <ErrorPage /> },
     ],
   },
 ]);

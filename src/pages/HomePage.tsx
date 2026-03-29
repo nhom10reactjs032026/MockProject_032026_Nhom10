@@ -10,13 +10,13 @@ export const HomePage = () => {
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors duration-500">
       <Header />
-      
+
       {/* Hero Section - Strict Tailwind classes */}
       <section className="relative min-h-[90vh] flex items-center overflow-hidden pt-48 pb-20">
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-background z-10" />
-          <img 
-            src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=2301" 
+          <img
+            src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=2301"
             alt="Notary Office"
             className="w-full h-full object-cover animate-pulse-slow"
           />
@@ -24,11 +24,11 @@ export const HomePage = () => {
 
         <div className="relative z-20 container mx-auto px-10 py-12 sm:px-20">
           <div className="max-w-4xl space-y-8">
-              <h1 className="text-5xl sm:text-8xl md:text-9xl font-bold text-white uppercase drop-shadow-2xl animate-in fade-in slide-in-from-bottom-8 duration-1000">
-                Pháp lý <br />
-                <span className="text-white/60">Tin cậy.</span>
-              </h1>
-            
+            <h1 className="text-5xl sm:text-8xl md:text-9xl font-bold text-white uppercase drop-shadow-2xl animate-in fade-in slide-in-from-bottom-8 duration-1000">
+              Pháp lý <br />
+              <span className="text-white/60">Tin cậy.</span>
+            </h1>
+
             <p className="text-base sm:text-lg text-white/80 font-medium max-w-xl leading-relaxed animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300">
               Giải pháp công chứng số hoá hàng đầu tại Hoa Kỳ. Chúng tôi kết hợp công nghệ hiện đại với sự tận tâm để bảo vệ giá trị pháp lý cho mọi giao dịch.
             </p>
@@ -98,20 +98,20 @@ export const HomePage = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <ServiceCard 
-              icon={<Shield className="w-10 h-10" />} 
-              title="Bảo mật NIST" 
-              desc="Hệ thống lưu trữ tài liệu mã hóa chuẩn liên bang Hoa Kỳ, đảm bảo an toàn tuyệt đối." 
+            <ServiceCard
+              icon={<Shield className="w-10 h-10" />}
+              title="Bảo mật NIST"
+              desc="Hệ thống lưu trữ tài liệu mã hóa chuẩn liên bang Hoa Kỳ, đảm bảo an toàn tuyệt đối."
             />
-            <ServiceCard 
-              icon={<Globe className="w-10 h-10" />} 
-              title="Công chứng RON" 
-              desc="Dịch vụ công chứng trực tuyến giúp quý khách hàng tiết kiệm thời gian tối đa." 
+            <ServiceCard
+              icon={<Globe className="w-10 h-10" />}
+              title="Công chứng RON"
+              desc="Dịch vụ công chứng trực tuyến giúp quý khách hàng tiết kiệm thời gian tối đa."
             />
-            <ServiceCard 
-              icon={<FileText className="w-10 h-10" />} 
-              title="Xác thực hồ sơ" 
-              desc="Chứng nhận Apostille và hợp pháp hóa lãnh sự cho mọi loại giấy tờ quốc tế." 
+            <ServiceCard
+              icon={<FileText className="w-10 h-10" />}
+              title="Xác thực hồ sơ"
+              desc="Chứng nhận Apostille và hợp pháp hóa lãnh sự cho mọi loại giấy tờ quốc tế."
             />
           </div>
         </div>
