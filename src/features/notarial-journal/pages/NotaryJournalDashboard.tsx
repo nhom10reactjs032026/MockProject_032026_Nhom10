@@ -2,14 +2,70 @@ import { StatCard } from "../components/StatCard";
 import { ComplianceAlerts } from "../components/ComplianceAlerts";
 import { RecentComplianceLogs } from "../components/RecentComplianceLogs";
 import { RegionalChartSummary } from "../components/RegionalChartSummary";
-import { mockStats } from "../data/mockData";
 import { Button } from "@/components/ui/button";
-import { Download, Plus } from "lucide-react";
+import {
+  AlertCircle,
+  BadgeCheck,
+  BookOpen,
+  Download,
+  Plus,
+  Users,
+} from "lucide-react";
+import { useNotarialJournalDashboard } from "../api";
+import { formatCurrency } from "../utils/format";
 
 export const NotaryJournalDashboard = () => {
+  const { data } = useNotarialJournalDashboard();
+
+  const stats = [
+    {
+      title: "Total Journal Entries",
+      value: data ? data.totalJournalEntries.toLocaleString() : "-",
+      change: data ? "+Live" : "…",
+      trend: "neutral" as const,
+      icon: BookOpen,
+      iconColor: "text-[#c4a484]",
+      iconBg: "bg-[#c4a484]/10",
+      changeBg: "bg-[#c4a484]/10",
+      changeText: "text-[#c4a484]",
+    },
+    {
+      title: "Action Required",
+      value: data ? data.countsByStatus.actionRequired.toLocaleString() : "-",
+      change: data ? "+Live" : "…",
+      trend: "neutral" as const,
+      icon: AlertCircle,
+      iconColor: "text-red-500",
+      iconBg: "bg-red-50",
+      changeBg: "bg-red-50",
+      changeText: "text-red-600",
+    },
+    {
+      title: "Active Notaries",
+      value: data ? data.activeNotaries.toLocaleString() : "-",
+      change: data ? "+Live" : "…",
+      trend: "neutral" as const,
+      icon: Users,
+      iconColor: "text-[#c4a484]",
+      iconBg: "bg-[#c4a484]/10",
+      changeBg: "bg-[#c4a484]/10",
+      changeText: "text-[#c4a484]",
+    },
+    {
+      title: "Total Fees Collected",
+      value: data ? formatCurrency(data.totalFeesCollected) : "-",
+      change: data ? "Overall" : "…",
+      trend: "neutral" as const,
+      icon: BadgeCheck,
+      iconColor: "text-foreground",
+      iconBg: "bg-secondary/50",
+      changeBg: "bg-transparent",
+      changeText: "text-muted-foreground",
+    },
+  ];
+
   return (
     <div className="transition-colors duration-500 font-['Plus_Jakarta_Sans']">
-
       {/* Main Content Section */}
       <section className="py-8 px-6 flex-1">
         <div className="max-w-7xl mx-auto space-y-8">
@@ -58,7 +114,7 @@ export const NotaryJournalDashboard = () => {
 
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {mockStats.map((stat, idx) => (
+            {stats.map((stat, idx) => (
               <StatCard key={idx} {...stat} />
             ))}
           </div>

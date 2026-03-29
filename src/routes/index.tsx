@@ -1,10 +1,12 @@
-import { createBrowserRouter, Outlet } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import { HomePage } from "../pages/HomePage";
 import { LoginPage } from "../pages/LoginPage";
 import { ErrorPage } from "../pages/ErrorPage";
 import ProtectedRoute from "./ProtectedRoute";
-import { AdminLayout } from "../components/layout/AdminLayout";
-import { NotaryManagementPage, NotaryDetailsPage } from "@/features/notary-profile-management";
+import {
+  NotaryManagementPage,
+  NotaryDetailsPage,
+} from "@/features/notary-profile-management";
 
 // Notary Journal Feature
 import {
@@ -44,7 +46,9 @@ export const router = createBrowserRouter([
           {
             path: "history",
             element: (
-              <div className="p-20 text-center font-bold">📝 LỊCH SỬ GIAO DỊCH</div>
+              <div className="p-20 text-center font-bold">
+                📝 LỊCH SỬ GIAO DỊCH
+              </div>
             ),
           },
         ],

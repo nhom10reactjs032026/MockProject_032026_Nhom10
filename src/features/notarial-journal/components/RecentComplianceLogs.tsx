@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Table,
   TableBody,
@@ -10,9 +9,20 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Filter } from "lucide-react";
-import { mockLogs } from "../data/mockData";
+import { useJournalEntries } from "../api";
+import { formatDate } from "../utils/format";
+
+function initials(name: string) {
+  const parts = name.split(/\s+/).filter(Boolean);
+  const first = parts[0]?.[0] ?? "?";
+  const last = parts.at(-1)?.[0] ?? "?";
+  return `${first}${last}`.toUpperCase();
+}
 
 export const RecentComplianceLogs = () => {
+  const { data } = useJournalEntries({ page: 1, pageSize: 3 });
+  const items = data?.items ?? [];
+
   return (
     <div className="bg-white rounded-none border border-[#ebebeb] shadow-sm mt-6">
       <div className="p-6 border-b border-[#ebebeb] flex items-center justify-between">
@@ -49,18 +59,18 @@ export const RecentComplianceLogs = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {mockLogs.map((log) => (
+            {items.map((log) => (
               <TableRow
                 key={log.id}
                 className="hover:bg-[#f8f8f8]/50 transition-colors cursor-pointer group border-b border-[#ebebeb]"
               >
                 <TableCell className="font-semibold text-foreground py-4 px-6 text-sm">
-                  {log.id}
+                  #{log.id}
                 </TableCell>
                 <TableCell className="py-4">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-sm bg-[#fdf2e3] text-[#c4a484] flex items-center justify-center text-xs font-bold shrink-0">
-                      {log.notaryInitials}
+                      {initials(log.notaryName)}
                     </div>
                     <span className="font-medium text-foreground text-sm whitespace-nowrap">
                       {log.notaryName}
@@ -68,13 +78,13 @@ export const RecentComplianceLogs = () => {
                   </div>
                 </TableCell>
                 <TableCell className="text-muted-foreground font-medium py-4 text-sm whitespace-nowrap">
-                  {log.state}
+                  {log.stateName ?? log.stateCode ?? "-"}
                 </TableCell>
                 <TableCell className="text-muted-foreground font-medium py-4 text-sm whitespace-nowrap">
-                  {log.date}
+                  {formatDate(log.dateTime)}
                 </TableCell>
                 <TableCell className="py-4">
-                  {log.status === "Compliant" ? (
+                  {log.status === "Completed" ? (
                     <Badge
                       variant="outline"
                       className="bg-green-50 text-green-700 border-green-200 font-bold hover:bg-green-100 rounded-none text-[10px] uppercase tracking-widest px-2 whitespace-nowrap"
@@ -108,7 +118,7 @@ export const RecentComplianceLogs = () => {
 
       <div className="p-4 border-t border-[#ebebeb] flex items-center justify-between">
         <span className="text-sm text-muted-foreground font-medium">
-          Showing 1-3 of 1,248 logs
+          Showing 1-3 of {data?.total?.toLocaleString?.() ?? "-"} logs
         </span>
         <div className="flex gap-2">
           <Button

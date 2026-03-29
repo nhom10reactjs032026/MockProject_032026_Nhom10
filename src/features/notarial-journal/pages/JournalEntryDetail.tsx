@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { EntryDataTab } from "./journal-entry-detail-tabs/EntryDataTab";
 import { SignerInfoTab } from "./journal-entry-detail-tabs/SignerInfoTab";
 import {
@@ -12,6 +12,7 @@ import {
   BookOpen,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useJournalEntryDetail, useJournalEntrySignerInfo } from "../api";
 
 const tabs = [
   { id: "entry-data", label: "Entry Data", icon: User },
@@ -23,6 +24,12 @@ const tabs = [
 
 export const JournalEntryDetail = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const entryId = searchParams.get("id") ?? "1";
+
+  const detailQuery = useJournalEntryDetail(entryId);
+  const signerQuery = useJournalEntrySignerInfo(entryId);
+
   const [activeTab, setActiveTab] = useState("entry-data");
 
   return (
@@ -93,9 +100,15 @@ export const JournalEntryDetail = () => {
           </div>
 
           {/* Tab Content */}
-          {activeTab === "entry-data" && <EntryDataTab />}
-          {activeTab === "signer-info" && <SignerInfoTab />}
-          {(activeTab === "signature" || activeTab === "linked-act" || activeTab === "audit-log") && (
+          {activeTab === "entry-data" && (
+            <EntryDataTab entry={detailQuery.data ?? null} />
+          )}
+          {activeTab === "signer-info" && (
+            <SignerInfoTab data={signerQuery.data ?? null} />
+          )}
+          {(activeTab === "signature" ||
+            activeTab === "linked-act" ||
+            activeTab === "audit-log") && (
             <div className="bg-white border border-dashed border-[#ebebeb] p-20 text-center text-muted-foreground italic text-sm">
               {tabs.find((t) => t.id === activeTab)?.label} — Coming soon...
             </div>

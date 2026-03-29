@@ -1,8 +1,30 @@
-import React from "react";
 import { Lock, Link as LinkIcon, Info, User, Fingerprint } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import type { JournalEntryDetailResponse } from "../../api";
+import { formatCurrency, formatDateTime } from "../../utils/format";
 
-export const EntryDataTab = () => {
+export const EntryDataTab = ({
+  entry,
+}: {
+  entry: JournalEntryDetailResponse | null;
+}) => {
+  const entryTitle = entry ? `JE-${entry.id}` : "JE-…";
+  const status = entry?.status ?? "Locked";
+  const linkedAct = entry?.linkedNotarialActId
+    ? `#${entry.linkedNotarialActId}`
+    : "-";
+  const createdBy = entry?.notary?.name
+    ? `${entry.notary.name}, Notary Public`
+    : "-";
+  const signedOn = entry?.signedAt ? formatDateTime(entry.signedAt) : "-";
+  const dateTime = entry?.createdAt ? formatDateTime(entry.createdAt) : "-";
+  const actType = entry?.actType ?? "-";
+  const venue = entry?.venue?.stateName
+    ? `${entry.venue.county ?? "-"} County, ${entry.venue.stateName}`
+    : "-";
+  const notarialFee = entry ? formatCurrency(entry.fees.baseNotarialFee) : "-";
+  const signerName = entry?.signer?.fullName ?? "-";
+
   return (
     <>
       <div className="bg-white border border-[#ebebeb] rounded-none shadow-sm p-8">
@@ -11,20 +33,20 @@ export const EntryDataTab = () => {
           <div>
             <div className="flex items-center gap-3">
               <h2 className="text-3xl font-bold text-foreground tracking-tight">
-                JE-2023-8842
+                {entryTitle}
               </h2>
               <Badge
                 variant="outline"
                 className="bg-gray-100 text-gray-700 border-gray-200 font-bold rounded-none text-[10px] uppercase px-2 py-0.5"
               >
                 <Lock className="w-3 h-3 mr-1" />
-                Locked
+                {status}
               </Badge>
             </div>
             <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground font-semibold">
               <LinkIcon className="w-4 h-4" />
               Linked Notarial Act:{" "}
-              <span className="text-[#c4a484]">#NA-9910</span>
+              <span className="text-[#c4a484]">{linkedAct}</span>
             </div>
           </div>
           <div className="flex flex-col md:text-right gap-1 border-l-0 md:border-l border-[#ebebeb] md:pl-8">
@@ -33,7 +55,7 @@ export const EntryDataTab = () => {
                 Created By
               </span>
               <p className="text-sm font-semibold text-foreground">
-                Sarah Jenkins, Notary Public
+                {createdBy}
               </p>
             </div>
             <div className="mt-2">
@@ -41,7 +63,7 @@ export const EntryDataTab = () => {
                 Signed On
               </span>
               <p className="text-sm font-semibold text-foreground">
-                Oct 24, 2023 14:32 PM
+                {signedOn}
               </p>
             </div>
           </div>
@@ -59,9 +81,7 @@ export const EntryDataTab = () => {
                 Date & Time <Info className="w-3 h-3" />
               </label>
               <div className="bg-[#f8f8f8] border border-[#ebebeb] p-3 text-sm font-semibold text-foreground">
-                October 24, 2023 —
-                <br />
-                14:32:11
+                {dateTime}
               </div>
               <p className="text-[10px] font-bold uppercase text-[#c4a484] mt-2 tracking-widest">
                 Auto-Populated
@@ -73,7 +93,7 @@ export const EntryDataTab = () => {
                 Act Type
               </label>
               <div className="bg-white border border-[#ebebeb] p-3 text-sm font-semibold text-foreground flex items-center h-[66px]">
-                Acknowledgment
+                {actType}
               </div>
               <p className="text-[10px] font-bold uppercase text-muted-foreground mt-2 tracking-widest">
                 Manual Entry
@@ -85,7 +105,7 @@ export const EntryDataTab = () => {
                 Venue/State
               </label>
               <div className="bg-[#f8f8f8] border border-[#ebebeb] p-3 text-sm font-semibold text-foreground flex items-center h-[66px]">
-                Kings County, New York
+                {venue}
               </div>
               <p className="text-[10px] font-bold uppercase text-[#c4a484] mt-2 tracking-widest">
                 Auto-Populated (GPS)
@@ -97,7 +117,7 @@ export const EntryDataTab = () => {
                 Notarial Fee
               </label>
               <div className="bg-white border border-[#ebebeb] p-3 text-sm font-semibold text-foreground flex items-center h-[66px]">
-                $15.00 USD
+                {notarialFee}
               </div>
               <p className="text-[10px] font-bold uppercase text-muted-foreground mt-2 tracking-widest">
                 Manual Entry
@@ -121,7 +141,7 @@ export const EntryDataTab = () => {
                   Signer Name
                 </span>
                 <h4 className="text-lg font-bold text-foreground mb-4">
-                  Michael R. Thompson
+                  {signerName}
                 </h4>
 
                 <div className="border border-[#ebebeb] p-4 bg-white">
