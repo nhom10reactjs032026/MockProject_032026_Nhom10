@@ -16,6 +16,20 @@ import {
 } from "../features/notarial-journal";
 import { DashboardLayout as JournalLayout } from "../components/layout/DashboardLayout";
 
+// Notary Act Feature
+import {
+  ActListPage,
+  NotaryActLayout,
+  ActOverviewPage,
+  ActSetupPage,
+  ActSignersPage,
+  ActExecutionPage,
+  ActCertificatePage,
+  ActJournalPage,
+  ActStatusPage
+} from "../features/notary-act";
+import { ActExportPage } from "@/features/notary-act/pages/ActExportPage";
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -181,7 +195,78 @@ export const router = createBrowserRouter([
           },
         ],
       },
-      // 6. CATCH-ALL ROUTE
+      // 6. NOTARY ACT FEATURE
+      {
+        path: "notary-acts",
+        element: <NotaryActLayout />,
+        children: [
+          {
+            index: true,
+            element: <ActListPage />
+          },
+          {
+            path: "registry",
+            element: <ErrorPage />
+          },
+          {
+            path: "detail",
+            element: <ErrorPage />
+          },
+          {
+            path: "technical",
+            element: <ErrorPage />
+          },
+          {
+            path: "traceability",
+            element: <ErrorPage />
+          },
+          {
+            path: "security",
+            element: <ErrorPage />
+          },
+          {
+            path: "risk",
+            element: <ErrorPage />
+          },
+          {
+            path: "oversight",
+            element: <ErrorPage />
+          },
+          {
+            path: ":id",
+            element: <ActOverviewPage />
+          },
+          {
+            path: ":id/setup",
+            element: <ActSetupPage />
+          },
+          {
+            path: ":id/signers",
+            element: <ActSignersPage />
+          },
+          {
+            path: ":id/execution",
+            element: <ActExecutionPage />
+          },
+          {
+            path: ":id/certificate",
+            element: <ActCertificatePage />
+          },
+          {
+            path: ":id/journal",
+            element: <ActJournalPage />
+          },
+          {
+            path: ":id/status",
+            element: <ActStatusPage />
+          },
+          {
+            path:":id/export",
+            element: <ActExportPage/>
+          }
+        ]
+      },
+      // 7. CATCH-ALL ROUTE
       {
         path: "*",
         element: <ErrorPage />,
