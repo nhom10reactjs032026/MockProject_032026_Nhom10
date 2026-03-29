@@ -5,6 +5,7 @@ import type {
   OverdueInvoice,
   ContractExpiring,
   CustomerProfileDetail,
+  HolidayAnnouncement,
 } from "../types";
 import {
   mockCustomers,
@@ -14,6 +15,7 @@ import {
   mockOverdueInvoices,
   mockContractsExpiring,
   mockCustomerProfileDetail,
+  mockHolidayAnnouncement,
 } from "../mock/mockData";
 
 export const fetchCustomers = async (): Promise<Customer[]> => {
@@ -62,4 +64,10 @@ export const fetchIssueCardsData = async (): Promise<{
       });
     }, 900);
   });
+};
+
+export const fetchHolidaySchedule = async (): Promise<HolidayAnnouncement> => {
+  return new Promise((resolve) =>
+    setTimeout(() => resolve(mockHolidayAnnouncement), 500),
+  );
 };

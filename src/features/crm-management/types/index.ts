@@ -79,3 +79,10 @@ export interface DashboardMetrics {
     b2c: number;
   };
 }
+
+export interface HolidayAnnouncement {
+  title: string;
+  dateRange: string;
+  content: string;
+  status: "upcoming" | "active";
+}

@@ -1,4 +1,10 @@
-import type { Customer, Contact, Activity, TopClientData } from "../types";
+import type {
+  Customer,
+  Contact,
+  Activity,
+  TopClientData,
+  HolidayAnnouncement,
+} from "../types";
 
 export const mockCustomers: Customer[] = [
   {
@@ -211,4 +217,12 @@ export const mockCustomerProfileDetail = {
   annualJobs: 1422,
   annualRevenue: "$2.84M",
   avgTurnaround: 4.2,
+};
+
+export const mockHolidayAnnouncement: HolidayAnnouncement = {
+  title: "Thông báo nghỉ lễ Giải phóng miền Nam & Quốc tế Lao động",
+  dateRange: "30/04/2026 - 03/05/2026",
+  content:
+    "Hệ thống CRM sẽ tạm ngưng các tiến trình tự động gửi mail marketing. Đội ngũ hỗ trợ sẽ phản hồi chậm hơn thường lệ trong thời gian này.",
+  status: "upcoming",
 };
