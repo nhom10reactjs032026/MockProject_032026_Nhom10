@@ -39,103 +39,30 @@ import {
   CustomerDetailPage,
 } from "../features/crm-management";
 
+// --- IMPORT MODULE SEAL CỦA ĐAN ---
+import { SealModuleLayout } from "@/features/security-management/pages/SealModuleLayout";
+import SealDashboardPage from "@/features/security-management/pages/SealDashboardPage";
+import SealDetailPage from "@/features/security-management/pages/SealDetailPage";
+import { TraceabilityLayout } from "@/features/security-management/pages/TraceabilityLayout";
+import { IncidentReportPage } from "@/features/security-management/pages/IncidentReportPage";
+import { IncidentDetailPage } from "@/features/security-management/pages/IncidentDetailPage";
+import { SealReplacementPage } from "@/features/security-management/pages/SealReplacementPage";
+import { ReplacementPage } from "@/features/security-management/pages/ReplacementPage";
+import { NotificationLogPage } from "@/features/security-management/pages/NotificationLogPage";
+import { AuditCompliancePage } from "@/features/security-management/pages/AuditCompliancePage";
+
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <HomePage />,
-  },
-  {
-    path: "/planning",
-    element: <PlanSchedulingPage />,
-  },
-  {
-    path: "/account/login",
-    element: <LoginPage />,
-  },
-
-  // 2. USER ROUTES (Dành cho người dùng đã đăng nhập)
-  {
-    element: <ProtectedRoute allowedRoles={["user", "admin", "notary"]} />,
-    children: [
-      {
-        path: "/profile",
-        element: (
-          <div className="p-20 text-center font-bold">
-            👤 THÔNG TIN CÁ NHÂN (USER/ADMIN/NOTARY)
-          </div>
-        ),
-      },
-      {
-        path: "/history",
-        element: (
-          <div className="p-20 text-center font-bold">📝 LỊCH SỬ GIAO DỊCH</div>
-        ),
-      },
-    ],
-  },
-
-  // 3. NOTARY ROUTES (Dành cho công chứng viên)
-  {
-    element: <ProtectedRoute allowedRoles={["notary", "admin"]} />,
-    children: [
-      {
-        path: "/notary/dashboard",
-        element: (
-          <div className="p-20 text-center font-bold text-blue-600">
-            📜 BẢNG ĐIỀU KHIỂN CÔNG CHỨNG VIÊN
-          </div>
-        ),
-      },
-      {
-        path: "/notary/verify",
-        element: (
-          <div className="p-20 text-center font-bold text-blue-600">
-            ✅ XÁC THỰC HỒ SƠ
-          </div>
-        ),
-      },
-    ],
-  },
-
-  // 4. ADMIN ROUTES (Dành riêng cho Quản trị viên)
-  {
-    element: <ProtectedRoute allowedRoles={["admin"]} />,
-    children: [
-      {
-        path: "/admin/dashboard",
-        element: (
-          <div className="p-20 text-center font-bold text-red-600">
-            🛠️ QUẢN TRỊ VIÊN - DASHBOARD
-          </div>
-        ),
-      },
-      {
-        path: "/admin/users",
-        element: (
-          <div className="p-20 text-center font-bold text-red-600">
-            👥 QUẢN LÝ NGƯỜI DÙNG
-          </div>
-        ),
-      },
-    ],
-  },
-
-  // 5. NOTARY JOURNAL FEATURE
-  {
-    path: "/notary-journal",
     element: <Outlet />,
+    errorElement: <ErrorPage />,
     children: [
-      // 1. PUBLIC ROUTES
-      {
-        index: true,
-        element: <HomePage />,
-      },
-      {
-        path: "account/login",
-        element: <LoginPage />,
-      },
+      // PUBLIC ROUTES
+      { index: true, element: <HomePage /> },
+      { path: "planning", element: <PlanSchedulingPage /> },
+      { path: "account/login", element: <LoginPage /> },
 
-      // 2. USER ROUTES
+      // USER ROUTES (Dành cho người dùng đã đăng nhập)
       {
         element: <ProtectedRoute allowedRoles={["user", "admin", "notary"]} />,
         children: [
@@ -158,7 +85,7 @@ export const router = createBrowserRouter([
         ],
       },
 
-      // 3. NOTARY ROUTES
+      // NOTARY ROUTES (Dành cho công chứng viên)
       {
         element: <ProtectedRoute allowedRoles={["notary", "admin"]} />,
         children: [
@@ -181,20 +108,26 @@ export const router = createBrowserRouter([
         ],
       },
 
-      // 4. ADMIN ROUTES
+      // ADMIN ROUTES
       {
-        path: "admin",
         element: <ProtectedRoute allowedRoles={["admin"]} />,
         children: [
           {
-            element: <JournalLayout />,
+            path: "admin",
+            element: <AdminLayout />,
             children: [
               {
                 path: "dashboard",
                 element: (
-                  <div className="p-20 text-center font-bold text-slate-800">
-                    🛠️ QUẢN TRỊ VIÊN - DASHBOARD
+                  <div className="p-20 font-bold">
+                    🛠️ ADMIN DASHBOARD (PUBLIC)
                   </div>
+                ),
+              },
+              {
+                path: "users",
+                element: (
+                  <div className="p-20 font-bold">👥 USERS MANAGEMENT</div>
                 ),
               },
               {
@@ -205,32 +138,55 @@ export const router = createBrowserRouter([
                 path: "notaries/:id",
                 element: <NotaryDetailsPage />,
               },
+
+              // MODULE SEAL & DIGITAL SIGNATURE
               {
-                path: "users",
-                element: (
-                  <div className="p-20 text-center font-bold text-slate-800">
-                    👥 QUẢN LÝ NGƯỜI DÙNG
-                  </div>
-                ),
+                path: "seals",
+                element: <SealModuleLayout />,
+                children: [
+                  { index: true, element: <SealDashboardPage /> },
+                  {
+                    path: "registry",
+                    element: (
+                      <div className="p-20 font-bold">Registry Content</div>
+                    ),
+                  },
+                  { path: "detail", element: <SealDetailPage /> },
+                  {
+                    path: "traceability",
+                    element: <TraceabilityLayout />,
+                    children: [
+                      { index: true, element: <IncidentReportPage /> },
+                      {
+                        path: "incident-detail",
+                        element: <IncidentDetailPage />,
+                      },
+                      {
+                        path: "seal-replacement-request",
+                        element: <SealReplacementPage />,
+                      },
+                      { path: "replacement", element: <ReplacementPage /> },
+                      {
+                        path: "notification-log",
+                        element: <NotificationLogPage />,
+                      },
+                      { path: "audit", element: <AuditCompliancePage /> },
+                    ],
+                  },
+                ],
               },
             ],
           },
         ],
       },
 
-      // 5. NOTARY JOURNAL FEATURE
+      // NOTARY JOURNAL FEATURE
       {
         path: "notary-journal",
         element: <JournalLayout />,
         children: [
-          {
-            index: true,
-            element: <NotaryJournalDashboard />,
-          },
-          {
-            path: "manager",
-            element: <JournalManagerPage />,
-          },
+          { index: true, element: <NotaryJournalDashboard /> },
+          { path: "manager", element: <JournalManagerPage /> },
           {
             path: "registry",
             element: (
@@ -239,10 +195,7 @@ export const router = createBrowserRouter([
               </div>
             ),
           },
-          {
-            path: "detail",
-            element: <JournalEntryDetail />,
-          },
+          { path: "detail", element: <JournalEntryDetail /> },
           {
             path: "technical",
             element: (
@@ -286,102 +239,43 @@ export const router = createBrowserRouter([
         ],
       },
 
-      // 6. NOTARY ACT FEATURE
+      // NOTARY ACT FEATURE
       {
         path: "notary-acts",
         element: <NotaryActLayout />,
         children: [
-          {
-            index: true,
-            element: <ActListPage />,
-          },
-          {
-            path: "registry",
-            element: <ErrorPage />,
-          },
-          {
-            path: "detail",
-            element: <ErrorPage />,
-          },
-          {
-            path: "technical",
-            element: <ErrorPage />,
-          },
-          {
-            path: "traceability",
-            element: <ErrorPage />,
-          },
-          {
-            path: "security",
-            element: <ErrorPage />,
-          },
-          {
-            path: "risk",
-            element: <ErrorPage />,
-          },
-          {
-            path: "oversight",
-            element: <ErrorPage />,
-          },
-          {
-            path: ":id",
-            element: <ActOverviewPage />,
-          },
-          {
-            path: ":id/setup",
-            element: <ActSetupPage />,
-          },
-          {
-            path: ":id/signers",
-            element: <ActSignersPage />,
-          },
-          {
-            path: ":id/execution",
-            element: <ActExecutionPage />,
-          },
-          {
-            path: ":id/certificate",
-            element: <ActCertificatePage />,
-          },
-          {
-            path: ":id/journal",
-            element: <ActJournalPage />,
-          },
-          {
-            path: ":id/status",
-            element: <ActStatusPage />,
-          },
-          {
-            path: ":id/export",
-            element: <ActExportPage />,
-          },
+          { index: true, element: <ActListPage /> },
+          { path: "registry", element: <ErrorPage /> },
+          { path: "detail", element: <ErrorPage /> },
+          { path: "technical", element: <ErrorPage /> },
+          { path: "traceability", element: <ErrorPage /> },
+          { path: "security", element: <ErrorPage /> },
+          { path: "risk", element: <ErrorPage /> },
+          { path: "oversight", element: <ErrorPage /> },
+          { path: ":id", element: <ActOverviewPage /> },
+          { path: ":id/setup", element: <ActSetupPage /> },
+          { path: ":id/signers", element: <ActSignersPage /> },
+          { path: ":id/execution", element: <ActExecutionPage /> },
+          { path: ":id/certificate", element: <ActCertificatePage /> },
+          { path: ":id/journal", element: <ActJournalPage /> },
+          { path: ":id/status", element: <ActStatusPage /> },
+          { path: ":id/export", element: <ActExportPage /> },
         ],
       },
 
-      // 6. CRM MANAGEMENT FEATURE
+      // CRM MANAGEMENT FEATURE
       {
         path: "crm",
         element: <Outlet />,
         children: [
-          {
-            index: true,
-            element: <CrmDashboard />,
-          },
-          {
-            path: "customers",
-            element: <CustomerListPage />,
-          },
-          {
-            path: "customers/:id",
-            element: <CustomerDetailPage />,
-          },
+          { index: true, element: <CrmDashboard /> },
+          { path: "customers", element: <CustomerListPage /> },
+          { path: "customers/:id", element: <CustomerDetailPage /> },
         ],
       },
-      // 7. CATCH-ALL ROUTE
-      {
-        path: "*",
-        element: <ErrorPage />,
-      },
+
+      // CATCH-ALL ROUTE
+      { path: "*", element: <ErrorPage /> },
     ],
   },
 ]);

@@ -1,4 +1,8 @@
-import { useRouteError, useNavigate, isRouteErrorResponse } from "react-router-dom";
+import {
+  useRouteError,
+  useNavigate,
+  isRouteErrorResponse,
+} from "react-router-dom";
 import { AlertCircle, Home, RefreshCcw, ArrowLeft } from "lucide-react";
 
 export function ErrorPage() {
@@ -25,7 +29,6 @@ export function ErrorPage() {
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6 font-sans">
       <div className="max-w-md w-full">
         <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100 flex flex-col items-center p-8 text-center animate-in fade-in zoom-in duration-500">
-          
           {/* Error Status Badge */}
           <div className="mb-6 p-4 bg-red-50 rounded-2xl">
             <AlertCircle className="w-12 h-12 text-red-500" />
@@ -34,14 +37,14 @@ export function ErrorPage() {
           <h1 className="text-7xl font-black text-slate-900 mb-2">
             {errorStatus}
           </h1>
-          
+
           <h2 className="text-2xl font-bold text-slate-800 mb-4">
             Oops! Something went wrong
           </h2>
-          
+
           <p className="text-slate-500 mb-8 leading-relaxed">
-            {errorMessage === "Not Found" 
-              ? "We couldn't find the page you're looking for. It might have been moved or deleted." 
+            {errorMessage === "Not Found"
+              ? "We couldn't find the page you're looking for. It might have been moved or deleted."
               : errorMessage}
           </p>
 
@@ -53,7 +56,7 @@ export function ErrorPage() {
               <ArrowLeft className="w-4 h-4" />
               Go Back
             </button>
-            
+
             <button
               onClick={() => navigate("/")}
               className="flex items-center justify-center gap-2 py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl shadow-lg shadow-indigo-200 transition-all active:scale-95"
