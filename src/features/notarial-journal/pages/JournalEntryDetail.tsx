@@ -13,9 +13,9 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useJournalEntryDetail, useJournalEntrySignerInfo } from "../api";
-import { LoadingState } from "../components/ui/LoadingState";
-import { ErrorState } from "../components/ui/ErrorState";
-import { ErrorBoundary } from "../components/ui/ErrorBoundary";
+import { LoadingState } from "../../../components/common/errors/LoadingState";
+import { ErrorState } from "../../../components/common/errors/ErrorState";
+import { ErrorBoundary } from "../../../components/common/errors/ErrorBoundary";
 
 const tabs = [
   { id: "entry-data", label: "Entry Data", icon: User },

@@ -10,9 +10,9 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { formatCurrency, formatDateTime } from "../../utils/format";
-import { LoadingState } from "../ui/LoadingState";
-import { ErrorState } from "../ui/ErrorState";
-import { EmptyState } from "../ui/EmptyState";
+import { LoadingState } from "../../../../components/common/errors/LoadingState";
+import { ErrorState } from "../../../../components/common/errors/ErrorState";
+import { EmptyState } from "../../../../components/common/errors/EmptyState";
 
 interface JournalTableProps {
   isLoading: boolean;
