@@ -3,6 +3,8 @@ import { HomePage } from "../pages/Home";
 import { LoginPage } from "../pages/Login";
 import ProtectedRoute from "./ProtectedRoute";
 
+import CustomerDetailPage from "../pages/crm/CustomerDetail";
+
 export const router = createBrowserRouter([
   // 1. PUBLIC ROUTES (Mọi người đều truy cập được)
   {
@@ -25,6 +27,10 @@ export const router = createBrowserRouter([
       {
         path: "/history",
         element: <div className="p-20 text-center font-bold">📝 LỊCH SỬ GIAO DỊCH</div>,
+      },
+      {
+        path: "/crm/customers/:id",
+        element: <CustomerDetailPage />,
       },
     ],
   },
