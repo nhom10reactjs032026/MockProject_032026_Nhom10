@@ -13,9 +13,32 @@ import {
 } from "lucide-react";
 import { useNotarialJournalDashboard } from "../api";
 import { formatCurrency } from "../utils/format";
+import { LoadingState } from "../components/ui/LoadingState";
+import { ErrorState } from "../components/ui/ErrorState";
+import { ErrorBoundary } from "../components/ui/ErrorBoundary";
 
 export const NotaryJournalDashboard = () => {
-  const { data } = useNotarialJournalDashboard();
+  const { data, isLoading, isError, refetch } = useNotarialJournalDashboard();
+
+  if (isLoading) {
+    return (
+      <div className="p-8">
+        <LoadingState message="Loading dashboard data..." />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="p-8">
+        <ErrorState
+          title="Failed to load dashboard"
+          message="There was an issue loading the dashboard data. Please try again."
+          retry={() => refetch()}
+        />
+      </div>
+    );
+  }
 
   const stats = [
     {
@@ -65,8 +88,9 @@ export const NotaryJournalDashboard = () => {
   ];
 
   return (
-    <div className="transition-colors duration-500 font-['Plus_Jakarta_Sans']">
-      {/* Main Content Section */}
+    <ErrorBoundary fallbackMessage="Failed to render dashboard">
+      <div className="transition-colors duration-500 font-['Plus_Jakarta_Sans']">
+        {/* Main Content Section */}
       <section className="py-8 px-6 flex-1">
         <div className="max-w-7xl mx-auto space-y-8">
           {/* Header Area */}
@@ -127,5 +151,6 @@ export const NotaryJournalDashboard = () => {
         </div>
       </section>
     </div>
+    </ErrorBoundary>
   );
 };
