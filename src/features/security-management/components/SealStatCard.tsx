@@ -3,14 +3,11 @@ import React from 'react';
 interface SealStatCardProps {
     title: string;
     count: number;
-    color?: string;      // Màu của con số
-    borderColor?: string; // Màu của đường kẻ ở đỉnh card
+    color?: string;
+    borderColor?: string;
 }
 
-/**
- * Component hiển thị các thẻ số liệu thống kê bản nâng cấp (SC_001)
- * Thiết kế: Bo góc 32px, số to ở trên, tiêu đề ở dưới, có border top màu.
- */
+/* Component hiển thị các thẻ số liệu thống kê */
 export const SealStatCard: React.FC<SealStatCardProps> = ({
     title,
     count,

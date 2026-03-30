@@ -1,7 +1,7 @@
 import React from 'react';
 
 export const NotificationLogPage = () => {
-    // Dữ liệu giả lập có thêm tên Notary
+    // Dữ liệu giả lập 
     const logs = [
         { id: '1', notifId: 'NOTIF-10021', date: 'Oct 25, 2025', time: '09:15 AM', recipient: 'CA SOS', oldCert: 'SEAL-90881', name: 'Alice Smith', reason: 'Lost', status: 'Delivered' },
         { id: '2', notifId: 'NOTIF-10022', date: 'Oct 25, 2025', time: '09:15 AM', recipient: 'CA SOS', oldCert: 'SEAL-90882', name: 'Alice Smith', reason: 'Lost', status: 'Delivered' },
@@ -26,7 +26,7 @@ export const NotificationLogPage = () => {
                             <th className="p-4">Date & Time</th>
                             <th className="p-4">Recipient</th>
                             <th className="p-4">Old Certificate</th>
-                            <th className="p-4">Notary Name</th> {/* Cột mới thêm nè */}
+                            <th className="p-4">Notary Name</th>
                             <th className="p-4">Reason</th>
                             <th className="p-4 text-center">Status</th>
                         </tr>
@@ -42,7 +42,7 @@ export const NotificationLogPage = () => {
                                 </td>
                                 <td className="p-4 font-black text-slate-700">{log.recipient}</td>
                                 <td className="p-4 font-mono font-bold text-slate-500">{log.oldCert}</td>
-                                <td className="p-4 font-black text-slate-800 italic">{log.name}</td> {/* Hiển thị tên */}
+                                <td className="p-4 font-black text-slate-800 italic">{log.name}</td>
                                 <td className="p-4 italic text-gray-500 font-medium">{log.reason}</td>
                                 <td className="p-4 text-center">
                                     <span className="bg-blue-600 text-white px-3 py-1.5 rounded-lg font-black uppercase text-[8px] italic shadow-sm shadow-blue-200">

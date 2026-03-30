@@ -1,4 +1,3 @@
-// src/features/security-management/pages/AuditCompliancePage.tsx
 import { Download, Calendar, Search } from 'lucide-react';
 
 export const AuditCompliancePage = () => {

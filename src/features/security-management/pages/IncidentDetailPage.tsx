@@ -1,4 +1,3 @@
-// src/features/security-management/pages/IncidentDetailPage.tsx
 import { StatusBadge } from '../components/DetailComponents';
 
 export const IncidentDetailPage = () => {

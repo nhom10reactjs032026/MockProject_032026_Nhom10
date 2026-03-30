@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 import {
     Users,
     LayoutDashboard,
-    BookOpen, // Dùng icon này cho Journal cho đúng bài
+    BookOpen,
     Bell,
     Stamp
 } from 'lucide-react';
@@ -14,7 +14,6 @@ import { Sidebar } from "./Sidebar";
 export const AdminLayout = () => {
     const [isCollapsed, setIsCollapsed] = useState(false);
 
-    // Danh sách menu rút gọn - Chỉ còn 4 mục chính
     const sidebarItems = [
         { icon: Users, label: 'Notary Profile', path: '/admin/notaries' },
         { icon: LayoutDashboard, label: 'Dashboard', path: '/admin/dashboard' },
@@ -24,7 +23,7 @@ export const AdminLayout = () => {
 
     return (
         <div className="flex min-h-screen bg-[#fcfcfc]">
-            {/* Sidebar beige xịn xò */}
+            {/* Sidebar beige */}
             <Sidebar
                 navItems={sidebarItems}
                 collapsed={isCollapsed}

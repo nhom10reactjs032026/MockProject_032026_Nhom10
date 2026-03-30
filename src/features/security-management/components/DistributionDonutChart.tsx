@@ -1,4 +1,3 @@
-// src/features/security-management/components/DistributionDonutChart.tsx
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 
 const data = [

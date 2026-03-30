@@ -4,7 +4,7 @@ import { NavLink, Outlet } from "react-router-dom";
 export const SealModuleLayout = () => {
     // Danh sách các tab ngang
     const tabs = [
-        { label: "Dashboard", path: "" }, // Đường dẫn mặc định (Overview)
+        { label: "Dashboard", path: "" },
         { label: "Detail", path: "detail" },
         { label: "Traceability", path: "traceability" },
     ];

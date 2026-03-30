@@ -1,4 +1,4 @@
-import { createBrowserRouter, Outlet } from "react-router-dom"; // Thêm Outlet vào đây
+import { createBrowserRouter, Outlet } from "react-router-dom";
 import { HomePage } from "../pages/HomePage"
 import { LoginPage } from "../pages/LoginPage";
 import { ErrorPage } from "../pages/ErrorPage";
@@ -6,7 +6,7 @@ import { ErrorPage } from "../pages/ErrorPage";
 // Layout tổng của Admin
 import { AdminLayout } from "../components/layout/AdminLayout";
 
-// --- IMPORT MODULE SEAL CỦA ĐAN ---
+// --- IMPORT MODULE SEAL ---
 import { SealModuleLayout } from "@/features/security-management/pages/SealModuleLayout";
 import SealDashboardPage from "@/features/security-management/pages/SealDashboardPage";
 import SealDetailPage from "@/features/security-management/pages/SealDetailPage";

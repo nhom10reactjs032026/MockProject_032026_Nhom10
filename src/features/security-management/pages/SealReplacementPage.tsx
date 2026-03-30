@@ -53,7 +53,7 @@ export const SealReplacementPage = () => {
                 {/* 3. NỘI DUNG THAY ĐỔI THEO TAB */}
                 <div className="animate-in slide-in-from-right-2 duration-300">
                     {activeType === 'physical' ? (
-                        /* FORM CHO PHYSICAL SEAL (SC_007.3a / SC_007.4) */
+                        /* FORM CHO PHYSICAL SEAL  */
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                             <div className="space-y-5">
                                 <h4 className="font-black text-sm text-blue-600 flex items-center gap-2">
@@ -80,7 +80,7 @@ export const SealReplacementPage = () => {
                             <div className="space-y-5">
                                 <h4 className="font-black text-sm text-blue-600 italic">Seal Impression</h4>
                                 <div className="border-2 border-dashed border-slate-200 rounded-[32px] h-60 flex flex-col items-center justify-center bg-slate-50 hover:border-blue-300 transition-all cursor-pointer overflow-hidden group">
-                                    {/* Giả lập có ảnh đã upload như ảnh SC_007.4 */}
+                                    {/* Giả lập có ảnh đã upload */}
                                     <div className="text-center p-6 group-hover:scale-105 transition-transform">
                                         <Upload className="mx-auto text-slate-300 mb-2" size={40} />
                                         <p className="text-[10px] font-black uppercase text-slate-400">Click to upload new impression</p>

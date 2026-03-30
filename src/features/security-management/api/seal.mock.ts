@@ -1,4 +1,3 @@
-// src/features/seal-management/api/seal.mock.ts
 import type { SealStats } from '../types';
 
 export const MOCK_STATS: SealStats = {

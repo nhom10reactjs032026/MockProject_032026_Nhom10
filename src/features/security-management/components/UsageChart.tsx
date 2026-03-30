@@ -15,7 +15,7 @@ const data = [
     { name: '1', seal: 8000, digitalCert: 7500 },
     { name: '2', seal: 7500, digitalCert: 7800 },
     { name: '3', seal: 8500, digitalCert: 8200 },
-    { name: '4', seal: 4500, digitalCert: 4000 }, // Điểm rơi giống trong ảnh
+    { name: '4', seal: 4500, digitalCert: 4000 },
     { name: '5', seal: 6000, digitalCert: 5800 },
     { name: '6', seal: 7000, digitalCert: 6500 },
     { name: '7', seal: 6500, digitalCert: 6200 },

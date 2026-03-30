@@ -2,7 +2,7 @@ import { NavLink, Outlet } from 'react-router-dom';
 
 export const TraceabilityLayout = () => {
     const subNavItems = [
-        { label: 'Incident Report', path: '' }, // Đường dẫn mặc định
+        { label: 'Incident Report', path: '' },
         { label: 'Incident Detail', path: 'incident-detail' },
         { label: 'Seal Replacement Request', path: 'seal-replacement-request' },
         { label: 'Replacement', path: 'replacement' },
@@ -36,7 +36,7 @@ export const TraceabilityLayout = () => {
                 ))}
             </div>
 
-            {/* NƠI HIỂN THỊ CÁC TRANG CON (SC_007.x, SC_008) */}
+            {/* NƠI HIỂN THỊ CÁC TRANG CON */}
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <Outlet />
             </div>
