@@ -93,7 +93,9 @@ export const TopBar = ({ onToggleSidebar }: TopBarProps) => {
                       ? "Notary Public"
                       : user?.role === "admin"
                         ? "Administrator"
-                        : "User"}
+                        : user?.role === "dispatcher"
+                          ? "Dispatcher"
+                          : "User"}
                   </span>
                 </div>
                 <Avatar className="w-9 h-9 rounded-none border border-[#ebebeb] group-hover:border-[#c4a484] transition-colors">

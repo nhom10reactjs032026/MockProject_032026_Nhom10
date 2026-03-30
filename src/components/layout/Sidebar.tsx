@@ -1,3 +1,4 @@
+import React from "react";
 import { NavLink } from "react-router-dom";
 import { BookOpen, type LucideIcon, X } from "lucide-react";
 
@@ -26,6 +27,7 @@ export const Sidebar = ({
       {/* ── Desktop sidebar ── */}
       <aside
         className={`
+
           hidden lg:flex flex-col bg-white border-r border-[#ebebeb]
           h-screen shrink-0 font-['Plus_Jakarta_Sans'] transition-all duration-300 ease-in-out
           ${collapsed ? "w-16" : "w-60"}
@@ -86,6 +88,7 @@ export const Sidebar = ({
       {/* ── Mobile sidebar (overlay drawer) ── */}
       <aside
         className={`
+            
           fixed top-0 left-0 h-full z-30 flex flex-col bg-white border-r border-[#ebebeb]
           w-64 font-['Plus_Jakarta_Sans'] transition-transform duration-300 ease-in-out
           lg:hidden

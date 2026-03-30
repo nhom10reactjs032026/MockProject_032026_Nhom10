@@ -1,9 +1,20 @@
-import { Search, User, ChevronDown, Menu, LogOut } from "lucide-react";
+import React from "react";
+import {
+  Search,
+  User,
+  ChevronDown,
+  Menu,
+  LogOut,
+  LayoutDashboard,
+} from "lucide-react";
+
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/store/useAuthStore";
+
 import type { User as AuthUser } from "@/store/useAuthStore";
+
 import {
   Sheet,
   SheetContent,
@@ -16,6 +27,7 @@ export const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, isAuthenticated, logout } = useAuthStore();
+
   const isDashboard =
     location.pathname.startsWith("/notary-journal") ||
     location.pathname.startsWith("/admin");
@@ -26,7 +38,7 @@ export const Header = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-[100] bg-background/95 backdrop-blur-xl border-b border-border/10 py-6 px-6 sm:px-12 flex items-center justify-between transition-all duration-500 group shadow-sm hover:shadow-xl">
+    <header className="fixed top-0 left-0 right-0 z-100 bg-background/95 backdrop-blur-xl border-b border-border/10 py-6 px-6 sm:px-12 flex items-center justify-between transition-all duration-500 group shadow-sm hover:shadow-xl">
       <div className="flex items-center">
         <Logo />
       </div>
@@ -158,12 +170,14 @@ const NavItems = ({
 }: {
   isDashboard: boolean;
   currentPath: string;
+
   user: AuthUser | null;
 }) => {
   if (isDashboard) {
     return (
       <>
         <NavItem label="Trang chủ" href="/" active={currentPath === "/"} />
+
         {user?.role === "admin" && (
           <>
             <NavItem
@@ -195,6 +209,7 @@ const NavItems = ({
   return (
     <>
       <NavItem label="Trang chủ" active={currentPath === "/"} href="/" />
+
       {user?.role === "admin" && (
         <NavItem
           label="Quản trị"

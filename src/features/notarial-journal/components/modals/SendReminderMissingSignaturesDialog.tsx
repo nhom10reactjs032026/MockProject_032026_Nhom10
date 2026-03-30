@@ -92,7 +92,7 @@ export function SendReminderMissingSignaturesDialog(props: {
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
         className={cn(
-          "top-0 right-0 left-auto translate-x-0 translate-y-0 h-dvh w-full max-w-[560px] rounded-none p-0 gap-0",
+          "top-0 right-0 left-auto translate-x-0 translate-y-0 h-dvh w-full max-w-[560px] rounded-l-xl p-0 gap-0",
         )}
       >
         <div className="p-6 border-b border-[#ebebeb]">
@@ -105,7 +105,7 @@ export function SendReminderMissingSignaturesDialog(props: {
           <div className="space-y-3">
             <div className="text-sm font-bold text-foreground">Sending to</div>
 
-            <div className="border border-[#ebebeb] bg-white rounded-none overflow-hidden">
+            <div className="border border-[#ebebeb] bg-white rounded-xl overflow-hidden">
               <div className="grid grid-cols-[28px_1fr_110px] items-center gap-2 px-3 py-2 border-b border-[#ebebeb] bg-[#f8f8f8]">
                 <input
                   type="checkbox"
@@ -163,7 +163,7 @@ export function SendReminderMissingSignaturesDialog(props: {
               <Input
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
-                className="rounded-none border-[#ebebeb]"
+                className="border-[#ebebeb]"
               />
             </div>
 
@@ -172,56 +172,28 @@ export function SendReminderMissingSignaturesDialog(props: {
                 Rich Text Editor
               </label>
 
-              <div className="border border-[#ebebeb] rounded-none bg-white overflow-hidden">
+              <div className="border border-[#ebebeb] rounded-xl bg-white overflow-hidden">
                 <div className="flex items-center gap-1 px-2 py-2 border-b border-[#ebebeb] bg-[#f8f8f8]">
-                  <Button
-                    variant="ghost"
-                    size="icon-xs"
-                    className="rounded-none"
-                  >
+                  <Button variant="ghost" size="icon-xs">
                     <Bold />
                   </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon-xs"
-                    className="rounded-none"
-                  >
+                  <Button variant="ghost" size="icon-xs">
                     <Italic />
                   </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon-xs"
-                    className="rounded-none"
-                  >
+                  <Button variant="ghost" size="icon-xs">
                     <Underline />
                   </Button>
                   <div className="w-px h-4 bg-[#ebebeb] mx-1" />
-                  <Button
-                    variant="ghost"
-                    size="icon-xs"
-                    className="rounded-none"
-                  >
+                  <Button variant="ghost" size="icon-xs">
                     <Link2 />
                   </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon-xs"
-                    className="rounded-none"
-                  >
+                  <Button variant="ghost" size="icon-xs">
                     <List />
                   </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon-xs"
-                    className="rounded-none"
-                  >
+                  <Button variant="ghost" size="icon-xs">
                     <ListOrdered />
                   </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon-xs"
-                    className="rounded-none"
-                  >
+                  <Button variant="ghost" size="icon-xs">
                     <AlignLeft />
                   </Button>
                 </div>
@@ -239,13 +211,13 @@ export function SendReminderMissingSignaturesDialog(props: {
         <DialogFooter className="p-6 border-t border-[#ebebeb] flex-row justify-end gap-3">
           <Button
             variant="outline"
-            className="rounded-none border-[#ebebeb]"
+            className="border-[#ebebeb]"
             onClick={onCancel}
           >
             Cancel
           </Button>
           <Button
-            className="rounded-none bg-blue-600 hover:bg-blue-700"
+            className="bg-blue-600 hover:bg-blue-700"
             disabled={selectedCount === 0 || sendMutation.isPending}
             onClick={onSend}
           >

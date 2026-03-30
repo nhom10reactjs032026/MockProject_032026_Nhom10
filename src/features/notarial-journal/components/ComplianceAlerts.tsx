@@ -11,8 +11,8 @@ export const ComplianceAlerts = () => {
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-        <div className="bg-[#fff9f0] border border-[#ebebeb] rounded-none p-6 flex gap-4 items-start shadow-sm">
-          <div className="p-2 bg-[#fdf2e3] text-[#c4a484] rounded-sm">
+        <div className="bg-[#fff9f0] border border-[#ebebeb] rounded-xl p-6 flex gap-4 items-start shadow-sm">
+          <div className="p-2 bg-[#fdf2e3] text-[#c4a484] rounded-lg">
             <Edit3 className="w-5 h-5" />
           </div>
           <div className="flex-1 space-y-2">
@@ -31,8 +31,8 @@ export const ComplianceAlerts = () => {
           </div>
         </div>
 
-        <div className="bg-red-50/50 border border-[#ebebeb] rounded-none p-6 flex gap-4 items-start shadow-sm">
-          <div className="p-2 bg-red-100/50 text-red-600 rounded-sm">
+        <div className="bg-red-50/50 border border-[#ebebeb] rounded-xl p-6 flex gap-4 items-start shadow-sm">
+          <div className="p-2 bg-red-100/50 text-red-600 rounded-lg">
             <Fingerprint className="w-5 h-5" />
           </div>
           <div className="flex-1 space-y-2">

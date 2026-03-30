@@ -1,28 +1,55 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Outlet, NavLink, useLocation } from "react-router-dom";
 import { Sidebar } from "./Sidebar";
 import { TopBar } from "./TopBar";
 import { Footer } from "./Footer";
-import { LayoutDashboard, BookOpen, Users, Stamp } from "lucide-react";
+import {
+  LayoutDashboard,
+  BookOpen,
+  Users,
+  Stamp,
+  FileSignature,
+  CalendarDays,
+} from "lucide-react";
 import type { SidebarNavItem } from "./Sidebar";
-
-const mainNavItems: SidebarNavItem[] = [
-  { icon: Users, label: "Notary Profile", path: "/admin/notaries" },
-  { icon: LayoutDashboard, label: "Dashboard", path: "/admin/dashboard" },
-  { icon: BookOpen, label: "Journal", path: "/notary-journal", end: true },
-  {
-    icon: Stamp,
-    label: "Seal & Digital Signature",
-    path: "/notary-journal/seal",
-  },
-];
+import { useAuthStore } from "@/store/useAuthStore";
 
 export const DashboardLayout = () => {
   const location = useLocation();
+  const { user } = useAuthStore();
   // Mobile: sidebar slides in as overlay
   const [mobileOpen, setMobileOpen] = useState(false);
   // Desktop: sidebar collapses to icon-only
   const [collapsed, setCollapsed] = useState(false);
+
+  const navItems: SidebarNavItem[] = useMemo(() => {
+    switch (user?.role) {
+      case "admin":
+        return [
+          { icon: Users, label: "Notary Profile", path: "/admin/notaries" },
+          {
+            icon: LayoutDashboard,
+            label: "Dashboard",
+            path: "/admin/dashboard",
+          },
+          { icon: BookOpen, label: "Journal", path: "/notary-journal" },
+          {
+            icon: Stamp,
+            label: "Seal & Digital Signature",
+            path: "/admin/seals",
+          },
+        ];
+      case "notary":
+        return [
+          { icon: FileSignature, label: "Notary Acts", path: "/notary-acts" },
+          // { icon: BookOpen, label: "Journal", path: "/notary-journal" },
+        ];
+      case "dispatcher":
+        return [{ icon: CalendarDays, label: "Scheduling", path: "/planning" }];
+      default:
+        return [{ icon: BookOpen, label: "Journal", path: "/notary-journal" }];
+    }
+  }, [user?.role]);
 
   return (
     <div className="flex h-screen w-full bg-[#f8f8f8] overflow-hidden font-['Plus_Jakarta_Sans']">
@@ -36,7 +63,7 @@ export const DashboardLayout = () => {
 
       {/* Sidebar */}
       <Sidebar
-        navItems={mainNavItems}
+        navItems={navItems}
         collapsed={collapsed}
         mobileOpen={mobileOpen}
         onCloseMobile={() => setMobileOpen(false)}

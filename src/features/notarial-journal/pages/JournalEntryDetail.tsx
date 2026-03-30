@@ -39,7 +39,7 @@ export const JournalEntryDetail = () => {
           {/* Header Action Bar */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 bg-white border border-[#ebebeb] flex items-center justify-center rounded-none shadow-sm">
+              <div className="w-10 h-10 bg-white border border-[#ebebeb] flex items-center justify-center rounded-lg shadow-sm">
                 <BookOpen className="w-5 h-5 text-[#c4a484]" />
               </div>
               <div>
@@ -55,19 +55,19 @@ export const JournalEntryDetail = () => {
               <Button
                 onClick={() => navigate("/notary-journal")}
                 variant="outline"
-                className="bg-white border-[#ebebeb] text-foreground font-bold h-9 px-4 rounded-none hover:bg-[#f8f8f8] text-xs transition-all"
+                className="bg-white border-[#ebebeb] text-foreground font-bold h-9 px-4 hover:bg-[#f8f8f8] text-xs transition-all"
               >
                 <ChevronLeft className="w-4 h-4 mr-1" />
                 Back
               </Button>
               <Button
                 variant="outline"
-                className="bg-white border-[#ebebeb] text-foreground font-bold h-9 px-4 rounded-none hover:bg-[#f8f8f8] text-xs transition-all"
+                className="bg-white border-[#ebebeb] text-foreground font-bold h-9 px-4 hover:bg-[#f8f8f8] text-xs transition-all"
               >
                 <Printer className="w-4 h-4 mr-1" />
                 Print Record
               </Button>
-              <Button className="bg-[#c4a484] hover:bg-[#b08e6d] text-white font-bold h-9 px-4 rounded-none text-xs transition-all shadow-sm">
+              <Button className="bg-[#c4a484] hover:bg-[#b08e6d] text-white font-bold h-9 px-4 text-xs transition-all shadow-sm">
                 <Download className="w-4 h-4 mr-1" />
                 Export PDF
               </Button>
@@ -75,7 +75,7 @@ export const JournalEntryDetail = () => {
           </div>
 
           {/* Horizontal Tab Bar */}
-          <div className="flex items-center gap-8 border-b border-[#ebebeb] bg-white px-6 pt-2 overflow-x-auto rounded-none shadow-sm">
+          <div className="flex items-center gap-8 border-b border-[#ebebeb] bg-white px-6 pt-2 overflow-x-auto rounded-xl shadow-sm">
             {tabs.map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
@@ -109,7 +109,7 @@ export const JournalEntryDetail = () => {
           {(activeTab === "signature" ||
             activeTab === "linked-act" ||
             activeTab === "audit-log") && (
-            <div className="bg-white border border-dashed border-[#ebebeb] p-20 text-center text-muted-foreground italic text-sm">
+            <div className="bg-white border border-dashed border-[#ebebeb] p-20 text-center text-muted-foreground italic text-sm rounded-xl">
               {tabs.find((t) => t.id === activeTab)?.label} — Coming soon...
             </div>
           )}

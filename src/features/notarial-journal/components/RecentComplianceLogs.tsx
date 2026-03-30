@@ -24,7 +24,7 @@ export const RecentComplianceLogs = () => {
   const items = data?.items ?? [];
 
   return (
-    <div className="bg-white rounded-none border border-[#ebebeb] shadow-sm mt-6">
+    <div className="bg-white rounded-xl border border-[#ebebeb] shadow-sm mt-6">
       <div className="p-6 border-b border-[#ebebeb] flex items-center justify-between">
         <h3 className="text-lg font-bold text-foreground">
           Recent Compliance Logs
@@ -69,7 +69,7 @@ export const RecentComplianceLogs = () => {
                 </TableCell>
                 <TableCell className="py-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-sm bg-[#fdf2e3] text-[#c4a484] flex items-center justify-center text-xs font-bold shrink-0">
+                    <div className="w-8 h-8 rounded-full bg-[#fdf2e3] text-[#c4a484] flex items-center justify-center text-xs font-bold shrink-0">
                       {initials(log.notaryName)}
                     </div>
                     <span className="font-medium text-foreground text-sm whitespace-nowrap">
@@ -87,7 +87,7 @@ export const RecentComplianceLogs = () => {
                   {log.status === "Completed" ? (
                     <Badge
                       variant="outline"
-                      className="bg-green-50 text-green-700 border-green-200 font-bold hover:bg-green-100 rounded-none text-[10px] uppercase tracking-widest px-2 whitespace-nowrap"
+                      className="bg-green-50 text-green-700 border-green-200 font-bold hover:bg-green-100 text-[10px] uppercase tracking-widest px-2 whitespace-nowrap"
                     >
                       <span className="w-1.5 h-1.5 rounded-full bg-green-500 mr-2 -ml-0.5 shrink-0"></span>
                       Compliant
@@ -95,7 +95,7 @@ export const RecentComplianceLogs = () => {
                   ) : (
                     <Badge
                       variant="outline"
-                      className="bg-red-50 text-red-700 border-red-200 font-bold hover:bg-red-100 rounded-none text-[10px] uppercase tracking-widest px-2 whitespace-nowrap"
+                      className="bg-red-50 text-red-700 border-red-200 font-bold hover:bg-red-100 text-[10px] uppercase tracking-widest px-2 whitespace-nowrap"
                     >
                       <span className="w-1.5 h-1.5 rounded-full bg-red-500 mr-2 -ml-0.5 shrink-0"></span>
                       Missing Signature
@@ -105,7 +105,7 @@ export const RecentComplianceLogs = () => {
                 <TableCell className="text-right py-4 pr-6">
                   <Button
                     variant="ghost"
-                    className="text-[#c4a484] font-bold text-[10px] uppercase tracking-[0.2em] hover:bg-[#c4a484]/10 rounded-none whitespace-nowrap"
+                    className="text-[#c4a484] font-bold text-[10px] uppercase tracking-[0.2em] hover:bg-[#c4a484]/10 whitespace-nowrap"
                   >
                     VIEW JOURNAL
                   </Button>
@@ -124,14 +124,14 @@ export const RecentComplianceLogs = () => {
           <Button
             variant="outline"
             size="sm"
-            className="font-semibold border-[#ebebeb] rounded-none text-xs text-foreground uppercase tracking-widest hover:bg-[#f8f8f8]"
+            className="font-semibold border-[#ebebeb] text-xs text-foreground uppercase tracking-widest hover:bg-[#f8f8f8]"
           >
             Previous
           </Button>
           <Button
             variant="outline"
             size="sm"
-            className="font-semibold border-[#ebebeb] rounded-none text-xs text-foreground uppercase tracking-widest hover:bg-[#f8f8f8]"
+            className="font-semibold border-[#ebebeb] text-xs text-foreground uppercase tracking-widest hover:bg-[#f8f8f8]"
           >
             Next
           </Button>
