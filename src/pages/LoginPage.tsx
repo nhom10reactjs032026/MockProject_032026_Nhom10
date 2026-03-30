@@ -20,7 +20,8 @@ export const LoginPage = () => {
   useEffect(() => {
     if (isAuthenticated && user) {
       if (user.role === "admin") navigate("/admin/dashboard");
-      else if (user.role === "notary") navigate("/notary/dashboard");
+      else if (user.role === "notary") navigate("/notary-acts");
+      else if (user.role === "dispatcher") navigate("/planning");
       else navigate("/history");
     }
   }, [isAuthenticated, user, navigate]);
@@ -38,12 +39,13 @@ export const LoginPage = () => {
         id: user.id,
         email: user.email,
         name: user.name,
-        role: user.role as "admin" | "notary" | "user",
+        role: user.role as "admin" | "notary" | "dispatcher" | "user",
       });
 
       // Redirect based on role
       if (user.role === "admin") navigate("/admin/dashboard");
-      else if (user.role === "notary") navigate("/notary/dashboard");
+      else if (user.role === "notary") navigate("/notary-acts");
+      else if (user.role === "dispatcher") navigate("/planning");
       else navigate("/history");
     } else {
       setError(

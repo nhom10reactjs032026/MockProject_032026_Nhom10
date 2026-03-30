@@ -14,6 +14,13 @@ export const MOCK_USERS = [
     name: "Michael Rivera",
   },
   {
+    id: 5,
+    email: "disp.john@mail.com",
+    password: "password123",
+    role: "dispatcher",
+    name: "John Davies",
+  },
+  {
     id: 7,
     email: "cust.smith@mail.com",
     password: "password123",

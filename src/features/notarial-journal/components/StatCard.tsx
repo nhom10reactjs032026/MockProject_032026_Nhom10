@@ -24,16 +24,16 @@ export const StatCard = ({
   changeText,
 }: StatCardProps) => {
   return (
-    <Card className="shadow-sm border-[#ebebeb] rounded-none overflow-hidden hover:shadow-md transition-shadow bg-white">
+    <Card className="shadow-sm border-[#ebebeb] overflow-hidden hover:shadow-md transition-shadow bg-white">
       <CardContent className="p-6">
         <div className="flex justify-between items-start mb-6">
           <div
-            className={`w-12 h-12 rounded-sm flex items-center justify-center ${iconBg}`}
+            className={`w-12 h-12 rounded-xl flex items-center justify-center ${iconBg}`}
           >
             <Icon className={`w-6 h-6 ${iconColor}`} />
           </div>
           <div
-            className={`px-2 py-1 rounded-sm text-[16px] uppercase tracking-widest font-bold ${changeBg} ${changeText}`}
+            className={`px-2 py-1 rounded-full text-[16px] uppercase tracking-widest font-bold ${changeBg} ${changeText}`}
           >
             {change}
           </div>

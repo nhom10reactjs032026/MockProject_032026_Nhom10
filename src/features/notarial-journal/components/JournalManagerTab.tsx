@@ -39,6 +39,8 @@ function formatActTypeLabel(value: string) {
 
 export const JournalManagerTab = () => {
   const navigate = useNavigate();
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
   const [status, setStatus] = useState<
     "All Statuses" | "Completed" | "Draft" | "Action Required"
   >("All Statuses");
@@ -61,23 +63,64 @@ export const JournalManagerTab = () => {
       stateCode === "All States" ? "All" : stateCode;
 
     return {
-      page: 1,
-      pageSize: 20,
+      page,
+      pageSize,
       status: mappedStatus,
       actType: mappedActType,
       stateCode: mappedStateCode,
       notaryQuery:
         notaryQuery.trim().length > 0 ? notaryQuery.trim() : undefined,
     };
-  }, [status, actType, stateCode, notaryQuery]);
+  }, [status, actType, stateCode, notaryQuery, page]);
 
-  const { data } = useJournalEntries(queryParams);
+  const journalEntriesQuery = useJournalEntries(queryParams);
+  const data = journalEntriesQuery.data;
   const journalEntries = data?.items ?? [];
+
+  const total = data?.total ?? 0;
+  const currentPage = data?.page ?? page;
+  const currentPageSize = data?.pageSize ?? pageSize;
+  const totalPages = Math.max(1, Math.ceil(total / currentPageSize));
+  const startIndex = total === 0 ? 0 : (currentPage - 1) * currentPageSize + 1;
+  const endIndex = Math.min(currentPage * currentPageSize, total);
+
+  function goToPage(nextPage: number) {
+    const clamped = Math.min(Math.max(1, nextPage), totalPages);
+    setPage(clamped);
+  }
+
+  const pageButtons: Array<number | "ellipsis"> = useMemo(() => {
+    if (totalPages <= 6) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+
+    const pages = new Set<number>();
+    pages.add(1);
+    pages.add(totalPages);
+
+    for (let p = currentPage - 1; p <= currentPage + 1; p += 1) {
+      if (p > 1 && p < totalPages) pages.add(p);
+    }
+
+    const sorted = Array.from(pages).sort((a, b) => a - b);
+    const result: Array<number | "ellipsis"> = [];
+
+    for (let i = 0; i < sorted.length; i += 1) {
+      const value = sorted[i];
+      const prev = sorted[i - 1];
+      if (i > 0 && prev !== undefined && value - prev > 1) {
+        result.push("ellipsis");
+      }
+      result.push(value);
+    }
+
+    return result;
+  }, [currentPage, totalPages]);
 
   return (
     <div className="space-y-8">
       {/* Table Container */}
-      <div className="bg-white border border-[#ebebeb] rounded-none shadow-sm flex flex-col mt-4">
+      <div className="bg-white border border-[#ebebeb] rounded-xl shadow-sm flex flex-col mt-4">
         {/* Toolbar - SC_002 Accurate */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 p-6 border-b border-[#ebebeb]">
           {/* Status */}
@@ -87,15 +130,16 @@ export const JournalManagerTab = () => {
             </label>
             <select
               value={status}
-              onChange={(e) =>
+              onChange={(e) => {
                 setStatus(
                   e.target.value as
                     | "All Statuses"
                     | "Completed"
                     | "Draft"
                     | "Action Required",
-                )
-              }
+                );
+                setPage(1);
+              }}
               className="h-10 border border-[#ebebeb] bg-white px-3 outline-none focus:ring-1 focus:ring-[#c4a484] text-sm text-foreground"
             >
               <option>All Statuses</option>
@@ -121,7 +165,10 @@ export const JournalManagerTab = () => {
             </label>
             <select
               value={actType}
-              onChange={(e) => setActType(e.target.value)}
+              onChange={(e) => {
+                setActType(e.target.value);
+                setPage(1);
+              }}
               className="h-10 border border-[#ebebeb] bg-white px-3 outline-none focus:ring-1 focus:ring-[#c4a484] text-sm text-foreground"
             >
               <option value="All Acts">All Acts</option>
@@ -140,8 +187,11 @@ export const JournalManagerTab = () => {
             <Input
               placeholder="Name or ID"
               value={notaryQuery}
-              onChange={(e) => setNotaryQuery(e.target.value)}
-              className="h-10 border border-[#ebebeb] bg-white px-3 outline-none focus-visible:ring-[#c4a484] text-sm rounded-none text-foreground placeholder:text-muted-foreground"
+              onChange={(e) => {
+                setNotaryQuery(e.target.value);
+                setPage(1);
+              }}
+              className="h-10 border border-[#ebebeb] bg-white px-3 outline-none focus-visible:ring-[#c4a484] text-sm text-foreground placeholder:text-muted-foreground"
             />
           </div>
           {/* STATE */}
@@ -151,7 +201,10 @@ export const JournalManagerTab = () => {
             </label>
             <select
               value={stateCode}
-              onChange={(e) => setStateCode(e.target.value)}
+              onChange={(e) => {
+                setStateCode(e.target.value);
+                setPage(1);
+              }}
               className="h-10 border border-[#ebebeb] bg-white px-3 outline-none focus:ring-1 focus:ring-[#c4a484] text-sm text-foreground"
             >
               <option value="All States">All States</option>
@@ -170,9 +223,10 @@ export const JournalManagerTab = () => {
                 setActType("All Acts");
                 setStateCode("All States");
                 setNotaryQuery("");
+                setPage(1);
               }}
               variant="outline"
-              className="h-10 border-[#ebebeb] bg-[#f8f8f8] text-[#c4a484] font-bold uppercase tracking-widest text-[11px] rounded-none hover:bg-[#c4a484]/10 w-full"
+              className="h-10 border-[#ebebeb] bg-[#f8f8f8] text-[#c4a484] font-bold uppercase tracking-widest text-[11px] hover:bg-[#c4a484]/10 w-full"
             >
               CLEAR ALL
             </Button>
@@ -239,7 +293,7 @@ export const JournalManagerTab = () => {
                     {log.notaryName}
                   </TableCell>
                   <TableCell className="py-4">
-                    <span className="inline-flex items-center px-3 py-1 bg-[#f8f8f8] border border-[#ebebeb] text-muted-foreground text-xs font-semibold rounded-none">
+                    <span className="inline-flex items-center px-3 py-1 bg-[#f8f8f8] border border-[#ebebeb] text-muted-foreground text-xs font-semibold rounded-full">
                       {log.actType}
                     </span>
                   </TableCell>
@@ -253,7 +307,7 @@ export const JournalManagerTab = () => {
                     {log.status === "Completed" && (
                       <Badge
                         variant="outline"
-                        className="bg-green-50 text-green-700 border-green-200 font-bold hover:bg-green-50 rounded-none text-[10px] uppercase tracking-widest px-2"
+                        className="bg-green-50 text-green-700 border-green-200 font-bold hover:bg-green-50 text-[10px] uppercase tracking-widest px-2"
                       >
                         <span className="w-1.5 h-1.5 rounded-full bg-green-500 mr-2 shrink-0"></span>{" "}
                         {log.status}
@@ -262,7 +316,7 @@ export const JournalManagerTab = () => {
                     {log.status === "Draft" && (
                       <Badge
                         variant="outline"
-                        className="bg-blue-50 text-blue-700 border-blue-200 font-bold hover:bg-blue-50 rounded-none text-[10px] uppercase tracking-widest px-2"
+                        className="bg-blue-50 text-blue-700 border-blue-200 font-bold hover:bg-blue-50 text-[10px] uppercase tracking-widest px-2"
                       >
                         <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mr-2 shrink-0"></span>{" "}
                         {log.status}
@@ -271,7 +325,7 @@ export const JournalManagerTab = () => {
                     {log.status === "Locked" && (
                       <Badge
                         variant="outline"
-                        className="bg-gray-100 text-gray-700 border-gray-200 font-bold hover:bg-gray-100 rounded-none text-[10px] uppercase tracking-widest px-2"
+                        className="bg-gray-100 text-gray-700 border-gray-200 font-bold hover:bg-gray-100 text-[10px] uppercase tracking-widest px-2"
                       >
                         <Lock className="w-3 h-3 mr-1.5 text-gray-500 shrink-0" />{" "}
                         {log.status}
@@ -280,7 +334,7 @@ export const JournalManagerTab = () => {
                     {log.status === "Action Required" && (
                       <Badge
                         variant="outline"
-                        className="bg-red-50 text-red-700 border-red-200 font-bold hover:bg-red-50 rounded-none text-[10px] uppercase tracking-widest px-2"
+                        className="bg-red-50 text-red-700 border-red-200 font-bold hover:bg-red-50 text-[10px] uppercase tracking-widest px-2"
                       >
                         <span className="w-1.5 h-1.5 rounded-full bg-red-500 mr-2 shrink-0"></span>{" "}
                         {log.status}
@@ -295,7 +349,7 @@ export const JournalManagerTab = () => {
                     ) : (
                       <Badge
                         variant="outline"
-                        className="bg-yellow-50 text-yellow-700 border-yellow-200 font-bold hover:bg-yellow-50 rounded-none text-[10px] uppercase tracking-widest px-2"
+                        className="bg-yellow-50 text-yellow-700 border-yellow-200 font-bold hover:bg-yellow-50 text-[10px] uppercase tracking-widest px-2"
                       >
                         <span className="w-1.5 h-1.5 rounded-full bg-orange-500 mr-2 shrink-0"></span>{" "}
                         {log.riskFlags}
@@ -323,33 +377,50 @@ export const JournalManagerTab = () => {
         {/* Pagination Info */}
         <div className="p-4 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <span className="text-sm text-muted-foreground font-medium text-center sm:text-left">
-            Showing 1 to{" "}
-            {Math.min(
-              journalEntries.length,
-              data?.total ?? journalEntries.length,
-            )}{" "}
-            of {data?.total?.toLocaleString?.() ?? "-"} entries
+            Showing {startIndex} to {endIndex} of {total.toLocaleString()}{" "}
+            entries
           </span>
           <div className="flex items-center gap-1">
-            <button className="w-8 h-8 flex items-center justify-center text-muted-foreground hover:bg-[#f8f8f8] transition-colors">
+            <button
+              className="w-8 h-8 flex items-center justify-center text-muted-foreground hover:bg-[#f8f8f8] transition-colors disabled:opacity-50 disabled:hover:bg-transparent"
+              onClick={() => goToPage(currentPage - 1)}
+              disabled={currentPage <= 1 || journalEntriesQuery.isFetching}
+              aria-label="Previous page"
+            >
               <ChevronLeft className="w-4 h-4" />
             </button>
-            <button className="w-8 h-8 flex items-center justify-center bg-[#c4a484] text-white font-bold text-sm rounded-none">
-              1
-            </button>
-            <button className="w-8 h-8 flex items-center justify-center text-foreground hover:bg-[#f8f8f8] font-bold text-sm rounded-none transition-colors">
-              2
-            </button>
-            <button className="w-8 h-8 flex items-center justify-center text-foreground hover:bg-[#f8f8f8] font-bold text-sm rounded-none transition-colors">
-              3
-            </button>
-            <span className="w-8 h-8 flex items-center justify-center text-muted-foreground font-bold text-sm">
-              ...
-            </span>
-            <button className="w-8 h-8 flex items-center justify-center text-foreground hover:bg-[#f8f8f8] font-bold text-sm rounded-none transition-colors">
-              250
-            </button>
-            <button className="w-8 h-8 flex items-center justify-center text-muted-foreground hover:bg-[#f8f8f8] transition-colors">
+            {pageButtons.map((p, idx) =>
+              p === "ellipsis" ? (
+                <span
+                  key={`ellipsis-${idx}`}
+                  className="w-8 h-8 flex items-center justify-center text-muted-foreground font-bold text-sm"
+                >
+                  …
+                </span>
+              ) : (
+                <button
+                  key={p}
+                  className={
+                    p === currentPage
+                      ? "w-8 h-8 flex items-center justify-center bg-[#c4a484] text-white font-bold text-sm rounded-md"
+                      : "w-8 h-8 flex items-center justify-center text-foreground hover:bg-[#f8f8f8] font-bold text-sm rounded-md transition-colors"
+                  }
+                  onClick={() => goToPage(p)}
+                  disabled={journalEntriesQuery.isFetching}
+                  aria-label={`Page ${p}`}
+                >
+                  {p}
+                </button>
+              ),
+            )}
+            <button
+              className="w-8 h-8 flex items-center justify-center text-muted-foreground hover:bg-[#f8f8f8] transition-colors disabled:opacity-50 disabled:hover:bg-transparent"
+              onClick={() => goToPage(currentPage + 1)}
+              disabled={
+                currentPage >= totalPages || journalEntriesQuery.isFetching
+              }
+              aria-label="Next page"
+            >
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>

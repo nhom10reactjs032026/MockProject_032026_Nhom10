@@ -27,7 +27,7 @@ export const EntryDataTab = ({
 
   return (
     <>
-      <div className="bg-white border border-[#ebebeb] rounded-none shadow-sm p-8">
+      <div className="bg-white border border-[#ebebeb] rounded-xl shadow-sm p-8">
         {/* Top Details */}
         <div className="flex flex-col md:flex-row md:items-start justify-between border-b border-[#ebebeb] pb-8 gap-6">
           <div>
@@ -37,7 +37,7 @@ export const EntryDataTab = ({
               </h2>
               <Badge
                 variant="outline"
-                className="bg-gray-100 text-gray-700 border-gray-200 font-bold rounded-none text-[10px] uppercase px-2 py-0.5"
+                className="bg-gray-100 text-gray-700 border-gray-200 font-bold text-[10px] uppercase px-2 py-0.5"
               >
                 <Lock className="w-3 h-3 mr-1" />
                 {status}
@@ -133,7 +133,7 @@ export const EntryDataTab = ({
           </h3>
           <div className="flex flex-col lg:flex-row gap-8">
             <div className="flex gap-4 flex-1">
-              <div className="w-16 h-16 bg-[#f8f8f8] rounded-none flex items-center justify-center shrink-0 border border-[#ebebeb]">
+              <div className="w-16 h-16 bg-[#f8f8f8] rounded-xl flex items-center justify-center shrink-0 border border-[#ebebeb]">
                 <User className="w-8 h-8 text-[#c4a484]" />
               </div>
               <div className="w-full">
@@ -166,7 +166,7 @@ export const EntryDataTab = ({
             </div>
 
             <div className="flex-1">
-              <div className="bg-[#fdf2e3] border border-[#c4a484]/30 p-5 rounded-none h-full">
+              <div className="bg-[#fdf2e3] border border-[#c4a484]/30 p-5 rounded-xl h-full">
                 <div className="flex items-center gap-2 mb-4">
                   <Fingerprint className="w-5 h-5 text-[#c4a484]" />
                   <h4 className="text-xs font-bold uppercase tracking-widest text-[#c4a484]">
@@ -188,7 +188,7 @@ export const EntryDataTab = ({
       {/* Bottom Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Protocol Card */}
-        <div className="bg-white border border-[#ebebeb] p-8 rounded-none shadow-sm">
+        <div className="bg-white border border-[#ebebeb] p-8 rounded-xl shadow-sm">
           <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] text-muted-foreground mb-6">
             Field Source Protocol
           </h3>
@@ -215,7 +215,7 @@ export const EntryDataTab = ({
         </div>
 
         {/* Chain of Custody */}
-        <div className="bg-white border border-[#ebebeb] p-8 rounded-none shadow-sm flex flex-col">
+        <div className="bg-white border border-[#ebebeb] p-8 rounded-xl shadow-sm flex flex-col">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
               Digital Chain of Custody

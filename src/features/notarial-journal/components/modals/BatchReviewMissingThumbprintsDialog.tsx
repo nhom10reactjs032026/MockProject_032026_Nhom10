@@ -80,7 +80,7 @@ export function BatchReviewMissingThumbprintsDialog(props: {
       <DialogContent
         showCloseButton={false}
         className={cn(
-          "sm:max-w-6xl w-full max-w-[calc(100%-2rem)] rounded-none p-0 gap-0 overflow-hidden",
+          "sm:max-w-6xl w-full max-w-[calc(100%-2rem)] rounded-xl p-0 gap-0 overflow-hidden",
         )}
       >
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#ebebeb] bg-white">
@@ -188,7 +188,7 @@ export function BatchReviewMissingThumbprintsDialog(props: {
                           <Button
                             size="sm"
                             className={cn(
-                              "rounded-none bg-orange-600 hover:bg-orange-700 text-white",
+                              "bg-orange-600 hover:bg-orange-700 text-white",
                               decision === "require" &&
                                 "ring-2 ring-orange-300",
                             )}
@@ -202,7 +202,7 @@ export function BatchReviewMissingThumbprintsDialog(props: {
                           <Button
                             size="sm"
                             className={cn(
-                              "rounded-none bg-green-700 hover:bg-green-800 text-white",
+                              "bg-green-700 hover:bg-green-800 text-white",
                               decision === "waive" && "ring-2 ring-green-300",
                             )}
                             disabled={decisionMutation.isPending}
@@ -230,7 +230,7 @@ export function BatchReviewMissingThumbprintsDialog(props: {
             <ChevronLeft className="w-4 h-4" />
           </button>
           <button
-            className="w-8 h-8 flex items-center justify-center bg-[#c4a484] text-white font-bold text-sm rounded-none"
+            className="w-8 h-8 flex items-center justify-center bg-[#c4a484] text-white font-bold text-sm rounded-md"
             aria-label="Page 1"
           >
             1

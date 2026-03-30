@@ -21,7 +21,6 @@ import { DashboardLayout as JournalLayout } from "../components/layout/Dashboard
 // Notary Act Feature
 import {
   ActListPage,
-  NotaryActLayout,
   ActOverviewPage,
   ActSetupPage,
   ActSignersPage,
@@ -117,31 +116,40 @@ export const router = createBrowserRouter([
             element: <AdminLayout />,
             children: [
               {
-                path: "dashboard",
+                path: "users",
+                element: (
+                  <div className="p-20 font-bold">👥 USERS MANAGEMENT</div>
+                ),
+              },
+            ],
+          },
+        ],
+      },
+
+      // ADMIN PAGES under shared sidebar + topbar
+      {
+        element: <JournalLayout />,
+        children: [
+          {
+            element: <ProtectedRoute allowedRoles={["admin"]} />,
+            children: [
+              {
+                path: "admin/dashboard",
                 element: (
                   <div className="p-20 font-bold">
                     🛠️ ADMIN DASHBOARD (PUBLIC)
                   </div>
                 ),
               },
+              { path: "admin/notaries", element: <NotaryManagementPage /> },
               {
-                path: "users",
-                element: (
-                  <div className="p-20 font-bold">👥 USERS MANAGEMENT</div>
-                ),
-              },
-              {
-                path: "notaries",
-                element: <NotaryManagementPage />,
-              },
-              {
-                path: "notaries/:id",
+                path: "admin/notaries/:id",
                 element: <NotaryDetailsPage />,
               },
 
               // MODULE SEAL & DIGITAL SIGNATURE
               {
-                path: "seals",
+                path: "admin/seals",
                 element: <SealModuleLayout />,
                 children: [
                   { index: true, element: <SealDashboardPage /> },
@@ -242,7 +250,7 @@ export const router = createBrowserRouter([
       // NOTARY ACT FEATURE
       {
         path: "notary-acts",
-        element: <NotaryActLayout />,
+        element: <JournalLayout />,
         children: [
           { index: true, element: <ActListPage /> },
           { path: "registry", element: <ErrorPage /> },
