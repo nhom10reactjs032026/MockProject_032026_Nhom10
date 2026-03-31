@@ -1,6 +1,6 @@
 import React from 'react';
-import { Header } from '../components/layout/Header';
-import { Footer } from '../components/layout/Footer';
+import  Header from '../components/layout/Header';
+import Footer from '../components/layout/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -12,7 +12,7 @@ export const LoginPage = () => {
   return (
     <div className="min-h-screen bg-[#f8f8f8] flex flex-col pt-20 transition-colors duration-500 font-['Plus_Jakarta_Sans']">
       <Header />
-      
+      <Footer />
       {/* Hero Banner Section */}
       <section className="relative h-96 flex flex-col items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
