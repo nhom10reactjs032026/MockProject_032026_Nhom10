@@ -1,26 +1,30 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
-import App from "./App";
+
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { RouterProvider } from "react-router-dom";
+import { router } from "./routes";
+import { AppProvider } from "./providers/AppProvider";
 import "./index.css";
 
-console.log("MAIN: start");
+async function enableMocks() {
+  // Enabled by default in dev. Set VITE_ENABLE_MOCKS=false to disable.
+  if (!import.meta.env.DEV) return;
+  if (
+    String(import.meta.env.VITE_ENABLE_MOCKS ?? "true").toLowerCase() ===
+    "false"
+  )
+    return;
 
-try {
-  const el = document.getElementById("root");
-  console.log("MAIN: root element =", el);
-
-  if (!el) throw new Error('Missing <div id="root"></div> in index.html');
-
-  ReactDOM.createRoot(el).render(
-    <React.StrictMode>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </React.StrictMode>
-  );
-
-  console.log("MAIN: render called");
-} catch (e) {
-  console.error("MAIN: crashed before render", e);
+  const { worker } = await import("./mocks/browser");
+  await worker.start({ onUnhandledRequest: "bypass" });
 }
+
+enableMocks().then(() => {
+  createRoot(document.getElementById("root")!).render(
+    <StrictMode>
+      <AppProvider>
+        <RouterProvider router={router} />
+      </AppProvider>
+    </StrictMode>,
+  );
+});

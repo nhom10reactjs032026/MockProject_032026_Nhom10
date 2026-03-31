@@ -1,122 +1,204 @@
-import { useState } from "react";
 
-export default function LoginPage() {
+import React, { useState, useEffect } from "react";
+import { Header } from "../components/layout/Header";
+import  Footer  from "../components/layout/Footer";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent } from "@/components/ui/card";
+import { Facebook, AlertCircle } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { MOCK_USERS } from "@/mock/mockData";
+import { useAuthStore } from "@/store/useAuthStore";
+
+export const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const { user, isAuthenticated, login } = useAuthStore();
 
-  function onSubmit(e: React.FormEvent) {
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      if (user.role === "admin") navigate("/admin/dashboard");
+      else if (user.role === "notary") navigate("/notary-acts");
+      else if (user.role === "dispatcher") navigate("/planning");
+      else navigate("/history");
+    }
+  }, [isAuthenticated, user, navigate]);
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({ email, password });
-  }
+    setError("");
+
+    const user = MOCK_USERS.find(
+      (u) => u.email === email && u.password === password,
+    );
+
+    if (user) {
+      login({
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role as "admin" | "notary" | "dispatcher" | "user",
+      });
+
+      // Redirect based on role
+      if (user.role === "admin") navigate("/admin/dashboard");
+      else if (user.role === "notary") navigate("/notary-acts");
+      else if (user.role === "dispatcher") navigate("/planning");
+      else navigate("/history");
+    } else {
+      setError(
+        "Invalid email or password. Please try admin.sys@mail.com / password123",
+      );
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Top banner */}
-      <div className="relative h-[220px] w-full overflow-hidden">
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage:
-              "url(https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=2000&q=80)",
-          }}
-        />
-        <div className="absolute inset-0 bg-black/55" />
+    <div className="min-h-screen bg-[#f8f8f8] flex flex-col pt-20 transition-colors duration-500 font-['Plus_Jakarta_Sans']">
+      <Header />
 
-        <div className="relative z-10 mx-auto flex h-full max-w-6xl flex-col items-center justify-center px-4 text-center text-white">
-          <h1 className="text-3xl font-semibold md:text-4xl">Đăng nhập tài khoản</h1>
-          <p className="mt-2 text-sm font-medium text-white/90">
-            Trang chủ <span className="mx-2 opacity-70">/</span> Đăng nhập tài khoản
-          </p>
+      {/* Hero Banner Section */}
+      <section className="relative h-96 flex flex-col items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-black/60 z-10" />
+          <img
+            src="https://images.unsplash.com/photo-1497366858526-0766cadbe8fa?auto=format&fit=crop&q=80&w=2301"
+            alt="Banner"
+            className="w-full h-full object-cover"
+          />
         </div>
-      </div>
 
-      {/* Body */}
-      <div className="mx-auto max-w-6xl px-4 py-10">
-        <div className="flex justify-center">
-          <div className="w-full max-w-[720px] rounded-md border border-slate-200 bg-white p-6 shadow-sm md:p-10">
-            <h2 className="text-center text-2xl font-semibold text-slate-800">
-              Đăng nhập
-            </h2>
+        <div className="relative z-20 text-center space-y-4 px-6 md:container mx-auto">
+          <h1 className="text-4xl sm:text-5xl font-bold text-white uppercase tracking-tight">
+            Đăng nhập tài khoản
+          </h1>
+          <nav className="flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-widest text-white">
+            <Link to="/" className="hover:text-[#c4a484] transition-colors">
+              Trang chủ
+            </Link>
+            <span className="opacity-60 text-sm">/</span>
+            <span className="opacity-80">Đăng nhập tài khoản</span>
+          </nav>
+        </div>
+      </section>
 
-            <form onSubmit={onSubmit} className="mt-6 space-y-5">
-              <div>
-                <label className="mb-2 block text-sm font-semibold text-slate-700">
-                  Email<span className="text-red-500">*</span>
-                </label>
-                <input
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  type="email"
-                  placeholder="Nhập Địa chỉ Email"
-                  className="h-11 w-full rounded-md border border-slate-200 px-3 text-sm outline-none focus:border-slate-400"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-semibold text-slate-700">
-                  Mật khẩu<span className="text-red-500">*</span>
-                </label>
-                <input
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  type="password"
-                  placeholder="Nhập Mật khẩu"
-                  className="h-11 w-full rounded-md border border-slate-200 px-3 text-sm outline-none focus:border-slate-400"
-                  required
-                />
-              </div>
-
-              <div className="flex items-center justify-between text-sm">
-                <a href="#" className="text-amber-700 hover:underline">
-                  Quên mật khẩu?
-                </a>
-                <a href="#" className="text-amber-700 hover:underline">
-                  Đăng ký tài khoản
-                </a>
-              </div>
-
-              <button
-                type="submit"
-                className="h-11 w-full rounded-md bg-[#c7a57b] font-semibold uppercase tracking-wide text-white hover:brightness-95 active:brightness-90"
-              >
+      {/* Login Form Section */}
+      <section className="py-16 px-6">
+        <Card className="max-w-xl mx-auto border border-border/50 shadow-sm rounded-none bg-white p-8 sm:p-12 transition-all">
+          <CardContent className="p-0 space-y-8">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-foreground mb-6">
                 Đăng nhập
-              </button>
+              </h2>
+            </div>
 
-              <p className="text-center text-sm text-slate-600">
-                Mock cam kết bảo mật và sẽ không bao giờ đăng <br />
-                hay chia sẻ thông tin mà chưa có được sự đồng ý của bạn.
-              </p>
-
-              <div className="pt-2 text-center">
-                <p className="text-base font-medium text-slate-700">Hoặc đăng nhập qua</p>
-
-                <div className="mt-3 flex justify-center gap-2">
-                  <button
-                    type="button"
-                    className="flex h-10 w-[140px] items-center justify-center gap-2 rounded-sm bg-[#3b5998] text-sm font-semibold text-white hover:brightness-95"
+            <form onSubmit={handleSubmit} className="space-y-8">
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="email"
+                    className="text-sm font-semibold text-foreground"
                   >
-                    <span className="inline-flex h-6 w-6 items-center justify-center rounded bg-white/15 font-bold">
-                      f
-                    </span>
-                    Facebook
-                  </button>
+                    Email <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Nhập Địa chỉ Email"
+                    className="h-12 border-[#ebebeb] bg-white focus-visible:ring-1 focus-visible:ring-[#c4a484] rounded-none transition-all text-sm"
+                  />
+                </div>
 
-                  <button
-                    type="button"
-                    className="flex h-10 w-[140px] items-center justify-center gap-2 rounded-sm bg-[#db4437] text-sm font-semibold text-white hover:brightness-95"
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="password"
+                    className="text-sm font-semibold text-foreground"
                   >
-                    <span className="inline-flex h-6 w-6 items-center justify-center rounded bg-white/15 font-bold">
-                      G+
-                    </span>
-                    Google
-                  </button>
+                    Mật khẩu <span className="text-red-500">*</span>
+                  </Label>
+
+                  <Input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Nhập Mật khẩu"
+                    className="h-12 border-[#ebebeb] bg-white focus-visible:ring-1 focus-visible:ring-[#c4a484] rounded-none transition-all text-sm"
+                  />
                 </div>
               </div>
+
+              {error && (
+                <div className="p-3 bg-red-50 border border-red-100 rounded-md flex items-center gap-3 text-red-600 text-sm">
+                  <AlertCircle className="w-4 h-4" />
+                  {error}
+                </div>
+              )}
+
+              <Button
+                type="submit"
+                className="w-full h-11 bg-[#c4a484] hover:bg-[#b08e6d] text-white font-bold uppercase tracking-[0.2em] text-xs rounded-none transition-all shadow-md"
+              >
+                ĐĂNG NHẬP
+              </Button>
             </form>
-          </div>
-        </div>
-      </div>
+
+            <div className="flex justify-between items-center text-[12px] font-medium text-[#c4a484]">
+              <a href="#" className="hover:opacity-80 transition-opacity">
+                Quên mật khẩu?
+              </a>
+              <Link
+                to="/account/register"
+                className="hover:opacity-80 transition-opacity"
+              >
+                Đăng ký tài khoản
+              </Link>
+            </div>
+
+            <div className="text-center space-y-6">
+              <p className="text-[12px] text-muted-foreground leading-relaxed max-w-sm mx-auto">
+                Wolf Arch cam kết bảo mật và sẽ không bao giờ đăng hay chia sẻ
+                thông tin mà chưa có được sự đồng ý của bạn.
+              </p>
+
+              <div className="space-y-4">
+                <div className="flex items-center gap-4">
+                  <div className="h-px flex-1 bg-border/50" />
+                  <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-widest">
+                    Hoặc đăng nhập qua
+                  </p>
+                  <div className="h-px flex-1 bg-border/50" />
+                </div>
+
+                <div className="flex gap-3">
+                  <Button
+                    type="button"
+                    className="flex-1 h-10 bg-[#3b5998] hover:bg-[#3b5998]/90 text-white rounded-none flex items-center justify-center gap-2 transition-all font-bold text-[10px] uppercase tracking-widest"
+                  >
+                    <Facebook className="fill-current w-4 h-4" />
+                    Facebook
+                  </Button>
+                  <Button
+                    type="button"
+                    className="flex-1 h-10 bg-[#e34133] hover:bg-[#e34133]/90 text-white rounded-none flex items-center justify-center gap-2 transition-all font-bold text-[10px] uppercase tracking-widest"
+                  >
+                    <div className="bg-white text-[#e34133] px-1 font-black rounded-sm">
+                      G+
+                    </div>
+                    Google
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </section>
+
+      <Footer />
     </div>
   );
-}
+};

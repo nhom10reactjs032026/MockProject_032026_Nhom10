@@ -1,0 +1,21 @@
+id,state_id,county_name,notary_id
+1,5,Los Angeles,1
+2,5,Orange,2
+3,5,San Diego,3
+4,5,Santa Clara,4
+5,43,Harris,5
+6,43,Dallas,6
+7,43,Tarrant,7
+8,43,Travis,8
+9,9,Miami-Dade,9
+10,9,Broward,10
+11,9,Orange,11
+12,9,Palm Beach,12
+13,32,Kings,13
+14,32,Queens,14
+15,32,New York,15
+16,32,Bronx,16
+17,47,King,17
+18,47,Pierce,18
+19,47,Snohomish,19
+20,13,Cook,20
