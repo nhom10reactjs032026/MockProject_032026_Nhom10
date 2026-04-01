@@ -11,14 +11,37 @@ import {
   Plus,
   Users,
 } from "lucide-react";
-import { useNotarialJournalDashboard } from "../api";
+import { useState } from "react";
+import { useNotarialJournalDashboard, useStates } from "../api";
+import { FILTER_OFFICES } from "../mock/filterData";
 import { formatCurrency } from "../utils/format";
 import { LoadingState } from "../../../components/common/errors/LoadingState";
 import { ErrorState } from "../../../components/common/errors/ErrorState";
 import { ErrorBoundary } from "../../../components/common/errors/ErrorBoundary";
+import { Navigate } from "react-router-dom";
+import { useAuthStore } from "@/store/useAuthStore";
 
 export const NotaryJournalDashboard = () => {
   const { data, isLoading, isError, refetch } = useNotarialJournalDashboard();
+  const { data: states } = useStates();
+  const { user } = useAuthStore();
+
+  const [stateCode, setStateCode] = useState("All States");
+  const [officeId, setOfficeId] = useState("All Offices");
+
+  const [startDate, setStartDate] = useState(() => {
+    const d = new Date();
+    d.setDate(d.getDate() - 30);
+    return d.toISOString().split("T")[0];
+  });
+
+  const [endDate, setEndDate] = useState(() => {
+    return new Date().toISOString().split("T")[0];
+  });
+
+  if (user?.role !== "admin") {
+    return <Navigate to="/notary-journal/manager" replace />;
+  }
 
   if (isLoading) {
     return (
@@ -124,16 +147,58 @@ export const NotaryJournalDashboard = () => {
               <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest px-2 hidden sm:inline-block">
                 FILTER:
               </span>
-              <select className="bg-[#f8f8f8] border border-[#ebebeb] text-sm font-semibold rounded-md px-4 py-2 outline-none focus:ring-1 focus:ring-[#c4a484] cursor-pointer text-foreground h-11 sm:h-10 w-full sm:w-auto">
-                <option>All States</option>
+              <select
+                value={stateCode}
+                onChange={(e) => setStateCode(e.target.value)}
+                className="bg-[#f8f8f8] border border-[#ebebeb] text-sm font-semibold rounded-md px-4 py-2 outline-none focus:ring-1 focus:ring-[#c4a484] cursor-pointer text-foreground h-11 sm:h-10 w-full sm:w-auto"
+              >
+                <option value="All States">All States</option>
+                {states?.map((state) => (
+                  <option key={state.stateCode} value={state.stateCode}>
+                    {state.stateCode} - {state.stateName}
+                  </option>
+                ))}
               </select>
-              <select className="bg-[#f8f8f8] border border-[#ebebeb] text-sm font-semibold rounded-md px-4 py-2 outline-none focus:ring-1 focus:ring-[#c4a484] cursor-pointer text-foreground h-11 sm:h-10 w-full sm:w-auto">
-                <option>All Offices</option>
+              <select
+                value={officeId}
+                onChange={(e) => setOfficeId(e.target.value)}
+                className="bg-[#f8f8f8] border border-[#ebebeb] text-sm font-semibold rounded-md px-4 py-2 outline-none focus:ring-1 focus:ring-[#c4a484] cursor-pointer text-foreground h-11 sm:h-10 w-full sm:w-auto"
+              >
+                <option value="All Offices">All Offices</option>
+                {FILTER_OFFICES.map((office) => (
+                  <option key={office.id} value={office.id}>
+                    {office.name}
+                  </option>
+                ))}
               </select>
-              <select className="bg-[#f8f8f8] border border-[#ebebeb] text-sm font-semibold rounded-md px-4 py-2 outline-none focus:ring-1 focus:ring-[#c4a484] cursor-pointer text-foreground h-11 sm:h-10 w-full sm:w-auto">
-                <option>Last 30 Days</option>
-              </select>
-              <button className="text-[12px] font-bold text-[#c4a484] hover:opacity-80 transition-opacity ml-0 sm:ml-2 mt-2 sm:mt-0 py-2 sm:py-0 text-center w-full sm:w-auto">
+              <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
+                <input
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  className="bg-[#f8f8f8] border border-[#ebebeb] text-sm font-semibold rounded-md px-4 py-2 outline-none focus:ring-1 focus:ring-[#c4a484] text-foreground h-11 sm:h-10 w-full sm:w-auto"
+                />
+                <span className="hidden sm:inline-block text-muted-foreground">
+                  -
+                </span>
+                <input
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                  className="bg-[#f8f8f8] border border-[#ebebeb] text-sm font-semibold rounded-md px-4 py-2 outline-none focus:ring-1 focus:ring-[#c4a484] text-foreground h-11 sm:h-10 w-full sm:w-auto"
+                />
+              </div>
+              <button
+                onClick={() => {
+                  setStateCode("All States");
+                  setOfficeId("All Offices");
+                  const d = new Date();
+                  setEndDate(d.toISOString().split("T")[0]);
+                  d.setDate(d.getDate() - 30);
+                  setStartDate(d.toISOString().split("T")[0]);
+                }}
+                className="text-[12px] font-bold text-[#c4a484] hover:opacity-80 transition-opacity ml-0 sm:ml-2 mt-2 sm:mt-0 py-2 sm:py-0 text-center w-full sm:w-auto cursor-pointer"
+              >
                 Clear Filter
               </button>
             </div>

@@ -20,6 +20,15 @@ export const JournalManagerTab = () => {
   const [stateCode, setStateCode] = useState<string>("All States");
   const [notaryQuery, setNotaryQuery] = useState<string>("");
 
+  const [startDate, setStartDate] = useState<string>(() => {
+    const d = new Date();
+    d.setDate(d.getDate() - 30);
+    return d.toISOString().split("T")[0];
+  });
+  const [endDate, setEndDate] = useState<string>(() => {
+    return new Date().toISOString().split("T")[0];
+  });
+
   const { data: actTypesData } = useActTypes();
   const actTypes = actTypesData ?? [];
 
@@ -102,6 +111,10 @@ export const JournalManagerTab = () => {
           setStateCode={setStateCode}
           notaryQuery={notaryQuery}
           setNotaryQuery={setNotaryQuery}
+          startDate={startDate}
+          setStartDate={setStartDate}
+          endDate={endDate}
+          setEndDate={setEndDate}
           actTypes={actTypes}
           states={states}
           setPage={setPage}

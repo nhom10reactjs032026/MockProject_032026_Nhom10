@@ -20,6 +20,10 @@ export interface JournalToolbarProps {
   setStateCode: (v: string) => void;
   notaryQuery: string;
   setNotaryQuery: (v: string) => void;
+  startDate: string;
+  setStartDate: (v: string) => void;
+  endDate: string;
+  setEndDate: (v: string) => void;
   actTypes: string[];
   states: any[];
   setPage: (v: number) => void;
@@ -34,12 +38,16 @@ export const JournalToolbar = ({
   setStateCode,
   notaryQuery,
   setNotaryQuery,
+  startDate,
+  setStartDate,
+  endDate,
+  setEndDate,
   actTypes,
   states,
   setPage,
 }: JournalToolbarProps) => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 p-6 border-b border-[#ebebeb]">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-4 p-6 border-b border-[#ebebeb]">
       {/* Status */}
       <div className="flex flex-col gap-1.5">
         <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
@@ -66,13 +74,30 @@ export const JournalToolbar = ({
         </select>
       </div>
       {/* DATE RANGE */}
-      <div className="flex flex-col gap-1.5">
+      <div className="flex flex-col gap-1.5 lg:col-span-2">
         <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
           DATE RANGE
         </label>
-        <div className="relative h-10 border border-[#ebebeb] bg-white flex items-center px-3 cursor-pointer">
-          <span className="text-sm text-foreground">Last 30 Days</span>
-          <Calendar className="absolute right-3 w-4 h-4 text-muted-foreground" />
+        <div className="flex items-center gap-2 w-full">
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => {
+              setStartDate(e.target.value);
+              setPage(1);
+            }}
+            className="bg-[#f8f8f8] border border-[#ebebeb] text-sm font-semibold rounded-md px-2 py-2 outline-none focus:ring-1 focus:ring-[#c4a484] text-foreground h-10 w-full flex-1"
+          />
+          <span className="text-muted-foreground hidden sm:inline-block">-</span>
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => {
+              setEndDate(e.target.value);
+              setPage(1);
+            }}
+            className="bg-[#f8f8f8] border border-[#ebebeb] text-sm font-semibold rounded-md px-2 py-2 outline-none focus:ring-1 focus:ring-[#c4a484] text-foreground h-10 w-full flex-1"
+          />
         </div>
       </div>
       {/* ACT TYPE */}
@@ -141,6 +166,10 @@ export const JournalToolbar = ({
             setStateCode("All States");
             setNotaryQuery("");
             setPage(1);
+            const d = new Date();
+            setEndDate(d.toISOString().split("T")[0]);
+            d.setDate(d.getDate() - 30);
+            setStartDate(d.toISOString().split("T")[0]);
           }}
           variant="outline"
           className="h-10 border-[#ebebeb] bg-[#f8f8f8] text-[#c4a484] font-bold uppercase tracking-widest text-[11px] hover:bg-[#c4a484]/10 w-full"

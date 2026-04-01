@@ -139,7 +139,10 @@ export const JournalEntryDetail = () => {
               <EntryDataTab entry={detailQuery.data ?? null} />
             )}
             {activeTab === "signer-info" && (
-              <SignerInfoTab data={signerQuery.data ?? null} />
+              <SignerInfoTab 
+                data={signerQuery.data ?? null} 
+                onNext={() => setActiveTab("signature")}
+              />
             )}
             {(activeTab === "signature" ||
               activeTab === "linked-act" ||

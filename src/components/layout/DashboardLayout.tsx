@@ -42,12 +42,12 @@ export const DashboardLayout = () => {
       case "notary":
         return [
           { icon: FileSignature, label: "Notary Acts", path: "/notary-acts" },
-          // { icon: BookOpen, label: "Journal", path: "/notary-journal" },
+          { icon: BookOpen, label: "Journal", path: "/notary-journal/manager" },
         ];
       case "dispatcher":
         return [{ icon: CalendarDays, label: "Scheduling", path: "/planning" }];
       default:
-        return [{ icon: BookOpen, label: "Journal", path: "/notary-journal" }];
+        return [{ icon: BookOpen, label: "Journal", path: "/notary-journal/manager" }];
     }
   }, [user?.role]);
 
@@ -85,26 +85,28 @@ export const DashboardLayout = () => {
         {location.pathname.startsWith("/notary-journal") && (
           <div className="bg-white border-b border-[#ebebeb] shrink-0">
             <div className="px-6 flex items-center gap-8">
-              <NavLink
-                to="/notary-journal"
-                end
-                className={({ isActive }) =>
-                  `py-3.5 text-sm font-bold uppercase tracking-widest transition-colors relative ${
-                    isActive
-                      ? "text-[#c4a484]"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`
-                }
-              >
-                {({ isActive }) => (
-                  <>
-                    Dashboard
-                    {isActive && (
-                      <span className="absolute bottom-0 left-0 w-full h-[2px] bg-[#c4a484]" />
-                    )}
-                  </>
-                )}
-              </NavLink>
+              {user?.role === "admin" && (
+                <NavLink
+                  to="/notary-journal"
+                  end
+                  className={({ isActive }) =>
+                    `py-3.5 text-sm font-bold uppercase tracking-widest transition-colors relative ${
+                      isActive
+                        ? "text-[#c4a484]"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`
+                  }
+                >
+                  {({ isActive }) => (
+                    <>
+                      Dashboard
+                      {isActive && (
+                        <span className="absolute bottom-0 left-0 w-full h-[2px] bg-[#c4a484]" />
+                      )}
+                    </>
+                  )}
+                </NavLink>
+              )}
               <NavLink
                 to="/notary-journal/manager"
                 className={({ isActive }) =>
