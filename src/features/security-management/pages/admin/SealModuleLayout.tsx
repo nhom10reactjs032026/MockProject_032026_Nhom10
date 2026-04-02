@@ -2,16 +2,16 @@ import React from "react";
 import { NavLink, Outlet } from "react-router-dom";
 
 export const SealModuleLayout = () => {
-    // Danh sách các tab ngang
+    // List of horizontal tabs
     const tabs = [
         { label: "Dashboard", path: "" },
-        { label: "Detail", path: "detail" },
-        { label: "Traceability", path: "traceability" },
+        { label: "Technical", path: "technical" },
+        { label: "Risk Handling", path: "risk-handling" },
     ];
 
     return (
         <div className="p-8 bg-[#fcfcfc] min-h-screen animate-in fade-in duration-500">
-            {/* 1. Tiêu đề Module (To, đậm, màu đen của Wolfarch) */}
+            {/* 1. Module Title (Large, bold, black color of Wolfarch) */}
             <div className="mb-8">
                 <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
                     Seal & Digital Signature
@@ -21,7 +21,7 @@ export const SealModuleLayout = () => {
                 </p>
             </div>
 
-            {/* 2. THANH NAV NGANG (Màu vàng đồng nhẹ nhàng cho hợp UI mới) */}
+            {/* 2. HORIZONTAL NAV BAR (Light bronze color to match new UI) */}
             <div className="flex gap-4 mb-10 border-b border-slate-100">
                 {tabs.map((tab) => (
                     <NavLink
@@ -33,7 +33,7 @@ export const SealModuleLayout = () => {
                             }`
                         }
                     >
-                        {/* Bọc toàn bộ label và cái gạch chân vào hàm này */}
+                        {/* Wrap the entire label and the underline into this function */}
                         {({ isActive }) => (
                             <>
                                 {tab.label}
@@ -46,7 +46,7 @@ export const SealModuleLayout = () => {
                 ))}
             </div>
 
-            {/* 3. NƠI HIỂN THỊ NỘI DUNG CÁC TRANG CON */}
+            {/* 3. PLACE TO DISPLAY CONTENT OF SUBPAGES */}
             <div>
                 <Outlet />
             </div>

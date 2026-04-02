@@ -7,7 +7,7 @@ interface SealStatCardProps {
     borderColor?: string;
 }
 
-/* Component hiển thị các thẻ số liệu thống kê */
+/* Component to display statistical cards */
 export const SealStatCard: React.FC<SealStatCardProps> = ({
     title,
     count,
@@ -16,12 +16,12 @@ export const SealStatCard: React.FC<SealStatCardProps> = ({
 }) => {
     return (
         <div className={`p-6 bg-white rounded-[32px] shadow-sm border-t-4 ${borderColor} flex flex-col items-center justify-center min-h-[150px] transition-all hover:shadow-md hover:-translate-y-1 duration-300`}>
-            {/* Con số thống kê - To và rõ ở trên */}
+            {/* Statistical number - Large and clear at the top */}
             <h3 className={`text-4xl font-black ${color} mb-1`}>
                 {count.toLocaleString()}
             </h3>
 
-            {/* Tiêu đề - Nhỏ và in hoa ở dưới */}
+            {/* Title - Small and uppercase at the bottom */}
             <p className="text-gray-400 text-[11px] font-bold uppercase tracking-wide text-center">
                 {title}
             </p>

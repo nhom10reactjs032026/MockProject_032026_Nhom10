@@ -10,7 +10,7 @@ import {
     Legend
 } from 'recharts';
 
-// Dữ liệu giả lập cho biểu đồ (Usage Trends)
+// Simulated data for chart (Usage Trends)
 const data = [
     { name: '1', seal: 8000, digitalCert: 7500 },
     { name: '2', seal: 7500, digitalCert: 7800 },
@@ -36,12 +36,12 @@ export const UsageChart: React.FC = () => {
                 <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                         <defs>
-                            {/* Tạo hiệu ứng dải màu (Gradient) cho Seal */}
+                            {/* Create gradient effect for Seal */}
                             <linearGradient id="colorSeal" x1="0" y1="0" x2="0" y2="1">
                                 <stop offset="5%" stopColor="#6366f1" stopOpacity={0.1} />
                                 <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
                             </linearGradient>
-                            {/* Tạo hiệu ứng dải màu cho Digital Cert */}
+                            {/* Create gradient effect for Digital Cert */}
                             <linearGradient id="colorCert" x1="0" y1="0" x2="0" y2="1">
                                 <stop offset="5%" stopColor="#ec4899" stopOpacity={0.1} />
                                 <stop offset="95%" stopColor="#ec4899" stopOpacity={0} />

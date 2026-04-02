@@ -10,6 +10,8 @@ import {
   Stamp,
   FileSignature,
   CalendarDays,
+  ShieldAlert,
+  Eye
 } from "lucide-react";
 import type { SidebarNavItem } from "./Sidebar";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -38,11 +40,16 @@ export const DashboardLayout = () => {
             label: "Seal & Digital Signature",
             path: "/admin/seals",
           },
+          {
+            icon: Eye,
+            label: "Oversight",
+            path: "/admin/oversight",
+          }
         ];
       case "notary":
         return [
           { icon: FileSignature, label: "Notary Acts", path: "/notary-acts" },
-          // { icon: BookOpen, label: "Journal", path: "/notary-journal" },
+          { icon: ShieldAlert, label: "Risk Handling", path: "/notary-risk" },
         ];
       case "dispatcher":
         return [{ icon: CalendarDays, label: "Scheduling", path: "/planning" }];
@@ -89,10 +96,9 @@ export const DashboardLayout = () => {
                 to="/notary-journal"
                 end
                 className={({ isActive }) =>
-                  `py-3.5 text-sm font-bold uppercase tracking-widest transition-colors relative ${
-                    isActive
-                      ? "text-[#c4a484]"
-                      : "text-muted-foreground hover:text-foreground"
+                  `py-3.5 text-sm font-bold uppercase tracking-widest transition-colors relative ${isActive
+                    ? "text-[#c4a484]"
+                    : "text-muted-foreground hover:text-foreground"
                   }`
                 }
               >
@@ -108,10 +114,9 @@ export const DashboardLayout = () => {
               <NavLink
                 to="/notary-journal/manager"
                 className={({ isActive }) =>
-                  `py-3.5 text-sm font-bold uppercase tracking-widest transition-colors relative ${
-                    isActive
-                      ? "text-[#c4a484]"
-                      : "text-muted-foreground hover:text-foreground"
+                  `py-3.5 text-sm font-bold uppercase tracking-widest transition-colors relative ${isActive
+                    ? "text-[#c4a484]"
+                    : "text-muted-foreground hover:text-foreground"
                   }`
                 }
               >

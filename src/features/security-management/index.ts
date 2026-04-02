@@ -1,1 +1,1 @@
-export { default as SealDashboardPage } from './pages/SealDashboardPage';
+export { default as SealDashboardPage } from './pages/admin/SealDashboardPage';

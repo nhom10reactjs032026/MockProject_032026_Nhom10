@@ -24,7 +24,6 @@ export const AdminLayout = () => {
 
   return (
     <div className="flex min-h-screen bg-[#fcfcfc]">
-      {/* 1. Sidebar beige xịn xò của Đan */}
       <Sidebar
         navItems={sidebarItems}
         collapsed={isCollapsed}
@@ -45,7 +44,6 @@ export const AdminLayout = () => {
               <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-rose-500 rounded-full border-2 border-white"></span>
             </Button>
 
-            {/* Profile - Đã đổi tên thành Văn Hữu Đan cho chuẩn nè */}
             <div className="flex items-center gap-3 pl-6 border-l border-[#ebebeb]">
               <div className="text-right hidden sm:block">
                 <p className="text-sm font-bold text-slate-800 leading-none">Văn Hữu Đan</p>
@@ -60,7 +58,6 @@ export const AdminLayout = () => {
         </header>
 
         <main className="flex-1 overflow-y-auto bg-[#fafafa]">
-          {/* Nơi hiện nội dung các trang con (Notary Profile, Dashboard, Seals...) */}
           <Outlet />
         </main>
       </div>
