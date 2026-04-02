@@ -3,16 +3,19 @@ import {
   fetchDashboardMetrics,
   fetchTopClients,
   fetchIssueCardsData,
+  fetchHolidaySchedule,
 } from "../api/crm.api";
 import type {
   DashboardMetrics,
   TopClientData,
   OverdueInvoice,
   ContractExpiring,
+  HolidayAnnouncement,
 } from "../types";
 
 export const useDashboardData = () => {
   const [metrics, setMetrics] = useState<DashboardMetrics>();
+  const [holiday, setHoliday] = useState<HolidayAnnouncement>();
   const [topClients, setTopClients] = useState<TopClientData[]>([]);
   const [issues, setIssues] = useState<{
     invoices: OverdueInvoice[];
@@ -27,14 +30,17 @@ export const useDashboardData = () => {
     const loadData = async () => {
       setIsLoading(true);
       try {
-        const [metricsData, clientsData, issuesData] = await Promise.all([
-          fetchDashboardMetrics(),
-          fetchTopClients(),
-          fetchIssueCardsData(),
-        ]);
+        const [metricsData, clientsData, issuesData, holidayData] =
+          await Promise.all([
+            fetchDashboardMetrics(),
+            fetchTopClients(),
+            fetchIssueCardsData(),
+            fetchHolidaySchedule(),
+          ]);
         setMetrics(metricsData as DashboardMetrics);
         setTopClients(clientsData);
         setIssues(issuesData);
+        setHoliday(holidayData);
       } catch (error) {
         console.error("Lỗi tải data Dashboard", error);
       } finally {
@@ -62,6 +68,7 @@ export const useDashboardData = () => {
 
   return {
     metrics,
+    holiday,
     topClients,
     issues,
     isLoading,

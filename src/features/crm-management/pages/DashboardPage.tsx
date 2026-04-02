@@ -1,9 +1,10 @@
 import React from "react";
+import { Users, Banknote, Briefcase } from "lucide-react";
 import { CRMHeader } from "../components/CRMHeader";
 import { KPICard, PieChart } from "../components/KPICard";
 import { RevenueChart } from "../components/RevenueChart";
 import { TopClients } from "../components/TopClients";
-import { Users, Banknote, Briefcase } from "lucide-react";
+import { HolidayBanner } from "../components/HolidayBanner";
 import { IssueCards } from "../components/IssueCards";
 import { useDashboardData } from "../hooks";
 
@@ -17,6 +18,7 @@ export const CrmDashboard: React.FC = () => {
     revenuePct,
     jobsPct,
     formatCurrency,
+    holiday,
   } = useDashboardData();
 
   return (
@@ -24,6 +26,7 @@ export const CrmDashboard: React.FC = () => {
       <CRMHeader currentTab="dashboard" />
       <div className="flex-1 overflow-y-auto">
         <div className="mx-auto max-w-[1200px] px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
+          {!isLoading && <HolidayBanner data={holiday} />}
           <div className="mb-6 lg:mb-8">
             <h1 className="mb-1 text-2xl font-bold tracking-tight text-slate-900 lg:text-3xl">
               Enterprise Overview
