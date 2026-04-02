@@ -147,3 +147,23 @@ export type SetThumbprintDecisionResponse = {
   decision: ThumbprintDecision;
   createdAt: string;
 };
+
+// SC_010 Audit
+export type ComplianceAuditLog = {
+  id: string;
+  action: string;
+  notaryId: string;
+  email: string | null;
+  subject: string;
+  content: string;
+  timeStamp: string;
+};
+
+// SC_011 Audit
+export type ThumbprintAuditLog = {
+  id: string;
+  journalEntryId: string;
+  action: "REQUIRE" | "WAIVE";
+  changedBy: string;
+  createdAt: string;
+};

@@ -9,7 +9,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Filter } from "lucide-react";
-import { useJournalEntries } from "../api";
+import { useJournalEntries, useComplianceAuditLogs, useThumbprintAuditLogs } from "../api";
 import { formatDate } from "../utils/format";
 
 function initials(name: string) {
@@ -23,6 +23,11 @@ export const RecentComplianceLogs = () => {
   const { data } = useJournalEntries({ page: 1, pageSize: 3 });
   const items = data?.items ?? [];
 
+  // Req 6 (SC_010): Fetch audit logs for "Reminder Email Sent" events
+  const { data: auditLogs = [] } = useComplianceAuditLogs();
+
+  // Req 8 (SC_011): Fetch audit logs for thumbprint review decisions
+  const { data: thumbprintLogs = [] } = useThumbprintAuditLogs();
   return (
     <div className="bg-white rounded-xl border border-[#ebebeb] shadow-sm mt-6">
       <div className="p-6 border-b border-[#ebebeb] flex items-center justify-between">
@@ -59,6 +64,105 @@ export const RecentComplianceLogs = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
+            {/* Req 6: Audit trail — "Reminder Email Sent" events shown first */}
+            {auditLogs.map((log) => (
+              <TableRow
+                key={log.id}
+                className="hover:bg-blue-50/50 transition-colors cursor-pointer group border-b border-[#ebebeb]"
+              >
+                <TableCell className="font-semibold text-foreground py-4 px-6 text-sm">
+                  #{log.notaryId}
+                </TableCell>
+                <TableCell className="py-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold shrink-0">
+                      ✉
+                    </div>
+                    <span className="font-medium text-foreground text-sm whitespace-nowrap">
+                      {log.email ?? `Notary #${log.notaryId}`}
+                    </span>
+                  </div>
+                </TableCell>
+                <TableCell className="text-muted-foreground font-medium py-4 text-sm whitespace-nowrap">
+                  -
+                </TableCell>
+                <TableCell className="text-muted-foreground font-medium py-4 text-sm whitespace-nowrap">
+                  {formatDate(log.timeStamp)}
+                </TableCell>
+                <TableCell className="py-4">
+                  <Badge
+                    variant="outline"
+                    className="bg-blue-50 text-blue-700 border-blue-200 font-bold hover:bg-blue-100 text-[10px] uppercase tracking-widest px-2 whitespace-nowrap"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mr-2 -ml-0.5 shrink-0"></span>
+                    Reminder Email Sent
+                  </Badge>
+                </TableCell>
+                <TableCell className="text-right py-4 pr-6">
+                  <Button
+                    variant="ghost"
+                    className="text-[#c4a484] font-bold text-[10px] uppercase tracking-[0.2em] hover:bg-[#c4a484]/10 whitespace-nowrap"
+                  >
+                    VIEW DETAILS
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+
+            {/* Req 8 (SC_011): Audit trail — Thumbprint review decisions */}
+            {thumbprintLogs.map((log) => (
+              <TableRow
+                key={log.id}
+                className="hover:bg-orange-50/30 transition-colors cursor-pointer group border-b border-[#ebebeb]"
+              >
+                <TableCell className="font-semibold text-foreground py-4 px-6 text-sm">
+                  JRN-CA-{log.journalEntryId.padStart(5, "0")}
+                </TableCell>
+                <TableCell className="py-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-xs font-bold shrink-0">
+                      👆
+                    </div>
+                    <span className="font-medium text-foreground text-sm whitespace-nowrap">
+                      {log.changedBy}
+                    </span>
+                  </div>
+                </TableCell>
+                <TableCell className="text-muted-foreground font-medium py-4 text-sm whitespace-nowrap">
+                  CA
+                </TableCell>
+                <TableCell className="text-muted-foreground font-medium py-4 text-sm whitespace-nowrap">
+                  {formatDate(log.createdAt)}
+                </TableCell>
+                <TableCell className="py-4">
+                  <Badge
+                    variant="outline"
+                    className={`${
+                      log.action === "REQUIRE"
+                        ? "bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-100"
+                        : "bg-green-50 text-green-700 border-green-200 hover:bg-green-100"
+                    } font-bold text-[10px] uppercase tracking-widest px-2 whitespace-nowrap`}
+                  >
+                    <span
+                      className={`w-1.5 h-1.5 rounded-full ${
+                        log.action === "REQUIRE" ? "bg-orange-500" : "bg-green-500"
+                      } mr-2 -ml-0.5 shrink-0`}
+                    ></span>
+                    Thumbprint {log.action === "REQUIRE" ? "Required" : "Waived"}
+                  </Badge>
+                </TableCell>
+                <TableCell className="text-right py-4 pr-6">
+                  <Button
+                    variant="ghost"
+                    className="text-[#c4a484] font-bold text-[10px] uppercase tracking-[0.2em] hover:bg-[#c4a484]/10 whitespace-nowrap"
+                  >
+                    VIEW DETAILS
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+
+            {/* Existing journal entry logs */}
             {items.map((log) => (
               <TableRow
                 key={log.id}
@@ -118,7 +222,8 @@ export const RecentComplianceLogs = () => {
 
       <div className="p-4 border-t border-[#ebebeb] flex items-center justify-between">
         <span className="text-sm text-muted-foreground font-medium">
-          Showing 1-3 of {data?.total?.toLocaleString?.() ?? "-"} logs
+          Showing 1-{items.length + auditLogs.length + thumbprintLogs.length} of{" "}
+          {((data?.total ?? 0) + auditLogs.length + thumbprintLogs.length).toLocaleString()} logs
         </span>
         <div className="flex gap-2">
           <Button

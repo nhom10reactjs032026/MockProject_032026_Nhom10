@@ -283,6 +283,18 @@ export const notarialJournalHandlers = [
     },
   ),
 
+  // SC_010: Audit logs — return sent reminder logs.
+  http.get(
+    "/api/notarial-journal/compliance/audit-logs",
+    () => {
+      const logs = sentReminderLogs.map((log) => ({
+        ...log,
+        action: "Reminder Email Sent",
+      }));
+      return HttpResponse.json(logs);
+    },
+  ),
+
   // SC_011: Review Batch — list entries missing thumbprints.
   http.get(
     "/api/notarial-journal/compliance/missing-thumbprints/batch",
@@ -361,6 +373,14 @@ export const notarialJournalHandlers = [
       });
 
       return HttpResponse.json({ journalEntryId, decision, createdAt });
+    },
+  ),
+
+  // SC_011: Audit logs — return thumbprint review decision logs.
+  http.get(
+    "/api/notarial-journal/compliance/missing-thumbprints/audit-logs",
+    () => {
+      return HttpResponse.json(thumbprintAuditLogs);
     },
   ),
 
