@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import {
   Bold,
   Italic,
@@ -8,6 +8,7 @@ import {
   ListOrdered,
   AlignLeft,
 } from "lucide-react";
+import { toast } from "sonner";
 
 import {
   Dialog,
@@ -18,17 +19,49 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { withAdminGuard } from "../../hocs/withAdminGuard";
 
 import {
   useMissingSignatureRecipients,
   useSendMissingSignatureReminders,
 } from "../../api";
 
-export function SendReminderMissingSignaturesDialog(props: {
+// ─── Default template constants ───────────────────────────────────────────────
+const DEFAULT_SUBJECT = "Action Required: Complete missing journal";
+
+function buildDefaultBody(
+  selectedRecipients: Array<{
+    notaryName: string;
+    count: number;
+    entryIds: string[];
+  }>,
+) {
+  const entryIdList = selectedRecipients.flatMap((r) => r.entryIds);
+  const totalCount = selectedRecipients.reduce((s, r) => s + r.count, 0);
+  const names = selectedRecipients.map((r) => r.notaryName).join(", ");
+  const deadline = new Date(Date.now() + 7 * 24 * 3600 * 1000)
+    .toISOString()
+    .split("T")[0];
+
+  return (
+    `Dear ${names || "[Notary Name]"},\n\n` +
+    `Our records indicate that you have ${totalCount || "[Count]"} journal entries with missing signatures. ` +
+    `Please review and electronically sign them by ${deadline} to maintain compliance.\n\n` +
+    `Refer to entries: ${entryIdList.length > 0 ? entryIdList.join(", ") : "[Entry IDs]"}.\n\n` +
+    `⚠️ COMPLIANCE WARNING: Failure to complete the required signatures within the specified timeframe ` +
+    `may result in regulatory action. Please ensure all journal entries are properly signed ` +
+    `to remain in compliance with state notarial laws.\n\n` +
+    `Thank you,\nCompliance Team.`
+  );
+}
+
+// ─── Component ────────────────────────────────────────────────────────────────
+function SendReminderMissingSignaturesDialogBase(props: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
   const { open, onOpenChange } = props;
+
 
   const { data: recipients = [], isFetching } = useMissingSignatureRecipients({
     stateCode: "TX",
@@ -39,53 +72,119 @@ export function SendReminderMissingSignaturesDialog(props: {
     () => new Set(),
   );
 
-  function handleOpenChange(nextOpen: boolean) {
-    if (!nextOpen) setSelectedNotaryIds(new Set());
-    onOpenChange(nextOpen);
-  }
+  // ── Req 5: Validation state ─────────────────────────────────────────────────
+  const [subjectError, setSubjectError] = useState("");
+  const [bodyError, setBodyError] = useState("");
 
+  // ── Req 2: Prefilled email template ─────────────────────────────────────────
+  const [subject, setSubject] = useState(DEFAULT_SUBJECT);
+  const [body, setBody] = useState(() => buildDefaultBody([]));
+
+  // Rebuild body when selection changes
+  const selectedRecipients = useMemo(
+    () => recipients.filter((r) => selectedNotaryIds.has(r.notaryId)),
+    [recipients, selectedNotaryIds],
+  );
+  useEffect(() => {
+    setBody(buildDefaultBody(selectedRecipients));
+  }, [selectedRecipients]);
+
+  // ── Helpers ─────────────────────────────────────────────────────────────────
   const allSelected =
     recipients.length > 0 && selectedNotaryIds.size === recipients.length;
   const selectedCount = selectedNotaryIds.size;
+  const noFlaggedRecipients = !isFetching && recipients.length === 0;
 
-  const [subject, setSubject] = useState(
-    "Action Required: Missing Signatures in Journal",
-  );
-  const [body, setBody] = useState(
-    "Dear [Notary Name],\n\nOur records indicate that you have [Count] journal entries with missing signatures. Please review and electronically sign them by [Date] to maintain compliance.\n\nRefer to entries: [Entry IDs].\n\nThank you,\nCompliance Team.",
+  function handleOpenChange(nextOpen: boolean) {
+    if (!nextOpen) {
+      setSelectedNotaryIds(new Set());
+      setSubjectError("");
+      setBodyError("");
+    }
+    onOpenChange(nextOpen);
+  }
+
+  // Update body template when a recipient checkbox changes
+  const refreshBody = useCallback(
+    (nextIds: Set<string>) => {
+      const sel = recipients.filter((r) => nextIds.has(r.notaryId));
+      setBody(buildDefaultBody(sel));
+    },
+    [recipients],
   );
 
-  function toggleRecipient(notaryId: string) {
+  function toggleRecipientAndRefresh(notaryId: string) {
     setSelectedNotaryIds((prev) => {
       const next = new Set(prev);
       if (next.has(notaryId)) next.delete(notaryId);
       else next.add(notaryId);
+      refreshBody(next);
       return next;
     });
   }
 
-  function toggleAll() {
+  function toggleAllAndRefresh() {
     setSelectedNotaryIds((prev) => {
       if (recipients.length === 0) return prev;
-      if (prev.size === recipients.length) return new Set();
-      return new Set(recipients.map((r) => r.notaryId));
+      let next: Set<string>;
+      if (prev.size === recipients.length) {
+        next = new Set();
+      } else {
+        next = new Set(recipients.map((r) => r.notaryId));
+      }
+      refreshBody(next);
+      return next;
     });
   }
 
   function onCancel() {
     setSelectedNotaryIds(new Set());
+    setSubjectError("");
+    setBodyError("");
     onOpenChange(false);
   }
 
+  // ── Req 5: Validation + Req 4: Send with toast ─────────────────────────────
   async function onSend() {
+    let hasError = false;
+
+    // Validate subject
+    if (subject.trim().length === 0) {
+      setSubjectError("Subject is required.");
+      hasError = true;
+    } else {
+      setSubjectError("");
+    }
+
+    // Validate body
+    if (body.trim().length === 0) {
+      setBodyError("Email body is required.");
+      hasError = true;
+    } else {
+      setBodyError("");
+    }
+
+    if (hasError) return;
+
     if (selectedNotaryIds.size === 0 || sendMutation.isPending) return;
-    await sendMutation.mutateAsync({
-      notaryIds: Array.from(selectedNotaryIds.values()),
-      subject,
-      content: body,
-    });
-    setSelectedNotaryIds(new Set());
-    onOpenChange(false);
+
+    try {
+      await sendMutation.mutateAsync({
+        notaryIds: Array.from(selectedNotaryIds.values()),
+        subject,
+        content: body,
+      });
+      // Req 4: Success toast
+      toast.success("Reminder emails sent successfully!", {
+        description: `${selectedNotaryIds.size} email${selectedNotaryIds.size === 1 ? "" : "s"} sent to the selected notaries.`,
+      });
+      setSelectedNotaryIds(new Set());
+      onOpenChange(false);
+    } catch {
+      toast.error("Failed to send reminder emails", {
+        description: "Please try again later.",
+      });
+    }
   }
 
   return (
@@ -102,6 +201,7 @@ export function SendReminderMissingSignaturesDialog(props: {
         </div>
 
         <div className="p-6 space-y-6 overflow-auto">
+          {/* ── Req 1: Recipients table with entries + email ────────────────── */}
           <div className="space-y-3">
             <div className="text-sm font-bold text-foreground">Sending to</div>
 
@@ -110,7 +210,8 @@ export function SendReminderMissingSignaturesDialog(props: {
                 <input
                   type="checkbox"
                   checked={allSelected}
-                  onChange={toggleAll}
+                  onChange={toggleAllAndRefresh}
+                  disabled={noFlaggedRecipients}
                   aria-label="Select all"
                 />
                 <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
@@ -124,7 +225,9 @@ export function SendReminderMissingSignaturesDialog(props: {
               <div className="max-h-[220px] overflow-auto">
                 {recipients.length === 0 ? (
                   <div className="px-3 py-4 text-sm text-muted-foreground">
-                    {isFetching ? "Loading…" : "No recipients found."}
+                    {isFetching
+                      ? "Loading…"
+                      : "No flagged recipients found. There are no entries with missing signatures."}
                   </div>
                 ) : (
                   recipients.map((r) => (
@@ -135,11 +238,26 @@ export function SendReminderMissingSignaturesDialog(props: {
                       <input
                         type="checkbox"
                         checked={selectedNotaryIds.has(r.notaryId)}
-                        onChange={() => toggleRecipient(r.notaryId)}
+                        onChange={() => toggleRecipientAndRefresh(r.notaryId)}
                         aria-label={`Select ${r.notaryName}`}
                       />
-                      <div className="text-sm font-medium text-foreground">
-                        {r.notaryName}
+                      <div>
+                        <div className="text-sm font-medium text-foreground">
+                          {r.notaryName}
+                        </div>
+                        {r.email && (
+                          <div className="text-xs text-muted-foreground">
+                            {r.email}
+                          </div>
+                        )}
+                        {/* Req 1: Show Entry IDs */}
+                        {r.entryIds.length > 0 && (
+                          <div className="text-xs text-blue-600 mt-0.5">
+                            {r.entryIds
+                              .map((id) => `JRN-CA-${id.padStart(5, "0")}`)
+                              .join(", ")}
+                          </div>
+                        )}
                       </div>
                       <div className="text-sm text-foreground text-right">
                         ({r.count} {r.count === 1 ? "entry" : "entries"})
@@ -151,28 +269,47 @@ export function SendReminderMissingSignaturesDialog(props: {
             </div>
           </div>
 
+          {/* ── Req 2 & 3: Email Composer with prefilled template ──────────── */}
           <div className="space-y-3">
             <div className="text-[16px] font-bold text-foreground">
               Email Composer
             </div>
 
+            {/* Subject field */}
             <div className="space-y-2">
               <label className="text-[12px] font-semibold text-foreground">
                 Subject
               </label>
               <Input
+                id="email-subject"
                 value={subject}
-                onChange={(e) => setSubject(e.target.value)}
-                className="border-[#ebebeb]"
+                onChange={(e) => {
+                  setSubject(e.target.value);
+                  if (e.target.value.trim().length > 0) setSubjectError("");
+                }}
+                className={cn(
+                  "border-[#ebebeb]",
+                  subjectError && "border-red-500 focus-visible:ring-red-500",
+                )}
+                placeholder="Enter email subject"
               />
+              {subjectError && (
+                <p className="text-xs text-red-500 mt-1">{subjectError}</p>
+              )}
             </div>
 
+            {/* Rich text editor / body */}
             <div className="space-y-2">
               <label className="text-[12px] font-semibold text-foreground">
                 Rich Text Editor
               </label>
 
-              <div className="border border-[#ebebeb] rounded-xl bg-white overflow-hidden">
+              <div
+                className={cn(
+                  "border border-[#ebebeb] rounded-xl bg-white overflow-hidden",
+                  bodyError && "border-red-500",
+                )}
+              >
                 <div className="flex items-center gap-1 px-2 py-2 border-b border-[#ebebeb] bg-[#f8f8f8]">
                   <Button variant="ghost" size="icon-xs">
                     <Bold />
@@ -199,15 +336,23 @@ export function SendReminderMissingSignaturesDialog(props: {
                 </div>
 
                 <textarea
+                  id="email-body"
                   value={body}
-                  onChange={(e) => setBody(e.target.value)}
+                  onChange={(e) => {
+                    setBody(e.target.value);
+                    if (e.target.value.trim().length > 0) setBodyError("");
+                  }}
                   className="w-full min-h-[220px] resize-none p-3 text-sm text-foreground outline-none"
                 />
               </div>
+              {bodyError && (
+                <p className="text-xs text-red-500 mt-1">{bodyError}</p>
+              )}
             </div>
           </div>
         </div>
 
+        {/* ── Req 8: Disable send when no flagged recipients ───────────────── */}
         <DialogFooter className="p-6 border-t border-[#ebebeb] flex-row justify-end gap-3">
           <Button
             variant="outline"
@@ -217,16 +362,32 @@ export function SendReminderMissingSignaturesDialog(props: {
             Cancel
           </Button>
           <Button
+            id="send-reminder-btn"
             className="bg-blue-600 hover:bg-blue-700"
-            disabled={selectedCount === 0 || sendMutation.isPending}
+            disabled={
+              noFlaggedRecipients ||
+              selectedCount === 0 ||
+              sendMutation.isPending
+            }
             onClick={onSend}
           >
             {sendMutation.isPending
               ? "Sending…"
-              : `Send ${selectedCount} Email${selectedCount === 1 ? "" : "s"}`}
+              : noFlaggedRecipients
+                ? "No Recipients"
+                : `Send ${selectedCount} Email${selectedCount === 1 ? "" : "s"}`}
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
 }
+
+export const SendReminderMissingSignaturesDialog = withAdminGuard(
+  SendReminderMissingSignaturesDialogBase,
+  {
+    type: "dialog",
+    message:
+      "You do not have permission to send reminder emails. Only administrators can access this feature.",
+  },
+);

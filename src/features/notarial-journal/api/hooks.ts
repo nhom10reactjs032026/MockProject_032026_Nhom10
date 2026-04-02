@@ -9,8 +9,8 @@ import type {
 } from "./types";
 
 export const notarialJournalQueryKeys = {
-  dashboard: (notaryId?: string) =>
-    ["notarial-journal", "dashboard", { notaryId }] as const,
+  dashboard: (params: ListJournalEntriesParams = {}) =>
+    ["notarial-journal", "dashboard", params] as const,
   actTypes: () => ["notarial-journal", "act-types"] as const,
   states: () => ["notarial-journal", "states"] as const,
   journalEntries: (params: ListJournalEntriesParams) =>
@@ -24,6 +24,10 @@ export const notarialJournalQueryKeys = {
   missingSignatureRecipients: (params: { stateCode?: string } = {}) =>
     ["notarial-journal", "compliance", "missing-signatures", params] as const,
 
+  // SC_010 Audit
+  complianceAuditLogs: () =>
+    ["notarial-journal", "compliance", "audit-logs"] as const,
+
   // SC_011
   missingThumbprintsBatch: (params: {
     stateCode: string;
@@ -31,12 +35,16 @@ export const notarialJournalQueryKeys = {
     pageSize: number;
   }) =>
     ["notarial-journal", "compliance", "missing-thumbprints", params] as const,
+
+  // SC_011 Audit
+  thumbprintAuditLogs: () =>
+    ["notarial-journal", "compliance", "thumbprint-audit-logs"] as const,
 };
 
-export function useNotarialJournalDashboard(notaryId?: string) {
+export function useNotarialJournalDashboard(params: ListJournalEntriesParams = {}) {
   return useQuery({
-    queryKey: notarialJournalQueryKeys.dashboard(notaryId),
-    queryFn: () => notarialJournalApi.getDashboard(notaryId),
+    queryKey: notarialJournalQueryKeys.dashboard(params),
+    queryFn: () => notarialJournalApi.getDashboard(params),
   });
 }
 
@@ -105,7 +113,19 @@ export function useSendMissingSignatureReminders() {
       void queryClient.invalidateQueries({
         queryKey: ["notarial-journal", "compliance", "missing-signatures"],
       });
+      // Also refresh audit logs so the new "Reminder Email Sent" event shows.
+      void queryClient.invalidateQueries({
+        queryKey: notarialJournalQueryKeys.complianceAuditLogs(),
+      });
     },
+  });
+}
+
+// SC_010 Audit
+export function useComplianceAuditLogs() {
+  return useQuery({
+    queryKey: notarialJournalQueryKeys.complianceAuditLogs(),
+    queryFn: () => notarialJournalApi.getComplianceAuditLogs(),
   });
 }
 
@@ -130,6 +150,22 @@ export function useSetMissingThumbprintsDecision() {
       void queryClient.invalidateQueries({
         queryKey: ["notarial-journal", "compliance", "missing-thumbprints"],
       });
+      // Refresh thumbprint audit logs (Req 8)
+      void queryClient.invalidateQueries({
+        queryKey: notarialJournalQueryKeys.thumbprintAuditLogs(),
+      });
+      // Refresh dashboard so Missing Thumbprints alert count updates (Req 6)
+      void queryClient.invalidateQueries({
+        queryKey: ["notarial-journal", "dashboard"],
+      });
     },
+  });
+}
+
+// SC_011 Audit
+export function useThumbprintAuditLogs() {
+  return useQuery({
+    queryKey: notarialJournalQueryKeys.thumbprintAuditLogs(),
+    queryFn: () => notarialJournalApi.getThumbprintAuditLogs(),
   });
 }

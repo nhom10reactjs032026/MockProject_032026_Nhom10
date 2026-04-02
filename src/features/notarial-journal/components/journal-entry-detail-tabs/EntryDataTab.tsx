@@ -80,7 +80,7 @@ export const EntryDataTab = ({
               <label className="text-xs font-bold text-muted-foreground flex items-center gap-1 mb-2">
                 Date & Time <Info className="w-3 h-3" />
               </label>
-              <div className="bg-[#f8f8f8] border border-[#ebebeb] p-3 text-sm font-semibold text-foreground">
+              <div className="bg-[#f8f8f8] border border-[#ebebeb] p-5 text-sm font-semibold text-foreground">
                 {dateTime}
               </div>
               <p className="text-[10px] font-bold uppercase text-[#c4a484] mt-2 tracking-widest">
@@ -232,7 +232,7 @@ export const EntryDataTab = ({
                 Record Finalized & Encrypted
               </h4>
               <p className="text-[11px] text-muted-foreground mt-1 font-medium">
-                Oct 24, 2023 14:35:01 PM - System
+                Oct 24, 2023 14:35:01 - System
               </p>
             </div>
 
@@ -242,7 +242,7 @@ export const EntryDataTab = ({
                 Signer Identity Confirmed
               </h4>
               <p className="text-[11px] text-muted-foreground mt-1 font-medium">
-                Oct 24, 2023 14:31:55 PM - Sarah Jenkins
+                Oct 24, 2023 14:31:55 - Sarah Jenkins
               </p>
             </div>
 
@@ -252,7 +252,7 @@ export const EntryDataTab = ({
                 Journal Entry Created
               </h4>
               <p className="text-[11px] text-muted-foreground mt-1 font-medium">
-                Oct 24, 2023 14:30:12 PM - Sarah Jenkins
+                Oct 24, 2023 14:30:12 - Sarah Jenkins
               </p>
             </div>
           </div>

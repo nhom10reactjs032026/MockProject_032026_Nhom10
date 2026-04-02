@@ -6,14 +6,18 @@ export type JournalEntryStatus =
 
 export type NotarialJournalDashboardResponse = {
   totalJournalEntries: number;
+  totalJournalEntriesChange: string; // e.g. "+12%"
   countsByStatus: {
     draft: number;
     completed: number;
     actionRequired: number;
+    actionRequiredChange: string;
     locked: number;
   };
   totalFeesCollected: number;
+  totalFeesCollectedChange: string;
   activeNotaries: number;
+  activeNotariesChange: string;
 };
 
 export type JournalEntryListItem = {
@@ -145,5 +149,25 @@ export type SetThumbprintDecisionRequest = {
 export type SetThumbprintDecisionResponse = {
   journalEntryId: string;
   decision: ThumbprintDecision;
+  createdAt: string;
+};
+
+// SC_010 Audit
+export type ComplianceAuditLog = {
+  id: string;
+  action: string;
+  notaryId: string;
+  email: string | null;
+  subject: string;
+  content: string;
+  timeStamp: string;
+};
+
+// SC_011 Audit
+export type ThumbprintAuditLog = {
+  id: string;
+  journalEntryId: string;
+  action: "REQUIRE" | "WAIVE";
+  changedBy: string;
   createdAt: string;
 };

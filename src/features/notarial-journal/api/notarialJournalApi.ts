@@ -1,5 +1,6 @@
 import { notarialJournalApiClient } from "./client";
 import type {
+  ComplianceAuditLog,
   JournalEntriesListResponse,
   JournalEntryDetailResponse,
   JournalEntrySignerResponse,
@@ -10,25 +11,29 @@ import type {
   SendMissingSignatureRemindersResponse,
   SetThumbprintDecisionRequest,
   SetThumbprintDecisionResponse,
+  ThumbprintAuditLog,
   ThumbprintBatchResponse,
 } from "./types";
 
 export type ListJournalEntriesParams = {
+  id?: string;
   status?: JournalEntryStatus | "All";
   notaryId?: string;
   notaryQuery?: string;
   actType?: string | "All";
   stateCode?: string | "All";
+  startDate?: string;
+  endDate?: string;
   page?: number;
   pageSize?: number;
 };
 
 export const notarialJournalApi = {
-  async getDashboard(notaryId?: string) {
+  async getDashboard(params: ListJournalEntriesParams = {}) {
     const res =
       await notarialJournalApiClient.get<NotarialJournalDashboardResponse>(
         "/dashboard",
-        { params: { notaryId } },
+        { params },
       );
     return res.data;
   },
@@ -107,6 +112,22 @@ export const notarialJournalApi = {
         "/compliance/missing-thumbprints/decision",
         payload,
       );
+    return res.data;
+  },
+
+  // SC_010 Audit
+  async getComplianceAuditLogs() {
+    const res = await notarialJournalApiClient.get<ComplianceAuditLog[]>(
+      "/compliance/audit-logs",
+    );
+    return res.data;
+  },
+
+  // SC_011 Audit
+  async getThumbprintAuditLogs() {
+    const res = await notarialJournalApiClient.get<ThumbprintAuditLog[]>(
+      "/compliance/missing-thumbprints/audit-logs",
+    );
     return res.data;
   },
 };

@@ -19,10 +19,19 @@ function mapStatus(
 }
 
 function isoLikeFromId(id: string): string {
-  // Deterministic pseudo timestamp for mocks
-  const base = new Date("2023-10-20T08:00:00Z").getTime();
-  const deltaDays = toNumber(id) % 20;
-  const ts = new Date(base + deltaDays * 24 * 3600 * 1000);
+  // Deterministic pseudo timestamp for mocks relative to current date.
+  // We ensure all dates are in the past to avoid being filtered out by default "today" end date.
+  const now = new Date();
+  const idNum = toNumber(id);
+  
+  // Create a date within the last 30 days, monotonic with id where possible
+  // so that higher IDs appear more "recent".
+  const daysAgo = 30 - (idNum % 31); 
+  const ts = new Date(now.getTime() - daysAgo * 24 * 3600 * 1000);
+  
+  // Stability for hours/minutes
+  ts.setHours(idNum % 24, idNum % 60, 0, 0);
+  
   return ts.toISOString();
 }
 
@@ -283,6 +292,18 @@ export const notarialJournalHandlers = [
     },
   ),
 
+  // SC_010: Audit logs — return sent reminder logs.
+  http.get(
+    "/api/notarial-journal/compliance/audit-logs",
+    () => {
+      const logs = sentReminderLogs.map((log) => ({
+        ...log,
+        action: "Reminder Email Sent",
+      }));
+      return HttpResponse.json(logs);
+    },
+  ),
+
   // SC_011: Review Batch — list entries missing thumbprints.
   http.get(
     "/api/notarial-journal/compliance/missing-thumbprints/batch",
@@ -364,16 +385,55 @@ export const notarialJournalHandlers = [
     },
   ),
 
+  // SC_011: Audit logs — return thumbprint review decision logs.
+  http.get(
+    "/api/notarial-journal/compliance/missing-thumbprints/audit-logs",
+    () => {
+      return HttpResponse.json(thumbprintAuditLogs);
+    },
+  ),
+
   http.get("/api/notarial-journal/dashboard", ({ request }) => {
     const db = getMockNotarialJournalDb();
     const url = new URL(request.url);
     const notaryId = url.searchParams.get("notaryId");
+    const stateCode = url.searchParams.get("stateCode");
+    const startDate = url.searchParams.get("startDate");
+    const endDate = url.searchParams.get("endDate");
 
     const paymentStatusByRequestId = createPaymentStatusByRequestId(db);
 
-    const entries = notaryId
-      ? db.journalEntries.filter((e) => e.notary_id === notaryId)
-      : db.journalEntries;
+    let entries = db.journalEntries.slice();
+
+    // Filtering logic (similar to journal-entries endpoint)
+    if (startDate) {
+      const d = new Date(startDate).getTime();
+      if (!isNaN(d)) {
+        entries = entries.filter(
+          (e) => new Date(isoLikeFromId(e.id)).getTime() >= d,
+        );
+      }
+    }
+    if (endDate) {
+      const d = new Date(endDate).getTime();
+      if (!isNaN(d)) {
+        entries = entries.filter(
+          (e) => new Date(isoLikeFromId(e.id)).getTime() < d + 24 * 3600 * 1000,
+        );
+      }
+    }
+    if (notaryId) {
+      entries = entries.filter((e) => e.notary_id === notaryId);
+    }
+    if (stateCode && stateCode !== "All States" && stateCode !== "All") {
+      const sc = stateCode.trim().toUpperCase();
+      entries = entries.filter((e) => {
+        const commission = db.commissions.find(
+          (c) => c.notary_id === e.notary_id,
+        );
+        return (commission?.commission_state ?? "").trim().toUpperCase() === sc;
+      });
+    }
 
     const totalJournalEntries = entries.length;
     const statusCounts = entries.reduce(
@@ -399,20 +459,34 @@ export const notarialJournalHandlers = [
       0,
     );
 
-    const activeNotaries = db.notaries.filter((n) =>
-      (n.status ?? "").toUpperCase().includes("ACTIVE"),
-    ).length;
+    const filteredNotaries = new Set(entries.map((e) => e.notary_id));
+    const activeNotaries = Array.from(filteredNotaries).filter((id) => {
+      const n = db.notaries.find((notary) => notary.id === id);
+      return (n?.status ?? "").toUpperCase().includes("ACTIVE");
+    }).length;
+
+    // Generate mock percentage changes based on the length of filters 
+    // to provide deterministic but changing values.
+    const mockSeed = (stateCode || "").length + (notaryId || "").length + entries.length;
+    const getChange = (val: number) => {
+      const pct = (val + mockSeed) % 15 + 2;
+      return (mockSeed % 2 === 0 ? "+" : "-") + pct + "%";
+    };
 
     return HttpResponse.json({
       totalJournalEntries,
+      totalJournalEntriesChange: getChange(totalJournalEntries),
       countsByStatus: {
         draft: statusCounts["Draft"],
         completed: statusCounts["Completed"],
         actionRequired: statusCounts["Action Required"],
+        actionRequiredChange: getChange(statusCounts["Action Required"]),
         locked: statusCounts["Locked"],
       },
       totalFeesCollected,
+      totalFeesCollectedChange: getChange(Math.floor(totalFeesCollected / 100)),
       activeNotaries,
+      activeNotariesChange: getChange(activeNotaries),
     });
   }),
 
@@ -422,11 +496,14 @@ export const notarialJournalHandlers = [
 
     const paymentStatusByRequestId = createPaymentStatusByRequestId(db);
 
+    const id = url.searchParams.get("id");
     const status = url.searchParams.get("status");
     const notaryId = url.searchParams.get("notaryId");
     const notaryQuery = url.searchParams.get("notaryQuery");
     const actType = url.searchParams.get("actType");
     const stateCode = url.searchParams.get("stateCode");
+    const startDate = url.searchParams.get("startDate");
+    const endDate = url.searchParams.get("endDate");
     const page = Math.max(1, Number(url.searchParams.get("page") ?? 1));
     const pageSize = Math.max(
       1,
@@ -434,6 +511,26 @@ export const notarialJournalHandlers = [
     );
 
     let entries = db.journalEntries.slice();
+    if (id && id.trim().length > 0) {
+      const q = id.trim().toLowerCase();
+      entries = entries.filter((e) => e.id.toLowerCase().includes(q));
+    }
+    if (startDate) {
+      const d = new Date(startDate).getTime();
+      if (!isNaN(d)) {
+        entries = entries.filter(
+          (e) => new Date(isoLikeFromId(e.id)).getTime() >= d,
+        );
+      }
+    }
+    if (endDate) {
+      const d = new Date(endDate).getTime();
+      if (!isNaN(d)) {
+        entries = entries.filter(
+          (e) => new Date(isoLikeFromId(e.id)).getTime() < d + 24 * 3600 * 1000,
+        );
+      }
+    }
     if (notaryId) entries = entries.filter((e) => e.notary_id === notaryId);
     if (notaryQuery && notaryQuery.trim().length > 0) {
       const q = notaryQuery.trim().toLowerCase();

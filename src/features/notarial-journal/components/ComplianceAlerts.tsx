@@ -3,10 +3,31 @@ import { useState } from "react";
 
 import { SendReminderMissingSignaturesDialog } from "./modals/SendReminderMissingSignaturesDialog";
 import { BatchReviewMissingThumbprintsDialog } from "./modals/BatchReviewMissingThumbprintsDialog";
+import {
+  useMissingSignatureRecipients,
+  useMissingThumbprintsBatch,
+} from "../api";
 
 export const ComplianceAlerts = () => {
   const [sendReminderOpen, setSendReminderOpen] = useState(false);
   const [batchReviewOpen, setBatchReviewOpen] = useState(false);
+
+  // Req 6 (SC_010): Dynamic count for missing signatures
+  const { data: signatureRecipients = [] } = useMissingSignatureRecipients({
+    stateCode: "TX",
+  });
+  const totalMissingSignatures = signatureRecipients.reduce(
+    (sum, r) => sum + r.count,
+    0,
+  );
+
+  // Req 6 (SC_011): Dynamic count for missing thumbprints
+  const { data: thumbprintsData } = useMissingThumbprintsBatch({
+    stateCode: "CA",
+    page: 1,
+    pageSize: 24,
+  });
+  const totalMissingThumbprints = thumbprintsData?.total ?? 0;
 
   return (
     <>
@@ -20,7 +41,8 @@ export const ComplianceAlerts = () => {
               Signer Signatures Missing
             </h4>
             <p className="text-[16px] text-muted-foreground leading-relaxed">
-              12 entries in Texas are missing electronic signer signatures.
+              {totalMissingSignatures} entries in Texas are missing electronic
+              signer signatures.
             </p>
             <button
               onClick={() => setSendReminderOpen(true)}
@@ -40,8 +62,8 @@ export const ComplianceAlerts = () => {
               Missing Thumbprints
             </h4>
             <p className="text-[16px] text-muted-foreground leading-relaxed">
-              42 entries in California require mandatory thumbprint
-              verification.
+              {totalMissingThumbprints} entries in California require mandatory
+              thumbprint verification.
             </p>
             <button
               onClick={() => setBatchReviewOpen(true)}
