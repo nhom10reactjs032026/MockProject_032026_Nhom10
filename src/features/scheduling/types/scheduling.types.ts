@@ -76,3 +76,13 @@ export interface DigitalSignature {
   ipAddress: string;
   verificationStatus: string;
 }
+
+export interface CalendarEvent {
+  id: string;
+  day: number;        // 0 = Monday, 1 = Tuesday, ...
+  startHour: number;  // 8 = 8:00 AM
+  duration: number;   // 1 = 1 hour, 0.5 = 30 minutes
+  customer: string;
+  type: string;
+  title?: string;
+}

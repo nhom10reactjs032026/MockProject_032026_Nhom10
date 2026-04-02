@@ -4,25 +4,31 @@ import { InfoCard } from "../components/detail/InfoCard";
 import { InfoRow } from "../components/detail/InfoRow";
 import { ActionButtons } from "../components/detail/ActionButtons";
 import { mockJobDetail } from "../data/mockData";
+import { useUIStore } from "../store/useUIStore";
 
+interface JobDetailProps {
+  onBack?: () => void;
+}
 
-export const JobDetail: React.FC = () => {
-  const job = mockJobDetail;
+export const JobDetail: React.FC<JobDetailProps> = ({ onBack }) => {
+  const { showToast } = useUIStore();
+  const job = mockJobDetail; // ✅ Tạm thời dùng mock data
 
   const handleConfirm = () => {
-    alert("Job confirmed!");
+    showToast("Job confirmed!", "success");
   };
 
   const handleCancel = () => {
-    alert("Job cancelled");
+    showToast("Job cancelled", "info");
+    if (onBack) onBack();
   };
 
   const handleReassign = () => {
-    alert("Reassign notary");
+    showToast("Redirecting to dispatch page...", "info");
   };
 
   const handleReschedule = () => {
-    alert("Reschedule job");
+    showToast("Reschedule feature coming soon", "info");
   };
 
   const handlePrint = () => {
@@ -31,10 +37,24 @@ export const JobDetail: React.FC = () => {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-      {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Job Details</h1>
-        <p className="text-sm text-gray-400 mt-1">Job #{job.id} • {job.service.name}</p>
+      {/* Header with back button */}
+      <div className="flex items-center gap-3 mb-6">
+        {onBack && (
+          <button
+            onClick={onBack}
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          >
+            <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+          </button>
+        )}
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800">Job Details</h1>
+          <p className="text-sm text-gray-400 mt-1">
+            Job #{job.id} • {job.service.name}
+          </p>
+        </div>
       </div>
 
       {/* 3 Column Layout */}
