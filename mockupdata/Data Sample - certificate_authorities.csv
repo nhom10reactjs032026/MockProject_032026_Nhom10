@@ -1,0 +1,21 @@
+id,name,is_approved
+1,IdenTrust Services,1
+2,DigiCert Inc.,1
+3,Sectigo Limited,1
+4,GlobalSign CA,1
+5,Entrust Datacard,1
+6,GoDaddy Certificate CA,1
+7,Adobe Trusted CA,1
+8,DocuSign Seal CA,1
+9,Notarize Trusted Authority,1
+10,QuoVadis Trustlink,1
+11,Trustwave Holdings,1
+12,Verizon Enterprise CA,1
+13,Amazon Trust Services,1
+14,Google Trust Services,1
+15,Wells Fargo Security CA,1
+16,Bank of America Digital CA,1
+17,US Government Root CA,1
+18,Federal Bridge CA,1
+19,BlueNotary Auth,1
+20,Proof Certified CA,1

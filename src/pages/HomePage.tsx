@@ -1,10 +1,8 @@
-import React from 'react';
-import { Header } from '../components/layout/Header';
-import { Footer } from '../components/layout/Footer';
-import { ArrowRight, Shield, FileText, Globe, Medal, Users, Heart } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-
+import { Header } from "../components/layout/Header";
+import { Footer } from "../components/layout/Footer";
+import { ArrowRight, Shield, FileText, Globe } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 export const HomePage = () => {
   return (
@@ -30,7 +28,9 @@ export const HomePage = () => {
             </h1>
 
             <p className="text-base sm:text-lg text-white/80 font-medium max-w-xl leading-relaxed animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300">
-              Giải pháp công chứng số hoá hàng đầu tại Hoa Kỳ. Chúng tôi kết hợp công nghệ hiện đại với sự tận tâm để bảo vệ giá trị pháp lý cho mọi giao dịch.
+              Giải pháp công chứng số hoá hàng đầu tại Hoa Kỳ. Chúng tôi kết hợp
+              công nghệ hiện đại với sự tận tâm để bảo vệ giá trị pháp lý cho
+              mọi giao dịch.
             </p>
 
             <div className="pt-8 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-500">
@@ -48,12 +48,28 @@ export const HomePage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
           <div className="grid grid-cols-2 gap-6 relative">
             <div className="space-y-6 pt-16">
-              <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&q=80&w=800" alt="Notary 1" className="w-full aspect-[4/5] object-cover rounded-3xl shadow-2xl hover:scale-105 transition-transform duration-500" />
-              <img src="https://images.unsplash.com/photo-1521791136064-7986c295944b?auto=format&fit=crop&q=80&w=800" alt="Notary 2" className="w-full aspect-square object-cover rounded-3xl shadow-xl hover:scale-105 transition-transform duration-500" />
+              <img
+                src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&q=80&w=800"
+                alt="Notary 1"
+                className="w-full aspect-[4/5] object-cover rounded-3xl shadow-2xl hover:scale-105 transition-transform duration-500"
+              />
+              <img
+                src="https://images.unsplash.com/photo-1521791136064-7986c295944b?auto=format&fit=crop&q=80&w=800"
+                alt="Notary 2"
+                className="w-full aspect-square object-cover rounded-3xl shadow-xl hover:scale-105 transition-transform duration-500"
+              />
             </div>
             <div className="space-y-6">
-              <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&q=80&w=800" alt="Notary 3" className="w-full aspect-square object-cover rounded-3xl shadow-xl hover:scale-105 transition-transform duration-500" />
-              <img src="https://images.unsplash.com/photo-1554469384-e58fac16e23a?auto=format&fit=crop&q=80&w=800" alt="Notary 4" className="w-full aspect-[4/5] object-cover rounded-3xl shadow-2xl hover:scale-105 transition-transform duration-500" />
+              <img
+                src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&q=80&w=800"
+                alt="Notary 3"
+                className="w-full aspect-square object-cover rounded-3xl shadow-xl hover:scale-105 transition-transform duration-500"
+              />
+              <img
+                src="https://images.unsplash.com/photo-1554469384-e58fac16e23a?auto=format&fit=crop&q=80&w=800"
+                alt="Notary 4"
+                className="w-full aspect-[4/5] object-cover rounded-3xl shadow-2xl hover:scale-105 transition-transform duration-500"
+              />
             </div>
             {/* Soft accent using standard Tailwind blur */}
             <div className="absolute inset-0 -z-10 m-auto w-3/4 h-3/4 bg-primary/5 rounded-full blur-3xl" />
@@ -62,13 +78,19 @@ export const HomePage = () => {
           <div className="space-y-12">
             <div className="space-y-6 text-left">
               <div className="inline-block py-2 px-4 bg-primary/10 rounded-full">
-                <span className="text-primary font-bold uppercase tracking-widest text-[10px]">Since 2011</span>
+                <span className="text-primary font-bold uppercase tracking-widest text-[10px]">
+                  Since 2011
+                </span>
               </div>
               <h2 className="text-5xl sm:text-7xl font-bold text-foreground uppercase tracking-tight">
-                Kiến tạo <span className="text-primary opacity-80">niềm tin</span> <br /> qua từng hồ sơ
+                Kiến tạo{" "}
+                <span className="text-primary opacity-80">niềm tin</span> <br />{" "}
+                qua từng hồ sơ
               </h2>
               <p className="text-muted-foreground font-medium text-base leading-relaxed max-w-lg">
-                Wolf Arch không chỉ là một văn phòng công chứng, mà là người bảo vệ pháp lý tận tâm. Mỗi quy trình được thiết kế nhằm mang lại sự nhẹ nhàng nhất.
+                Wolf Arch không chỉ là một văn phòng công chứng, mà là người bảo
+                vệ pháp lý tận tâm. Mỗi quy trình được thiết kế nhằm mang lại sự
+                nhẹ nhàng nhất.
               </p>
             </div>
 
@@ -79,7 +101,10 @@ export const HomePage = () => {
             </div>
 
             <div className="pt-4">
-              <Button variant="outline" className="h-14 px-10 border-primary text-primary hover:bg-primary hover:text-white rounded-full font-black uppercase tracking-widest text-xs group transition-all duration-300">
+              <Button
+                variant="outline"
+                className="h-14 px-10 border-primary text-primary hover:bg-primary hover:text-white rounded-full font-black uppercase tracking-widest text-xs group transition-all duration-300"
+              >
                 Tìm hiểu thêm
               </Button>
             </div>
@@ -91,7 +116,9 @@ export const HomePage = () => {
       <section className="py-24 lg:py-40 bg-secondary/30">
         <div className="container mx-auto px-6 sm:px-12 space-y-20">
           <div className="text-center space-y-4 max-w-2xl mx-auto">
-            <span className="text-primary font-bold uppercase tracking-[0.4em] text-[10px]">Ưu thế của chúng tôi</span>
+            <span className="text-primary font-bold uppercase tracking-[0.4em] text-[10px]">
+              Ưu thế của chúng tôi
+            </span>
             <h2 className="text-5xl sm:text-7xl font-bold text-foreground uppercase tracking-tight">
               Tại sao chọn <span className="text-primary">Wolf Arch</span>
             </h2>
@@ -122,23 +149,35 @@ export const HomePage = () => {
   );
 };
 
-const StatItem = ({ value, label }: { value: string, label: string }) => (
+const StatItem = ({ value, label }: { value: string; label: string }) => (
   <div className="space-y-1">
-    <div className="text-4xl font-black text-foreground tracking-tight">{value}</div>
+    <div className="text-4xl font-black text-foreground tracking-tight">
+      {value}
+    </div>
     <div className="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-60 leading-none">
       {label}
     </div>
   </div>
 );
 
-const ServiceCard = ({ icon, title, desc }: { icon: React.ReactNode, title: string, desc: string }) => (
+const ServiceCard = ({
+  icon,
+  title,
+  desc,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  desc: string;
+}) => (
   <Card className="bg-background/40 backdrop-blur-sm border-none shadow-sm hover:shadow-2xl transition-all duration-500 group rounded-[2.5rem]">
     <CardContent className="p-12 space-y-8 text-left">
       <div className="text-primary bg-primary/5 w-20 h-20 flex items-center justify-center rounded-3xl group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all duration-500">
         {icon}
       </div>
       <div className="space-y-4">
-        <h3 className="text-2xl font-bold uppercase tracking-tight text-foreground leading-tight">{title}</h3>
+        <h3 className="text-2xl font-bold uppercase tracking-tight text-foreground leading-tight">
+          {title}
+        </h3>
         <p className="text-muted-foreground font-medium text-sm leading-relaxed opacity-80">
           {desc}
         </p>

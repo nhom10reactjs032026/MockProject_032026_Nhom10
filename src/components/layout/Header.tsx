@@ -1,9 +1,20 @@
 import React from "react";
-import { Search, User, ChevronDown, Menu, LogOut, LayoutDashboard } from "lucide-react";
+import {
+  Search,
+  User,
+  ChevronDown,
+  Menu,
+  LogOut,
+  LayoutDashboard,
+} from "lucide-react";
+
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/store/useAuthStore";
+
+import type { User as AuthUser } from "@/store/useAuthStore";
+
 import {
   Sheet,
   SheetContent,
@@ -16,7 +27,10 @@ export const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, isAuthenticated, logout } = useAuthStore();
-  const isDashboard = location.pathname.startsWith("/notary-journal") || location.pathname.startsWith("/admin");
+
+  const isDashboard =
+    location.pathname.startsWith("/notary-journal") ||
+    location.pathname.startsWith("/admin");
 
   const handleLogout = () => {
     logout();
@@ -24,13 +38,17 @@ export const Header = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-[100] bg-background/95 backdrop-blur-xl border-b border-border/10 py-6 px-6 sm:px-12 flex items-center justify-between transition-all duration-500 group shadow-sm hover:shadow-xl">
+    <header className="fixed top-0 left-0 right-0 z-100 bg-background/95 backdrop-blur-xl border-b border-border/10 py-6 px-6 sm:px-12 flex items-center justify-between transition-all duration-500 group shadow-sm hover:shadow-xl">
       <div className="flex items-center">
         <Logo />
       </div>
 
       <nav className="hidden xl:flex items-center gap-10">
-        <NavItems isDashboard={isDashboard} currentPath={location.pathname} user={user} />
+        <NavItems
+          isDashboard={isDashboard}
+          currentPath={location.pathname}
+          user={user}
+        />
       </nav>
 
       <div className="flex items-center gap-4 sm:gap-8">
@@ -42,8 +60,12 @@ export const Header = () => {
           {isAuthenticated ? (
             <div className="flex items-center gap-4">
               <div className="flex flex-col items-end">
-                <span className="text-[10px] font-bold text-foreground leading-none">{user?.name}</span>
-                <span className="text-[9px] font-medium text-primary uppercase tracking-tighter leading-none mt-1">{user?.role}</span>
+                <span className="text-[10px] font-bold text-foreground leading-none">
+                  {user?.name}
+                </span>
+                <span className="text-[9px] font-medium text-primary uppercase tracking-tighter leading-none mt-1">
+                  {user?.role}
+                </span>
               </div>
               <button
                 onClick={handleLogout}
@@ -97,8 +119,12 @@ export const Header = () => {
                   <div className="flex items-center gap-4">
                     <User className="w-5 h-5 text-primary" />
                     <div>
-                      <p className="text-sm font-bold uppercase tracking-widest">{user?.name}</p>
-                      <p className="text-[10px] text-muted-foreground font-medium uppercase">{user?.role}</p>
+                      <p className="text-sm font-bold uppercase tracking-widest">
+                        {user?.name}
+                      </p>
+                      <p className="text-[10px] text-muted-foreground font-medium uppercase">
+                        {user?.role}
+                      </p>
                     </div>
                   </div>
                   <button
@@ -144,13 +170,15 @@ const NavItems = ({
 }: {
   isDashboard: boolean;
   currentPath: string;
-  user: any; // Type should be imported if possible, using any for quick fix
+
+  user: AuthUser | null;
 }) => {
   if (isDashboard) {
     return (
       <>
         <NavItem label="Trang chủ" href="/" active={currentPath === "/"} />
-        {user?.role === 'admin' && (
+
+        {user?.role === "admin" && (
           <>
             <NavItem
               label="Admin Dashboard"
@@ -181,14 +209,27 @@ const NavItems = ({
   return (
     <>
       <NavItem label="Trang chủ" active={currentPath === "/"} href="/" />
-      {user?.role === 'admin' && (
-        <NavItem label="Quản trị" href="/admin/dashboard" active={currentPath.startsWith("/admin")} />
+
+      {user?.role === "admin" && (
+        <NavItem
+          label="Quản trị"
+          href="/admin/dashboard"
+          active={currentPath.startsWith("/admin")}
+        />
       )}
-      {user?.role === 'notary' && (
-        <NavItem label="Bảng điều khiển" href="/notary/dashboard" active={currentPath.startsWith("/notary")} />
+      {user?.role === "notary" && (
+        <NavItem
+          label="Bảng điều khiển"
+          href="/notary/dashboard"
+          active={currentPath.startsWith("/notary")}
+        />
       )}
-      {user?.role === 'user' && (
-        <NavItem label="Lịch sử" href="/history" active={currentPath === "/history"} />
+      {user?.role === "user" && (
+        <NavItem
+          label="Lịch sử"
+          href="/history"
+          active={currentPath === "/history"}
+        />
       )}
       <NavItem label="Giới thiệu" active={currentPath === "/about"} />
       <NavItem label="Dịch vụ" active={currentPath === "/services"} />

@@ -1,0 +1,21 @@
+id,seal_id,certificate_id,reason,effective_date,performed_by,incident_id
+1,NULL,1,Potential Private Key Compromise,2024-03-01,1,1
+2,NULL,2,Administrative Expiration,2024-03-05,2,2
+3,3,NULL,Physical wear and tear - Unusable,2024-03-10,3,3
+4,4,NULL,Loss of physical control over seal,2024-02-10,4,4
+5,5,5,Theft of all notary credentials,2024-02-06,5,5
+6,6,6,Security breach at workplace,2024-02-18,6,6
+7,7,7,Cloud Storage Breach,2024-03-01 15:20,1,7
+8,8,8,Physical Seal Reported Lost,2024-03-08 11:00,1,8
+9,9,9,Password Leak Found,2024-03-12 18:00,1,9
+10,10,10,Engraving Error Correction,2024-03-15 14:45,1,10
+11,11,11,Remote Trojan Infection,2024-04-01 10:00,1,11
+12,12,12,Backup Media Loss,2024-04-08 16:30,1,12
+13,13,13,Internal Key Misuse,2024-04-12 11:50,1,13
+14,14,14,Theft of Physical Seal,2024-04-19 09:00,1,14
+15,15,15,Critical Software Vulnerability,2024-04-20 10:30,1,15
+16,16,16,Accidental Key Deletion,2024-05-01 15:00,1,16
+17,17,17,MFA Credentials Compromised,2024-05-08 17:15,1,17
+18,18,18,Physical Destruction by Fire,2024-05-12 10:00,1,18
+19,19,19,Enclave Corruption - System Error,2024-05-18 14:20,1,19
+20,20,20,Suspicious Insider Activity,2024-05-23 09:00,1,20
