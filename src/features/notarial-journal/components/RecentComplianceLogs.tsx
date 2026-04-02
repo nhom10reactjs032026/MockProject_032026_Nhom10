@@ -225,7 +225,7 @@ export const RecentComplianceLogs = ({
               <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
                 DATE RANGE
               </label>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                 <input
                   type="date"
                   value={localStartDate}
@@ -235,7 +235,7 @@ export const RecentComplianceLogs = ({
                   }}
                   className="bg-white border border-[#ebebeb] text-sm font-semibold rounded-md px-3 py-2 outline-none focus:ring-1 focus:ring-[#c4a484] text-foreground h-10 w-full"
                 />
-                <span className="text-muted-foreground">-</span>
+                <span className="text-muted-foreground hidden sm:inline">-</span>
                 <input
                   type="date"
                   value={localEndDate}

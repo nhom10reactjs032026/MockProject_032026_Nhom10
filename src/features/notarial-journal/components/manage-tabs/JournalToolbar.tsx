@@ -78,7 +78,7 @@ export const JournalToolbar = ({
         <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
           DATE RANGE
         </label>
-        <div className="flex items-center gap-2 w-full">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 w-full">
           <input
             type="date"
             value={startDate}
@@ -88,7 +88,7 @@ export const JournalToolbar = ({
             }}
             className="bg-[#f8f8f8] border border-[#ebebeb] text-sm font-semibold rounded-md px-2 py-2 outline-none focus:ring-1 focus:ring-[#c4a484] text-foreground h-10 w-full flex-1"
           />
-          <span className="text-muted-foreground hidden sm:inline-block">-</span>
+          <span className="text-muted-foreground hidden sm:inline">-</span>
           <input
             type="date"
             value={endDate}

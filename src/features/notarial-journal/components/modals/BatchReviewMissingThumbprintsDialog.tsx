@@ -123,25 +123,25 @@ function BatchReviewMissingThumbprintsDialogBase(props: {
         )}
       >
         {/* Header with progress indicator (Req 4) */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#ebebeb] bg-white">
-          <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between px-4 sm:px-6 py-4 border-b border-[#ebebeb] bg-white gap-4 sm:gap-0">
+          <div className="flex items-center gap-2 sm:gap-3">
             <DialogClose asChild>
               <button
-                className="w-9 h-9 flex items-center justify-center hover:bg-[#f8f8f8] transition-colors"
+                className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center hover:bg-[#f8f8f8] transition-colors shrink-0"
                 aria-label="Back"
               >
-                <ArrowLeft className="w-5 h-5 text-foreground" />
+                <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 text-foreground" />
               </button>
             </DialogClose>
-            <DialogTitle className="text-[24px] font-bold text-foreground">
+            <DialogTitle className="text-lg sm:text-[24px] font-bold text-foreground leading-tight">
               Batch Review: Missing Thumbprints
             </DialogTitle>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 pl-10 sm:pl-0">
             {/* Req 4: Progress bar */}
             {rows.length > 0 && (
-              <div className="flex items-center gap-2">
-                <div className="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <div className="flex-1 sm:w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
                   <div
                     className="h-full bg-green-500 rounded-full transition-all duration-300"
                     style={{
@@ -149,7 +149,7 @@ function BatchReviewMissingThumbprintsDialogBase(props: {
                     }}
                   />
                 </div>
-                <span className="text-sm font-semibold text-muted-foreground whitespace-nowrap">
+                <span className="text-xs sm:text-sm font-semibold text-muted-foreground whitespace-nowrap">
                   {reviewedCount}/{rows.length} Reviewed
                 </span>
               </div>
@@ -157,8 +157,8 @@ function BatchReviewMissingThumbprintsDialogBase(props: {
           </div>
         </div>
 
-        <div className="px-6 py-4 bg-sky-50 border-b border-sky-200">
-          <div className="text-sm text-foreground">
+        <div className="px-4 sm:px-6 py-3 sm:py-4 bg-sky-50 border-b border-sky-200">
+          <div className="text-xs sm:text-sm text-foreground">
             Please review <span className="font-semibold">State</span> and{" "}
             <span className="font-semibold">Act Type</span> to determine if
             thumbprints are legally required. You can Require or Waive this
@@ -166,7 +166,7 @@ function BatchReviewMissingThumbprintsDialogBase(props: {
           </div>
         </div>
 
-        <div className="px-6 py-4 overflow-auto max-h-[70vh] bg-white">
+        <div className="px-0 sm:px-6 py-4 overflow-auto max-h-[60vh] sm:max-h-[70vh] bg-white">
           {/* Req 9: Empty state when no thumbprint issues remain */}
           {(noFlaggedEntries || allReviewed) && !isFetching ? (
             <div className="flex flex-col items-center justify-center py-16 text-center gap-4">
@@ -185,10 +185,10 @@ function BatchReviewMissingThumbprintsDialogBase(props: {
               </p>
             </div>
           ) : (
-            <Table className="min-w-[1100px]">
+            <Table className="min-w-[1100px] w-full">
               <TableHeader className="bg-[#f8f8f8]">
                 <TableRow className="border-b border-[#ebebeb]">
-                  <TableHead className="w-[44px] px-4">
+                  <TableHead className="w-[48px] px-4">
                     <input type="checkbox" aria-label="Select all" />
                   </TableHead>
                   <TableHead className="font-bold text-[12px] uppercase tracking-widest text-muted-foreground">
@@ -335,14 +335,14 @@ function BatchReviewMissingThumbprintsDialogBase(props: {
           )}
         </div>
 
-        <div className="flex items-center justify-between px-6 py-3 border-t border-[#ebebeb] bg-white">
+        <div className="flex flex-col sm:flex-row items-center justify-between px-4 sm:px-6 py-3 border-t border-[#ebebeb] bg-white gap-4 sm:gap-0">
           {/* Req 4: Summary in footer */}
-          <span className="text-sm text-muted-foreground font-medium">
+          <span className="text-xs sm:text-sm text-muted-foreground font-medium order-2 sm:order-1">
             {rows.length === 0
               ? "No flagged entries"
               : `${rows.length - reviewedCount} remaining · ${reviewedCount} reviewed`}
           </span>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 order-1 sm:order-2">
             <button
               className="w-8 h-8 flex items-center justify-center text-muted-foreground hover:bg-[#f8f8f8] transition-colors"
               aria-label="Previous page"
