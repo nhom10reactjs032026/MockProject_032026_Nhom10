@@ -1,4 +1,3 @@
-import React from 'react';
 import { Search, Filter, Download, History, ArrowRight } from 'lucide-react';
 import { MOCK_LOGS } from '../api/traceability.mock';
 
@@ -73,8 +72,8 @@ export default function TraceabilityPage() {
                                 </td>
                                 <td className="p-5 text-center">
                                     <span className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-tight ${log.status === 'Success' ? 'bg-green-100 text-green-600' :
-                                            log.status === 'Warning' ? 'bg-yellow-100 text-yellow-600' :
-                                                log.status === 'In Progress' ? 'bg-blue-100 text-blue-600' : 'bg-red-100 text-red-600'
+                                        log.status === 'Warning' ? 'bg-yellow-100 text-yellow-600' :
+                                            log.status === 'In Progress' ? 'bg-blue-100 text-blue-600' : 'bg-red-100 text-red-600'
                                         }`}>
                                         {log.status}
                                     </span>

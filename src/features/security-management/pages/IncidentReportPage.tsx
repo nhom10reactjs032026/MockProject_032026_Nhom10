@@ -1,4 +1,3 @@
-// src/features/security-management/pages/IncidentReportPage.tsx
 export const IncidentReportPage = () => {
     return (
         <div className="bg-white p-10 rounded-[32px] border border-blue-50 shadow-sm max-w-4xl">

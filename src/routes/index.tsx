@@ -38,7 +38,7 @@ import {
   CustomerDetailPage,
 } from "../features/crm-management";
 
-// --- IMPORT MODULE SEAL CỦA ĐAN ---
+// --- IMPORT MODULE SEAL ---
 import { SealModuleLayout } from "@/features/security-management/pages/SealModuleLayout";
 import SealDashboardPage from "@/features/security-management/pages/SealDashboardPage";
 import SealDetailPage from "@/features/security-management/pages/SealDetailPage";

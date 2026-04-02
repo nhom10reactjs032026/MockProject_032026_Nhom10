@@ -1,4 +1,3 @@
-// src/features/seal-management/types/index.ts
 export interface Seal {
     id: string;
     name: string;

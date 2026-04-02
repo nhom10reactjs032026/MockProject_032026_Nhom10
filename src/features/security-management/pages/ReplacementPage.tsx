@@ -13,10 +13,7 @@ export const ReplacementPage = () => {
 
     return (
         <div className="animate-in fade-in duration-500">
-            {/* Khung trắng bo góc cực lớn giống ảnh mẫu */}
             <div className="bg-white p-10 rounded-[40px] border border-blue-50 shadow-sm flex flex-col items-center min-h-[600px]">
-
-                {/* Tiêu đề bảng */}
                 <h3 className="text-sm font-black text-slate-400 uppercase tracking-[0.2em] mb-10">
                     Linkage Verification Data
                 </h3>

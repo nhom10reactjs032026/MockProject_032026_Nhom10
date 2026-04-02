@@ -1,4 +1,3 @@
-// src/features/security-management/components/ViolationBarChart.tsx
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const data = [
