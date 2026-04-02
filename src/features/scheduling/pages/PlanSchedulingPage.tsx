@@ -1,5 +1,4 @@
-// src/features/scheduling/pages/PlanSchedulingPage.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Briefcase,
   FileText,
@@ -14,6 +13,9 @@ import {
 import { Sidebar } from "../../../components/layout/Sidebar";
 import type { SidebarNavItem } from "../../../components/layout/Sidebar";
 import { TopBar } from "../../../components/layout/TopBar";
+
+import { useUIStore } from "../store/useUIStore";
+import { useCreateJob } from "../hooks/useJobs";
 
 import { CreateJob } from "./CreateJob";
 import { JobList } from "./JobList";
@@ -36,13 +38,35 @@ type Tab = "create" | "list" | "calendar" | "dispatch" | "detail" | "timeline";
 
 export const PlanSchedulingPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>("create");
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  
+  const { 
+    sidebarCollapsed, 
+    mobileSidebarOpen, 
+    setMobileSidebarOpen, 
+    toggleSidebar 
+  } = useUIStore();
+  
+  const createJobMutation = useCreateJob();
+
+  const handleCreateJob = (formData: any) => {
+    createJobMutation.mutate(formData, {
+      onSuccess: () => {
+        // Chuyển sang tab list sau khi tạo thành công
+        setActiveTab("list");
+      },
+    });
+  };
 
   const renderContent = () => {
     switch (activeTab) {
       case "create":
-        return <CreateJob onCancel={() => setActiveTab("list")} />;
+        return (
+          <CreateJob 
+            onSubmit={handleCreateJob} 
+            onCancel={() => setActiveTab("list")}
+          />
+        );
+        return <JobList />;
       case "list":
         return <JobList />;
       case "calendar":
@@ -50,7 +74,7 @@ export const PlanSchedulingPage: React.FC = () => {
       case "dispatch":
         return <Dispatch />;
       case "detail":
-        return <JobDetail />;
+        return <JobDetail onBack={() => setActiveTab("list")} />;
       case "timeline":
         return (
           <div className="flex items-center justify-center h-full">
@@ -79,9 +103,8 @@ export const PlanSchedulingPage: React.FC = () => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0">
         
-        {/* ✅ FIX: TopBar full width, không bị lệch */}
         <TopBar 
-          onToggleSidebar={() => setMobileSidebarOpen(true)}
+          onToggleSidebar={toggleSidebar}
         />
 
         {/* Tabs Navigation (fix overflow mobile) */}

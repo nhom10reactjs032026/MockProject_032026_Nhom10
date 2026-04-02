@@ -14,29 +14,35 @@ const FieldLabel: React.FC<{ children: React.ReactNode }> = ({ children }) => (
 );
 
 export const JobInfoCard: React.FC<JobInfoCardProps> = ({ job, onNoteChange }) => {
+  const [note, setNote] = React.useState(job.note ?? "");
+
+  const handleNoteChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newNote = e.target.value;
+    setNote(newNote);
+    onNoteChange?.(newNote);
+  };
+
   return (
-    <div className="bg-white rounded-2xl border border-[#ebebeb] shadow-sm p-5 w-full lg:w-80">
+    <div className="bg-white rounded-2xl border border-[#ebebeb] shadow-sm p-5 w-full lg:w-100">
       <h2 className="text-lg font-bold text-gray-800 mb-4">Job Summary</h2>
 
-      {/* JOB ID */}
-      <div className="mb-4">
-        <FieldLabel>JOB ID</FieldLabel>
-        <span className="text-sm font-bold text-[#c4a484]">#{job.id}</span>
-      </div>
-
-      {/* SERVICE & CLIENT */}
       <div className="grid grid-cols-2 gap-4 mb-4">
+        <div >
+          <FieldLabel>JOB ID</FieldLabel>
+          <span className="text-sm font-bold text-[#c4a484]">#{job.id}</span>
+        </div>
+
         <div>
           <FieldLabel>SERVICE</FieldLabel>
           <span className="text-sm font-medium text-gray-700">{job.service}</span>
         </div>
-        <div>
-          <FieldLabel>CLIENT</FieldLabel>
-          <span className="text-sm font-bold text-gray-800">{job.client}</span>
-        </div>
       </div>
 
-      {/* LOCATION */}
+      <div className="mb-4">
+        <FieldLabel>CLIENT</FieldLabel>
+        <span className="text-sm font-bold text-gray-800">{job.client}</span>
+      </div>
+
       <div className="mb-4">
         <FieldLabel>LOCATION</FieldLabel>
         <div className="flex items-center gap-2 text-sm text-gray-600">
@@ -45,7 +51,6 @@ export const JobInfoCard: React.FC<JobInfoCardProps> = ({ job, onNoteChange }) =
         </div>
       </div>
 
-      {/* TIME & SIGNERS */}
       <div className="grid grid-cols-2 gap-4 mb-4">
         <div>
           <FieldLabel>TIME</FieldLabel>
@@ -63,7 +68,6 @@ export const JobInfoCard: React.FC<JobInfoCardProps> = ({ job, onNoteChange }) =
         </div>
       </div>
 
-      {/* TYPE */}
       <div className="mb-4">
         <FieldLabel>TYPE</FieldLabel>
         <span className="inline-block px-3 py-1 rounded-full bg-[#fdf6ef] text-[#c4a484] text-xs font-semibold border border-[#c4a484]/30">
@@ -71,15 +75,14 @@ export const JobInfoCard: React.FC<JobInfoCardProps> = ({ job, onNoteChange }) =
         </span>
       </div>
 
-      {/* NOTE */}
       <div>
         <FieldLabel>A NOTE</FieldLabel>
         <div className="relative">
           <FileText className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
           <textarea
             placeholder="Enter job instructions or special notes for the notary..."
-            defaultValue={job.note ?? ""}
-            onChange={(e) => onNoteChange?.(e.target.value)}
+            value={note}
+            onChange={handleNoteChange}
             rows={3}
             className="w-full pl-9 pr-3 py-2 rounded-xl border border-[#ebebeb] bg-[#f8f8f8] text-sm text-gray-600 placeholder-gray-300 resize-none focus:outline-none focus:ring-1 focus:ring-[#c4a484]/50 focus:border-[#c4a484]"
           />

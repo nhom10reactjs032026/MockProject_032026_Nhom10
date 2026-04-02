@@ -1,36 +1,95 @@
-// features/scheduling/pages/Dispatch.tsx
-import React, { useState } from "react";
-import { ArrowLeft, Info } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { ArrowLeft, Info, Loader2 } from "lucide-react";
 import { JobInfoCard } from "../components/dispatch/JobInfoCard";
 import { NotaryCard } from "../components/dispatch/NotaryCard";
 import { EmptyNotaryState } from "../components/dispatch/EmptyNotaryState";
-import { mockDispatchJob, mockSuitableNotaries } from "../data/mockData";
-import type { Notary } from "../types/scheduling.types";
+import { useAssignNotary } from "../hooks/useJobs";
+import { useNotaries } from "../hooks/useNotaries";
+import { useUIStore } from "../store/useUIStore";
+import { useJobStore } from "../store/useJobStore";
+import type { Notary, DispatchJob } from "../types/scheduling.types";
+import { mockDispatchJob } from "../data/mockData";
 
 export const Dispatch: React.FC = () => {
-  const [selectedNotaryId, setSelectedNotaryId] = useState<string>(
-    mockSuitableNotaries[0]?.id ?? ""
-  );
+  // Lấy selected job từ store
+  const { selectedJob } = useJobStore();
+  const { showToast } = useUIStore();
+  
+  // State cho selected notary
+  const [selectedNotaryId, setSelectedNotaryId] = useState<string>("");
   const [jobNote, setJobNote] = useState(mockDispatchJob.note ?? "");
   const [showBackConfirm, setShowBackConfirm] = useState(false);
-
-  const selectedNotary = mockSuitableNotaries.find(n => n.id === selectedNotaryId);
-
+  
+  // Fetch notaries từ API
+  const { data: notaries = [], isLoading: notariesLoading } = useNotaries({
+    serviceType: selectedJob?.serviceType,
+    state: selectedJob?.state,
+  });
+  
+  // Assign notary mutation
+  const assignNotaryMutation = useAssignNotary();
+  
+  // Set default selected notary khi data load xong
+  useEffect(() => {
+    if (notaries.length > 0 && !selectedNotaryId) {
+      setSelectedNotaryId(notaries[0]?.id ?? "");
+    }
+  }, [notaries, selectedNotaryId]);
+  
+  const selectedNotary = notaries.find(n => n.id === selectedNotaryId);
+  
+  // Handle assign notary
   const handleAssign = () => {
-    if (selectedNotary) {
-      alert(`✅ Job #${mockDispatchJob.id} assigned to ${selectedNotary.name}`);
+    if (selectedNotary && selectedJob) {
+      assignNotaryMutation.mutate(
+        { jobId: selectedJob.id, notaryId: selectedNotary.id },
+        {
+          onSuccess: () => {
+            setJobNote("");
+          }
+        }
+      );
     }
   };
-
+  
+  // Handle back navigation
   const handleBack = () => {
     if (jobNote !== mockDispatchJob.note) {
       setShowBackConfirm(true);
     } else {
-      // Navigate back
       console.log("Go back to job list");
     }
   };
-
+  
+  // Handle leave confirmation
+  const handleLeave = () => {
+    setShowBackConfirm(false);
+    console.log("Leave without saving");
+  };
+  
+  // Tạo currentJob với type DispatchJob từ selectedJob hoặc mock
+  const currentJob: DispatchJob = selectedJob 
+    ? {
+        id: selectedJob.id,
+        service: selectedJob.serviceType,
+        client: selectedJob.customerName,
+        location: selectedJob.state,
+        time: `${selectedJob.date} • ${selectedJob.timeStart}–${selectedJob.timeEnd}`,
+        signers: "2 persons", // Có thể lấy từ API sau
+        type: selectedJob.serviceType,
+        note: jobNote,
+      }
+    : mockDispatchJob;
+  
+  // Show loading state
+  if (notariesLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="w-8 h-8 animate-spin text-[#c4a484]" />
+      </div>
+    );
+  }
+  
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       {/* Header */}
@@ -43,13 +102,18 @@ export const Dispatch: React.FC = () => {
         </button>
         <div>
           <h1 className="text-xl font-bold text-gray-800">Dispatch Job</h1>
-          <p className="text-sm text-gray-400">Assign a notary to this job request</p>
+          <p className="text-sm text-gray-400">
+            Assign a notary to job #{currentJob.id}
+          </p>
         </div>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Left Panel - Job Info */}
-        <JobInfoCard job={mockDispatchJob} onNoteChange={setJobNote} />
+        <JobInfoCard 
+          job={currentJob} 
+          onNoteChange={setJobNote}
+        />
 
         {/* Right Panel - Notary List */}
         <div className="flex-1 bg-white rounded-2xl border border-[#ebebeb] shadow-sm overflow-hidden">
@@ -58,7 +122,7 @@ export const Dispatch: React.FC = () => {
               <div>
                 <h3 className="text-base font-bold text-gray-800">Suitable Notary List</h3>
                 <p className="text-xs text-gray-400 mt-1">
-                  {mockSuitableNotaries.length} matches found
+                  {notaries.length} matches found
                 </p>
               </div>
               <div className="flex items-center gap-2 text-xs text-gray-400">
@@ -69,18 +133,24 @@ export const Dispatch: React.FC = () => {
           </div>
 
           <div className="p-5 max-h-[500px] overflow-y-auto space-y-3">
-            {mockSuitableNotaries.length > 0 ? (
-              mockSuitableNotaries.map((notary) => (
+            {notaries.length > 0 ? (
+              notaries.map((notary) => (
                 <NotaryCard
                   key={notary.id}
                   notary={notary}
                   isSelected={selectedNotaryId === notary.id}
                   onSelect={() => setSelectedNotaryId(notary.id)}
-                  onViewProfile={() => alert(`Viewing profile: ${notary.name}`)}
+                  onViewProfile={() => {
+                    showToast(`Viewing profile: ${notary.name}`, "info");
+                  }}
                 />
               ))
             ) : (
-              <EmptyNotaryState />
+              <EmptyNotaryState 
+                onExpandSearch={() => {
+                  showToast("Expanding search radius...", "info");
+                }}
+              />
             )}
           </div>
 
@@ -98,10 +168,17 @@ export const Dispatch: React.FC = () => {
               </div>
               <button
                 onClick={handleAssign}
-                disabled={!selectedNotary}
-                className="px-6 py-2.5 rounded-xl bg-[#c4a484] hover:bg-[#b89474] disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-semibold transition-all shadow-sm"
+                disabled={!selectedNotary || assignNotaryMutation.isPending}
+                className="px-6 py-2.5 rounded-xl bg-[#c4a484] hover:bg-[#b89474] disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-semibold transition-all shadow-sm flex items-center gap-2"
               >
-                Assign to Job
+                {assignNotaryMutation.isPending ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Assigning...
+                  </>
+                ) : (
+                  "Assign to Job"
+                )}
               </button>
             </div>
           </div>
@@ -124,7 +201,7 @@ export const Dispatch: React.FC = () => {
                 Stay
               </button>
               <button
-                onClick={() => console.log("Leave without saving")}
+                onClick={handleLeave}
                 className="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
               >
                 Leave
