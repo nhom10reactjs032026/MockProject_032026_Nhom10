@@ -23,23 +23,24 @@ export const JobInfoCard: React.FC<JobInfoCardProps> = ({ job, onNoteChange }) =
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-[#ebebeb] shadow-sm p-5 w-full lg:w-80">
+    <div className="bg-white rounded-2xl border border-[#ebebeb] shadow-sm p-5 w-full lg:w-100">
       <h2 className="text-lg font-bold text-gray-800 mb-4">Job Summary</h2>
 
-      <div className="mb-4">
-        <FieldLabel>JOB ID</FieldLabel>
-        <span className="text-sm font-bold text-[#c4a484]">#{job.id}</span>
-      </div>
-
       <div className="grid grid-cols-2 gap-4 mb-4">
+        <div >
+          <FieldLabel>JOB ID</FieldLabel>
+          <span className="text-sm font-bold text-[#c4a484]">#{job.id}</span>
+        </div>
+
         <div>
           <FieldLabel>SERVICE</FieldLabel>
           <span className="text-sm font-medium text-gray-700">{job.service}</span>
         </div>
-        <div>
-          <FieldLabel>CLIENT</FieldLabel>
-          <span className="text-sm font-bold text-gray-800">{job.client}</span>
-        </div>
+      </div>
+
+      <div className="mb-4">
+        <FieldLabel>CLIENT</FieldLabel>
+        <span className="text-sm font-bold text-gray-800">{job.client}</span>
       </div>
 
       <div className="mb-4">

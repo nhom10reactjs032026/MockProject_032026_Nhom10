@@ -32,7 +32,7 @@ const STATS = [
 ];
 
 export const JobList: React.FC<JobListProps> = ({ onViewJob, onAssignJob }) => {
-  // ✅ Lấy state và actions từ Zustand store
+  // Lấy state và actions từ Zustand store
   const { 
     jobs, 
     filters, 
@@ -44,13 +44,13 @@ export const JobList: React.FC<JobListProps> = ({ onViewJob, onAssignJob }) => {
   
   const { showToast } = useUIStore();
   
-  // ✅ Gọi React Query hook để fetch data
+  // Gọi React Query hook để fetch data
   const { refetch, isFetching } = useJobs();
 
-  // ✅ Theo dõi loading state
+  // Theo dõi loading state
   const isPageLoading = isLoading || isFetching;
 
-  // ✅ Handle filter change
+  // Handle filter change
   const handleFilterChange = (filterName: string, value: string) => {
     const filterKey = filterName.toLowerCase();
     setFilters({ 
@@ -64,12 +64,12 @@ export const JobList: React.FC<JobListProps> = ({ onViewJob, onAssignJob }) => {
     showToast("Filters applied", "info");
   };
 
-  // ✅ Handle page change
+  // Handle page change
   const handlePageChange = (page: number) => {
     setFilters({ page });
   };
 
-  // ✅ Show loading state
+  // Show loading state
   if (isPageLoading && jobs.length === 0) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -78,7 +78,7 @@ export const JobList: React.FC<JobListProps> = ({ onViewJob, onAssignJob }) => {
     );
   }
 
-  // ✅ Show error state
+  // Show error state
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center h-64 gap-4">
@@ -93,7 +93,7 @@ export const JobList: React.FC<JobListProps> = ({ onViewJob, onAssignJob }) => {
     );
   }
 
-  // ✅ Calculate pagination
+  // Calculate pagination
   const totalPages = Math.ceil(total / filters.limit);
   const currentPage = filters.page || 1;
 

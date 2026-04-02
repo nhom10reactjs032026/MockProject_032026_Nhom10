@@ -18,7 +18,7 @@ export const JobFilter: React.FC<JobFilterProps> = ({
 }) => {
   return (
     <div className="bg-white border border-[#ebebeb] rounded-xl p-4 shadow-sm">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
         {filters.map((filter) => (
           <div key={filter.label} className="flex flex-col gap-1">
             <span className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider">

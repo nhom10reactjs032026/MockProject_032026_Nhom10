@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Building2, User, MapPin, Calendar, Clock, Loader2 } from "lucide-react";
+import { Building2, User, MapPin, Calendar, Clock, Loader2, Gift } from "lucide-react";
 import type { CreateJobForm, CustomerType, ServiceType } from "../types/scheduling.types";
 import { US_STATES } from "../data/mockData";
 import { StatusBadge } from "../components/createJob/StatusBadge";
@@ -8,6 +8,7 @@ import { useUIStore } from "../store/useUIStore";
 interface CreateJobProps {
   onSubmit?: (data: CreateJobForm) => void;
   onCancel?: () => void;
+  onSave?: () => void;
   isLoading?: boolean; 
 }
 
@@ -22,13 +23,30 @@ const defaultForm: CreateJobForm = {
   note: "",
 };
 
+const HOLIDAY_OPTIONS = [
+  "New Year's Day",
+  "Martin Luther King Jr. Day",
+  "Presidents' Day",
+  "Memorial Day",
+  "Juneteenth",
+  "Independence Day",
+  "Labor Day",
+  "Columbus Day",
+  "Veterans Day",
+  "Thanksgiving Day",
+  "Christmas Day",
+];
+
 export const CreateJob: React.FC<CreateJobProps> = ({ 
   onSubmit, 
   onCancel, 
+  onSave,
   isLoading = false  
 }) => {
   const [form, setForm] = useState<CreateJobForm>(defaultForm);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [selectedHoliday, setSelectedHoliday] = useState<string>("");
+  const [enableHoliday, setEnableHoliday] = useState(true);
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
@@ -212,6 +230,62 @@ export const CreateJob: React.FC<CreateJobProps> = ({
           />
         </div>
 
+        <div className="bg-white rounded-xl border border-[#ebebeb] p-6">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-5">
+            <div className="flex items-center gap-3">
+              <span className="w-7 h-7 rounded-full bg-[#c4a484] text-white text-sm font-bold flex items-center justify-center">
+                6
+              </span>
+              <h2 className="font-semibold text-gray-800">Holidays</h2>
+            </div>
+
+            {/* Toggle */}
+            <button
+              onClick={() => setEnableHoliday(!enableHoliday)}
+              className={`w-11 h-6 flex items-center rounded-full p-1 transition ${
+                enableHoliday ? "bg-blue-500" : "bg-gray-300"
+              }`}
+            >
+              <div
+                className={`bg-white w-4 h-4 rounded-full shadow-md transform transition ${
+                  enableHoliday ? "translate-x-5" : "translate-x-0"
+                }`}
+              />
+            </button>
+          </div>
+
+          {/* Content */}
+          {enableHoliday && (
+            <>
+              <div className="relative">
+                <select
+                  value={selectedHoliday}
+                  onChange={(e) => setSelectedHoliday(e.target.value)}
+                  disabled={isLoading}
+                  className="w-full px-4 py-3 rounded-lg border border-[#ebebeb] bg-[#f8f8f8] text-sm appearance-none focus:outline-none focus:ring-1 focus:ring-[#c4a484]/50 focus:border-[#c4a484]"
+                >
+                  <option value="">Choose Holiday</option>
+                  {HOLIDAY_OPTIONS.map((holiday) => (
+                    <option key={holiday} value={holiday}>
+                      {holiday}
+                    </option>
+                  ))}
+                </select>
+
+                <Gift className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#c4a484] pointer-events-none" />
+              </div>
+
+              {selectedHoliday && (
+                <p className="text-xs text-amber-600 mt-2 flex items-center gap-1">
+                  <Gift className="w-3 h-3" />
+                  Holiday surcharge may apply
+                </p>
+              )}
+            </>
+          )}
+        </div>
+
         <div className="flex gap-2">
           <button 
             onClick={handleSubmit} 
@@ -234,7 +308,16 @@ export const CreateJob: React.FC<CreateJobProps> = ({
           >
             Cancel
           </button>
+
+          <button 
+            onClick={onSave} 
+            disabled={isLoading}
+            className="flex-1 py-3 rounded-lg border border-[#ebebeb] text-gray-600 font-semibold hover:bg-gray-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Save
+          </button>
         </div>
+
       </div>
     </div>
   );
