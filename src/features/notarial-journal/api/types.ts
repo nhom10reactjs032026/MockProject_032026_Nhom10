@@ -6,14 +6,18 @@ export type JournalEntryStatus =
 
 export type NotarialJournalDashboardResponse = {
   totalJournalEntries: number;
+  totalJournalEntriesChange: string; // e.g. "+12%"
   countsByStatus: {
     draft: number;
     completed: number;
     actionRequired: number;
+    actionRequiredChange: string;
     locked: number;
   };
   totalFeesCollected: number;
+  totalFeesCollectedChange: string;
   activeNotaries: number;
+  activeNotariesChange: string;
 };
 
 export type JournalEntryListItem = {

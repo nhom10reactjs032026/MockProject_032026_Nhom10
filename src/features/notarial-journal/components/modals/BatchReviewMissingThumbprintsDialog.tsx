@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { ArrowLeft, ChevronLeft, ChevronRight, ShieldAlert, Inbox } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight, Inbox } from "lucide-react";
 import { toast } from "sonner";
 
 import {
@@ -25,6 +25,7 @@ import {
   useSetMissingThumbprintsDecision,
 } from "../../api";
 import { formatDate } from "../../utils/format";
+import { withAdminGuard } from "../../hocs/withAdminGuard";
 
 function formatActTypeLabel(value: string) {
   const normalized = (value ?? "").trim();
@@ -39,7 +40,7 @@ function formatEntryId(journalEntryId: string, stateCode: string | null) {
   return `JRN-${stateCode ?? "XX"}-${journalEntryId.padStart(5, "0")}`;
 }
 
-export function BatchReviewMissingThumbprintsDialog(props: {
+function BatchReviewMissingThumbprintsDialogBase(props: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
@@ -47,7 +48,7 @@ export function BatchReviewMissingThumbprintsDialog(props: {
 
   // ── Req 7: Authorization check ──────────────────────────────────────────────
   const { user } = useAuthStore();
-  const isAuthorized = user?.role === "admin";
+
 
   // ── Req 1: Only thumbprint-flagged entries ──────────────────────────────────
   const { data, isFetching } = useMissingThumbprintsBatch({
@@ -112,54 +113,6 @@ export function BatchReviewMissingThumbprintsDialog(props: {
     }
   }
 
-  // ── Req 7: Unauthorized access ─────────────────────────────────────────────
-  if (!isAuthorized) {
-    return (
-      <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent
-          showCloseButton={false}
-          className={cn(
-            "sm:max-w-6xl w-full max-w-[calc(100%-2rem)] rounded-xl p-0 gap-0 overflow-hidden",
-          )}
-        >
-          <div className="flex items-center justify-between px-6 py-4 border-b border-[#ebebeb] bg-white">
-            <div className="flex items-center gap-3">
-              <DialogClose asChild>
-                <button
-                  className="w-9 h-9 flex items-center justify-center hover:bg-[#f8f8f8] transition-colors"
-                  aria-label="Back"
-                >
-                  <ArrowLeft className="w-5 h-5 text-foreground" />
-                </button>
-              </DialogClose>
-              <DialogTitle className="text-[24px] font-bold text-foreground">
-                Access Denied
-              </DialogTitle>
-            </div>
-          </div>
-          <div className="flex flex-col items-center justify-center py-16 px-8 text-center gap-4">
-            <div className="p-4 bg-red-50 rounded-full">
-              <ShieldAlert className="w-10 h-10 text-red-500" />
-            </div>
-            <h3 className="text-lg font-bold text-foreground">
-              Unauthorized Access
-            </h3>
-            <p className="text-sm text-muted-foreground max-w-xs">
-              You do not have permission to review batch thumbprints. Only
-              administrators can access this feature.
-            </p>
-            <Button
-              variant="outline"
-              className="border-[#ebebeb] mt-2"
-              onClick={() => onOpenChange(false)}
-            >
-              Close
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-    );
-  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -414,3 +367,12 @@ export function BatchReviewMissingThumbprintsDialog(props: {
     </Dialog>
   );
 }
+
+export const BatchReviewMissingThumbprintsDialog = withAdminGuard(
+  BatchReviewMissingThumbprintsDialogBase,
+  {
+    type: "dialog",
+    message:
+      "You do not have permission to review batch thumbprints. Only administrators can access this feature.",
+  },
+);

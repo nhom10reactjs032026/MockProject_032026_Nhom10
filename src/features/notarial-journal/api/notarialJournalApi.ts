@@ -16,21 +16,24 @@ import type {
 } from "./types";
 
 export type ListJournalEntriesParams = {
+  id?: string;
   status?: JournalEntryStatus | "All";
   notaryId?: string;
   notaryQuery?: string;
   actType?: string | "All";
   stateCode?: string | "All";
+  startDate?: string;
+  endDate?: string;
   page?: number;
   pageSize?: number;
 };
 
 export const notarialJournalApi = {
-  async getDashboard(notaryId?: string) {
+  async getDashboard(params: ListJournalEntriesParams = {}) {
     const res =
       await notarialJournalApiClient.get<NotarialJournalDashboardResponse>(
         "/dashboard",
-        { params: { notaryId } },
+        { params },
       );
     return res.data;
   },

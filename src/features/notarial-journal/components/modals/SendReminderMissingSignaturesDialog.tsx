@@ -7,7 +7,6 @@ import {
   List,
   ListOrdered,
   AlignLeft,
-  ShieldAlert,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -20,7 +19,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { useAuthStore } from "@/store/useAuthStore";
+import { withAdminGuard } from "../../hocs/withAdminGuard";
 
 import {
   useMissingSignatureRecipients,
@@ -57,15 +56,12 @@ function buildDefaultBody(
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
-export function SendReminderMissingSignaturesDialog(props: {
+function SendReminderMissingSignaturesDialogBase(props: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
   const { open, onOpenChange } = props;
 
-  // ── Req 7: Authorization check ──────────────────────────────────────────────
-  const { user } = useAuthStore();
-  const isAuthorized = user?.role === "admin";
 
   const { data: recipients = [], isFetching } = useMissingSignatureRecipients({
     stateCode: "TX",
@@ -189,44 +185,6 @@ export function SendReminderMissingSignaturesDialog(props: {
         description: "Please try again later.",
       });
     }
-  }
-
-  // ── Req 7: Unauthorized access ─────────────────────────────────────────────
-  if (!isAuthorized) {
-    return (
-      <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent
-          className={cn(
-            "top-0 right-0 left-auto translate-x-0 translate-y-0 h-dvh w-full max-w-[560px] rounded-l-xl p-0 gap-0",
-          )}
-        >
-          <div className="p-6 border-b border-[#ebebeb]">
-            <DialogTitle className="text-[18px] font-bold text-foreground">
-              Access Denied
-            </DialogTitle>
-          </div>
-          <div className="flex-1 flex flex-col items-center justify-center p-8 text-center gap-4">
-            <div className="p-4 bg-red-50 rounded-full">
-              <ShieldAlert className="w-10 h-10 text-red-500" />
-            </div>
-            <h3 className="text-lg font-bold text-foreground">
-              Unauthorized Access
-            </h3>
-            <p className="text-sm text-muted-foreground max-w-xs">
-              You do not have permission to send reminder emails. Only
-              administrators can access this feature.
-            </p>
-            <Button
-              variant="outline"
-              className="border-[#ebebeb] mt-2"
-              onClick={() => onOpenChange(false)}
-            >
-              Close
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-    );
   }
 
   return (
@@ -424,3 +382,12 @@ export function SendReminderMissingSignaturesDialog(props: {
     </Dialog>
   );
 }
+
+export const SendReminderMissingSignaturesDialog = withAdminGuard(
+  SendReminderMissingSignaturesDialogBase,
+  {
+    type: "dialog",
+    message:
+      "You do not have permission to send reminder emails. Only administrators can access this feature.",
+  },
+);

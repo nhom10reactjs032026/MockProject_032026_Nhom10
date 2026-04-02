@@ -51,8 +51,10 @@ export const JournalManagerTab = () => {
       stateCode: mappedStateCode,
       notaryQuery:
         notaryQuery.trim().length > 0 ? notaryQuery.trim() : undefined,
+      startDate,
+      endDate,
     };
-  }, [status, actType, stateCode, notaryQuery, page]);
+  }, [status, actType, stateCode, notaryQuery, page, startDate, endDate]);
 
   const journalEntriesQuery = useJournalEntries(queryParams);
   const data = journalEntriesQuery.data;

@@ -9,8 +9,8 @@ import type {
 } from "./types";
 
 export const notarialJournalQueryKeys = {
-  dashboard: (notaryId?: string) =>
-    ["notarial-journal", "dashboard", { notaryId }] as const,
+  dashboard: (params: ListJournalEntriesParams = {}) =>
+    ["notarial-journal", "dashboard", params] as const,
   actTypes: () => ["notarial-journal", "act-types"] as const,
   states: () => ["notarial-journal", "states"] as const,
   journalEntries: (params: ListJournalEntriesParams) =>
@@ -41,10 +41,10 @@ export const notarialJournalQueryKeys = {
     ["notarial-journal", "compliance", "thumbprint-audit-logs"] as const,
 };
 
-export function useNotarialJournalDashboard(notaryId?: string) {
+export function useNotarialJournalDashboard(params: ListJournalEntriesParams = {}) {
   return useQuery({
-    queryKey: notarialJournalQueryKeys.dashboard(notaryId),
-    queryFn: () => notarialJournalApi.getDashboard(notaryId),
+    queryKey: notarialJournalQueryKeys.dashboard(params),
+    queryFn: () => notarialJournalApi.getDashboard(params),
   });
 }
 

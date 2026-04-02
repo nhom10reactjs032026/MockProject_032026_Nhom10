@@ -18,14 +18,9 @@ import { formatCurrency } from "../utils/format";
 import { LoadingState } from "../../../components/common/errors/LoadingState";
 import { ErrorState } from "../../../components/common/errors/ErrorState";
 import { ErrorBoundary } from "../../../components/common/errors/ErrorBoundary";
-import { Navigate } from "react-router-dom";
-import { useAuthStore } from "@/store/useAuthStore";
+import { withAdminGuard } from "../hocs/withAdminGuard";
 
-export const NotaryJournalDashboard = () => {
-  const { data, isLoading, isError, refetch } = useNotarialJournalDashboard();
-  const { data: states } = useStates();
-  const { user } = useAuthStore();
-
+const NotaryJournalDashboardBase = () => {
   const [stateCode, setStateCode] = useState("All States");
   const [officeId, setOfficeId] = useState("All Offices");
 
@@ -39,9 +34,14 @@ export const NotaryJournalDashboard = () => {
     return new Date().toISOString().split("T")[0];
   });
 
-  if (user?.role !== "admin") {
-    return <Navigate to="/notary-journal/manager" replace />;
-  }
+  const { data, isLoading, isError, refetch } = useNotarialJournalDashboard({
+    stateCode: stateCode === "All States" ? undefined : stateCode,
+    notaryId: officeId === "All Offices" ? undefined : officeId,
+    startDate,
+    endDate,
+  });
+
+  const { data: states } = useStates();
 
   if (isLoading) {
     return (
@@ -67,7 +67,7 @@ export const NotaryJournalDashboard = () => {
     {
       title: "Total Journal Entries",
       value: data ? data.totalJournalEntries.toLocaleString() : "-",
-      change: data ? "+Live" : "…",
+      change: data ? data.totalJournalEntriesChange : "…",
       trend: "neutral" as const,
       icon: BookOpen,
       iconColor: "text-[#c4a484]",
@@ -78,7 +78,7 @@ export const NotaryJournalDashboard = () => {
     {
       title: "Action Required",
       value: data ? data.countsByStatus.actionRequired.toLocaleString() : "-",
-      change: data ? "+Live" : "…",
+      change: data ? data.countsByStatus.actionRequiredChange : "…",
       trend: "neutral" as const,
       icon: AlertCircle,
       iconColor: "text-red-500",
@@ -89,7 +89,7 @@ export const NotaryJournalDashboard = () => {
     {
       title: "Active Notaries",
       value: data ? data.activeNotaries.toLocaleString() : "-",
-      change: data ? "+Live" : "…",
+      change: data ? data.activeNotariesChange : "…",
       trend: "neutral" as const,
       icon: Users,
       iconColor: "text-[#c4a484]",
@@ -100,12 +100,12 @@ export const NotaryJournalDashboard = () => {
     {
       title: "Total Fees Collected",
       value: data ? formatCurrency(data.totalFeesCollected) : "-",
-      change: data ? "Overall" : "…",
+      change: data ? data.totalFeesCollectedChange : "…",
       trend: "neutral" as const,
       icon: BadgeCheck,
       iconColor: "text-foreground",
       iconBg: "bg-secondary/50",
-      changeBg: "bg-transparent",
+      changeBg: "bg-secondary/10",
       changeText: "text-muted-foreground",
     },
   ];
@@ -212,7 +212,12 @@ export const NotaryJournalDashboard = () => {
 
             <ComplianceAlerts />
 
-            <RecentComplianceLogs />
+            <RecentComplianceLogs
+              stateCode={stateCode}
+              notaryId={officeId}
+              startDate={startDate}
+              endDate={endDate}
+            />
 
             <RegionalChartSummary />
           </div>
@@ -221,3 +226,8 @@ export const NotaryJournalDashboard = () => {
     </ErrorBoundary>
   );
 };
+
+export const NotaryJournalDashboard = withAdminGuard(
+  NotaryJournalDashboardBase,
+  { type: "redirect", to: "/notary-journal/manager" },
+);
