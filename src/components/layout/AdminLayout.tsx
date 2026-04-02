@@ -36,7 +36,7 @@ export const AdminLayout = () => {
     {
       icon: <ShieldCheck size={20} />,
       label: "Security",
-      path: "/admin/security",
+      path: "/admin/security/access-control",
     },
     {
       icon: <FileText size={20} />,

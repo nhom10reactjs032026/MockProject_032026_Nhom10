@@ -1,5 +1,4 @@
 import { NavLink, useNavigate, useParams } from "react-router-dom";
-import AppShell from "../../../layouts/AppShell";
 import Card from "../../../components/ui/Card";
 import Badge from "../../../components/ui/Badge";
 import Button from "../../../components/ui/Button";
@@ -13,14 +12,15 @@ export default function SealDetailElectricPage() {
   const seal = sealId ? getSealDetail(sealId) : undefined;
 
   return (
-    <AppShell>
+    <div className="animate-in fade-in duration-500 font-['Plus_Jakarta_Sans']">
+      <div className="mx-auto min-h-screen max-w-[1400px] bg-transparent px-4 py-8 sm:px-6 lg:px-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <div className="text-2xl font-bold">Seal / Digital Signature Detail</div>
           <div className="mt-1 text-sm text-slate-500">Electric seal detail page</div>
         </div>
 
-        <Button variant="secondary" onClick={() => navigate("/seals")}>
+        <Button variant="secondary" onClick={() => navigate("/admin/seals/registry")}>
           Back to Registry
         </Button>
       </div>
@@ -29,7 +29,7 @@ export default function SealDetailElectricPage() {
       <div className="mt-4">
         <div className="inline-flex gap-2 rounded-xl border bg-white p-2 shadow-sm">
           <NavLink
-            to={`/seals/e/${sealId}`}
+            to={`/admin/seals/e/${sealId}`}
             className={({ isActive }) =>
               `rounded-lg px-3 py-2 text-sm font-semibold ${
                 isActive ? "bg-blue-50 text-blue-700" : "text-slate-600 hover:bg-slate-50"
@@ -39,7 +39,7 @@ export default function SealDetailElectricPage() {
             Electric Seal
           </NavLink>
           <NavLink
-            to={`/seals/p/${sealId}`}
+            to={`/admin/seals/p/${sealId}`}
             className={({ isActive }) =>
               `rounded-lg px-3 py-2 text-sm font-semibold ${
                 isActive ? "bg-blue-50 text-blue-700" : "text-slate-600 hover:bg-slate-50"
@@ -58,7 +58,7 @@ export default function SealDetailElectricPage() {
             No seal data for ID: <span className="font-semibold">{sealId || "—"}</span>
           </div>
           <div className="mt-4">
-            <Button variant="primary" onClick={() => navigate("/seals")}>
+            <Button variant="primary" onClick={() => navigate("/admin/seals/registry")}>
               Go back
             </Button>
           </div>
@@ -184,6 +184,7 @@ export default function SealDetailElectricPage() {
           </Card>
         </div>
       )}
-    </AppShell>
+      </div>
+    </div>
   );
 }

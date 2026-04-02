@@ -10,6 +10,12 @@ import {
   Stamp,
   FileSignature,
   CalendarDays,
+  ShieldCheck,
+  History,
+  AlertTriangle,
+  Bell,
+  Key,
+  ClipboardList,
 } from "lucide-react";
 import type { SidebarNavItem } from "./Sidebar";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -38,6 +44,36 @@ export const DashboardLayout = () => {
             icon: Stamp,
             label: "Seal & Digital Signature",
             path: "/admin/seals",
+          },
+          {
+            icon: History,
+            label: "Usage / Traceability",
+            path: "/admin/traceability/usage",
+          },
+          {
+            icon: ShieldCheck,
+            label: "Access Control",
+            path: "/admin/security/access-control",
+          },
+          {
+            icon: AlertTriangle,
+            label: "Incidents",
+            path: "/admin/incidents",
+          },
+          {
+            icon: Bell,
+            label: "Regulatory Notifications",
+            path: "/admin/regulatory/notifications",
+          },
+          {
+            icon: ClipboardList,
+            label: "Audit & Compliance",
+            path: "/admin/compliance/audit",
+          },
+          {
+            icon: Key,
+            label: "Technical",
+            path: "/admin/technical/keys",
           },
         ];
       case "notary":

@@ -1,5 +1,4 @@
 import { useMemo, useState } from "react";
-import AppShell from "../../../layouts/AppShell";
 import Card from "../../../components/ui/Card";
 import Select from "../../../components/ui/Select";
 import DatePicker from "../../../components/ui/DatePicker";
@@ -105,11 +104,12 @@ export default function UsageHistoryPage() {
   }, [totalPages]);
 
   return (
-    <AppShell>
-      <h1 className="text-2xl font-bold">Seal &amp; Digital Signature Usage History</h1>
+    <div className="animate-in fade-in duration-500 font-['Plus_Jakarta_Sans']">
+      <div className="mx-auto min-h-screen max-w-[1400px] bg-transparent px-4 py-8 sm:px-6 lg:px-8">
+        <h1 className="text-2xl font-bold">Seal &amp; Digital Signature Usage History</h1>
 
       {/* Filters */}
-      <Card className="mt-4 p-4">
+        <Card className="mt-4 p-4">
         <div className="flex flex-wrap items-center gap-4">
           <div className="text-xs font-semibold text-slate-400">FILTERS:</div>
 
@@ -153,7 +153,7 @@ export default function UsageHistoryPage() {
       </Card>
 
       {/* Table */}
-      <Card className="mt-4">
+        <Card className="mt-4">
         <table className="w-full text-left text-sm">
           <thead className="bg-slate-50 text-xs font-semibold text-slate-500">
             <tr>
@@ -253,7 +253,8 @@ export default function UsageHistoryPage() {
             </button>
           </div>
         </div>
-      </Card>
-    </AppShell>
+        </Card>
+      </div>
+    </div>
   );
 }

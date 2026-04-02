@@ -3,9 +3,16 @@ import { StatusBadge } from '../components/DetailComponents';
 
 export const IncidentDetailPage = () => {
     return (
-        <div className="space-y-6 animate-in fade-in duration-500">
-            <div className="bg-white p-8 rounded-[32px] border border-blue-50 shadow-sm">
-                <h3 className="text-xl font-black mb-8">Incident Report Details</h3>
+        <div className="animate-in fade-in duration-500 font-['Plus_Jakarta_Sans']">
+            <div className="mx-auto min-h-screen max-w-[1400px] bg-transparent px-4 py-8 sm:px-6 lg:px-8">
+                <div className="mb-6">
+                    <h1 className="text-2xl font-bold text-slate-900">Incident Detail</h1>
+                    <p className="mt-1 text-sm text-slate-500">Investigation and replacement actions</p>
+                </div>
+
+                <div className="space-y-6">
+                    <div className="bg-white p-8 rounded-[32px] border border-blue-50 shadow-sm">
+                        <h3 className="text-xl font-black mb-8">Incident Report Details</h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                     {/* Cột 1: Basic Information */}
@@ -77,6 +84,8 @@ export const IncidentDetailPage = () => {
                 <div className="flex justify-end gap-4 mt-8">
                     <button className="px-8 py-3 bg-red-500 text-white rounded-xl font-black text-xs uppercase italic shadow-lg shadow-red-100">Revoke</button>
                     <button className="px-8 py-3 bg-blue-600 text-white rounded-xl font-black text-xs uppercase italic shadow-lg shadow-blue-100">Approve</button>
+                </div>
+                    </div>
                 </div>
             </div>
         </div>

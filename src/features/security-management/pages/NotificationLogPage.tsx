@@ -11,7 +11,14 @@ export const NotificationLogPage = () => {
     ];
 
     return (
-        <div className="bg-white rounded-[32px] border border-blue-50 shadow-sm overflow-hidden animate-in fade-in duration-700">
+        <div className="animate-in fade-in duration-500 font-['Plus_Jakarta_Sans']">
+            <div className="mx-auto min-h-screen max-w-[1400px] bg-transparent px-4 py-8 sm:px-6 lg:px-8">
+                <div className="mb-6">
+                    <h1 className="text-2xl font-bold text-slate-900">Regulatory Notifications</h1>
+                    <p className="mt-1 text-sm text-slate-500">Notification log and delivery status</p>
+                </div>
+
+                <div className="bg-white rounded-[32px] border border-blue-50 shadow-sm overflow-hidden animate-in fade-in duration-700">
             <div className="p-6 border-b border-slate-50 flex justify-between items-center">
                 <h3 className="text-xl font-black text-slate-800">Regulatory Notification Log</h3>
                 <span className="text-[10px] font-black bg-blue-50 text-blue-600 px-3 py-1 rounded-lg italic tracking-wider">LIVE FEED</span>
@@ -63,6 +70,8 @@ export const NotificationLogPage = () => {
                             {page}
                         </button>
                     ))}
+                </div>
+            </div>
                 </div>
             </div>
         </div>

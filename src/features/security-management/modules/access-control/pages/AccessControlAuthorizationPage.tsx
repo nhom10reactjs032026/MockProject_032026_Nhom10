@@ -1,5 +1,4 @@
 import { useMemo, useState } from "react";
-import AppShell from "../../../layouts/AppShell";
 import { Card } from "../../../../../components/ui/card";
 import { Button } from "../../../../../components/ui/button";
 import ConfirmDialog from "../../../components/ui/ConfirmDialog";
@@ -89,152 +88,158 @@ export default function AccessControlAuthorizationPage() {
   };
 
   return (
-    <AppShell>
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="text-3xl font-bold text-slate-900">
-          Access Control &amp; Authorization
+    <div className="animate-in fade-in duration-500 font-['Plus_Jakarta_Sans']">
+      <div className="mx-auto min-h-screen max-w-[1400px] bg-transparent px-4 py-8 sm:px-6 lg:px-8">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="text-3xl font-bold text-slate-900">
+            Access Control &amp; Authorization
+          </div>
+
+          <Button onClick={() => alert("Add New Rule (mock)")}>Add New Rule</Button>
         </div>
 
-        <Button onClick={() => alert("Add New Rule (mock)")}>Add New Rule</Button>
-      </div>
+        <ConfirmDialog
+          open={confirmOpen}
+          title={
+            selected?.status === "Locked"
+              ? `Unlock rule ${selected?.ruleId}?`
+              : `Emergency lock rule ${selected?.ruleId}?`
+          }
+          description={
+            selected?.status === "Locked"
+              ? "This will set the rule back to Active (mock action)."
+              : "This will immediately lock access for this rule (mock action)."
+          }
+          confirmText={selected?.status === "Locked" ? "Unlock" : "Emergency Lock"}
+          danger={selected?.status !== "Locked"}
+          onClose={() => setConfirmOpen(false)}
+          onConfirm={applyEmergencyLock}
+        />
 
-      <ConfirmDialog
-        open={confirmOpen}
-        title={
-          selected?.status === "Locked"
-            ? `Unlock rule ${selected?.ruleId}?`
-            : `Emergency lock rule ${selected?.ruleId}?`
-        }
-        description={
-          selected?.status === "Locked"
-            ? "This will set the rule back to Active (mock action)."
-            : "This will immediately lock access for this rule (mock action)."
-        }
-        confirmText={selected?.status === "Locked" ? "Unlock" : "Emergency Lock"}
-        danger={selected?.status !== "Locked"}
-        onClose={() => setConfirmOpen(false)}
-        onConfirm={applyEmergencyLock}
-      />
-
-      <div className="mt-4 flex items-center gap-3">
-        <div className="w-full max-w-sm">
-          <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search..." />
+        <div className="mt-4 flex items-center gap-3">
+          <div className="w-full max-w-sm">
+            <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search..." />
+          </div>
         </div>
-      </div>
 
-      <Card className="mt-4 overflow-hidden">
-        <table className="w-full text-left text-sm">
-          <thead className="bg-slate-50 text-xs font-semibold text-slate-500">
-            <tr>
-              <th className="px-5 py-3">#</th>
-              <th className="px-5 py-3">RULE ID</th>
-              <th className="px-5 py-3">USER</th>
-              <th className="px-5 py-3">SEAL/SIGNATURE TYPE</th>
-              <th className="px-5 py-3">REQUIRED CONDITIONS</th>
-              <th className="px-5 py-3">APPROVAL PROCESS</th>
-              <th className="px-5 py-3">STATUS</th>
-              <th className="px-5 py-3">ACTION</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {paged.map((r, idx) => (
-              <tr key={r.index} className={idx % 2 ? "bg-white" : "bg-slate-50/30"}>
-                <td className="px-5 py-4 font-semibold">{r.index}</td>
-                <td className="px-5 py-4 font-semibold text-blue-600">{r.ruleId}</td>
-                <td className="px-5 py-4 text-slate-700">{r.user}</td>
-                <td className="px-5 py-4">{r.sealType}</td>
-                <td className="px-5 py-4">{r.requiredConditions}</td>
-                <td className="px-5 py-4">{r.approvalProcess}</td>
-                <td className="px-5 py-4">
-                  <span
-                    className={[
-                      "rounded-full px-3 py-1 text-xs font-semibold",
-                      r.status === "Active"
-                        ? "bg-emerald-50 text-emerald-700"
-                        : "bg-slate-200 text-slate-700",
-                    ].join(" ")}
-                  >
-                    {r.status}
-                  </span>
-                </td>
-                <td className="px-5 py-4">
-                  <Button
-                    variant="destructive"
-                    className="h-8 px-3"
-                    onClick={() => openEmergencyLock(r)}
-                  >
-                    EMERGENCY LOCK
-                  </Button>
-                </td>
-              </tr>
-            ))}
-
-            {total === 0 && (
+        <Card className="mt-4 overflow-hidden">
+          <table className="w-full text-left text-sm">
+            <thead className="bg-slate-50 text-xs font-semibold text-slate-500">
               <tr>
-                <td className="px-5 py-10 text-center text-sm text-slate-500" colSpan={8}>
-                  No results
-                </td>
+                <th className="px-5 py-3">#</th>
+                <th className="px-5 py-3">RULE ID</th>
+                <th className="px-5 py-3">USER</th>
+                <th className="px-5 py-3">SEAL/SIGNATURE TYPE</th>
+                <th className="px-5 py-3">REQUIRED CONDITIONS</th>
+                <th className="px-5 py-3">APPROVAL PROCESS</th>
+                <th className="px-5 py-3">STATUS</th>
+                <th className="px-5 py-3">ACTION</th>
               </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
 
-        <div className="flex items-center justify-between px-5 py-3 text-xs text-slate-500">
-          <div>
-            Showing {showingFrom} to {showingTo} of {total} entries
-          </div>
+            <tbody>
+              {paged.map((r, idx) => (
+                <tr key={r.index} className={idx % 2 ? "bg-white" : "bg-slate-50/30"}>
+                  <td className="px-5 py-4 font-semibold">{r.index}</td>
+                  <td className="px-5 py-4 font-semibold text-blue-600">{r.ruleId}</td>
+                  <td className="px-5 py-4 text-slate-700">{r.user}</td>
+                  <td className="px-5 py-4">{r.sealType}</td>
+                  <td className="px-5 py-4">{r.requiredConditions}</td>
+                  <td className="px-5 py-4">{r.approvalProcess}</td>
+                  <td className="px-5 py-4">
+                    <span
+                      className={[
+                        "rounded-full px-3 py-1 text-xs font-semibold",
+                        r.status === "Active"
+                          ? "bg-emerald-50 text-emerald-700"
+                          : "bg-slate-200 text-slate-700",
+                      ].join(" ")}
+                    >
+                      {r.status}
+                    </span>
+                  </td>
+                  <td className="px-5 py-4">
+                    <Button
+                      variant="destructive"
+                      className="h-8 px-3"
+                      onClick={() => openEmergencyLock(r)}
+                    >
+                      EMERGENCY LOCK
+                    </Button>
+                  </td>
+                </tr>
+              ))}
 
-          <div className="flex items-center gap-2">
-            <button
-              className="rounded-md px-2 py-1 hover:bg-slate-100 disabled:opacity-50"
-              type="button"
-              disabled={safePage <= 1}
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-            >
-              ‹
-            </button>
+              {total === 0 && (
+                <tr>
+                  <td className="px-5 py-10 text-center text-sm text-slate-500" colSpan={8}>
+                    No results
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
 
-            {[1, 2, 3].filter((n) => n <= totalPages).map((n) => (
+          <div className="flex items-center justify-between px-5 py-3 text-xs text-slate-500">
+            <div>
+              Showing {showingFrom} to {showingTo} of {total} entries
+            </div>
+
+            <div className="flex items-center gap-2">
               <button
-                key={n}
-                className={[
-                  "rounded-md px-3 py-1",
-                  n === safePage ? "bg-blue-600 font-semibold text-white" : "hover:bg-slate-100",
-                ].join(" ")}
+                className="rounded-md px-2 py-1 hover:bg-slate-100 disabled:opacity-50"
                 type="button"
-                onClick={() => setPage(n)}
+                disabled={safePage <= 1}
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
               >
-                {n}
+                ‹
               </button>
-            ))}
 
-            {totalPages > 3 && <span>…</span>}
+              {[1, 2, 3].filter((n) => n <= totalPages).map((n) => (
+                <button
+                  key={n}
+                  className={[
+                    "rounded-md px-3 py-1",
+                    n === safePage
+                      ? "bg-blue-600 font-semibold text-white"
+                      : "hover:bg-slate-100",
+                  ].join(" ")}
+                  type="button"
+                  onClick={() => setPage(n)}
+                >
+                  {n}
+                </button>
+              ))}
 
-            {totalPages > 3 && (
+              {totalPages > 3 && <span>…</span>}
+
+              {totalPages > 3 && (
+                <button
+                  className={[
+                    "rounded-md px-3 py-1",
+                    totalPages === safePage
+                      ? "bg-blue-600 font-semibold text-white"
+                      : "hover:bg-slate-100",
+                  ].join(" ")}
+                  type="button"
+                  onClick={() => setPage(totalPages)}
+                >
+                  {totalPages}
+                </button>
+              )}
+
               <button
-                className={[
-                  "rounded-md px-3 py-1",
-                  totalPages === safePage ? "bg-blue-600 font-semibold text-white" : "hover:bg-slate-100",
-                ].join(" ")}
+                className="rounded-md px-2 py-1 hover:bg-slate-100 disabled:opacity-50"
                 type="button"
-                onClick={() => setPage(totalPages)}
+                disabled={safePage >= totalPages}
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               >
-                {totalPages}
+                ›
               </button>
-            )}
-
-            <button
-              className="rounded-md px-2 py-1 hover:bg-slate-100 disabled:opacity-50"
-              type="button"
-              disabled={safePage >= totalPages}
-              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-            >
-              ›
-            </button>
+            </div>
           </div>
-        </div>
-      </Card>
-    </AppShell>
+        </Card>
+      </div>
+    </div>
   );
 }

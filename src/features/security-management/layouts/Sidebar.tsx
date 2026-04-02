@@ -28,7 +28,7 @@ const Item = ({
 
 function getDetailTo() {
   const last = localStorage.getItem("lastSelectedSealId");
-  return last ? `/seals/e/${last}` : "/seals/e/987650";
+  return last ? `/admin/seals/e/${last}` : "/admin/seals/e/987650";
 }
 
 export default function Sidebar() {
@@ -59,7 +59,7 @@ export default function Sidebar() {
         <Item to="/overview" label="Overview" />
 
         {/* Registry: chỉ active đúng /seals */}
-        <Item to="/seals" label="Registry" end />
+        <Item to="/admin/seals" label="Registry" end />
 
         {/* Detail: tự động lấy ID gần nhất */}
         <Item to={detailTo} label="Detail" />

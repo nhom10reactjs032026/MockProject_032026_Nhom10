@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import AppShell from "../../../layouts/AppShell";
 import Card from "../../../components/ui/Card";
 import Badge from "../../../components/ui/Badge";
 import Select from "../../../components/ui/Select";
@@ -98,8 +97,11 @@ export default function SealRegistryPage() {
 
   const viewDetail = (r: SealRow) => {
     // quyết định route theo type
-    // Signature có thể coi như digital => dùng /seals/e/:id (hoặc bạn muốn route riêng thì nói mình)
-    const to = r.type === "Physical" ? `/seals/p/${r.id}` : `/seals/e/${r.id}`;
+    // Signature có thể coi như digital => dùng /admin/seals/e/:id (hoặc bạn muốn route riêng thì nói mình)
+    const to =
+      r.type === "Physical"
+        ? `/admin/seals/p/${r.id}`
+        : `/admin/seals/e/${r.id}`;
 
     // lưu last selected để Sidebar Detail đúng id
     localStorage.setItem("lastSelectedSealId", r.id);
@@ -138,8 +140,9 @@ export default function SealRegistryPage() {
     : "";
 
   return (
-    <AppShell>
-      <h1 className="text-2xl font-bold">Seal &amp; Digital Signature Registry</h1>
+    <div className="animate-in fade-in duration-500 font-['Plus_Jakarta_Sans']">
+      <div className="mx-auto min-h-screen max-w-[1400px] bg-transparent px-4 py-8 sm:px-6 lg:px-8">
+        <h1 className="text-2xl font-bold">Seal &amp; Digital Signature Registry</h1>
 
       <ConfirmDialog
         open={confirmOpen}
@@ -155,7 +158,7 @@ export default function SealRegistryPage() {
       />
 
       {/* Filters */}
-      <Card className="mt-4 p-4">
+        <Card className="mt-4 p-4">
         <div className="flex flex-wrap items-center gap-3">
           <div className="text-xs font-semibold text-slate-400">FILTERS:</div>
 
@@ -202,7 +205,7 @@ export default function SealRegistryPage() {
       </Card>
 
       {/* Table */}
-      <Card className="mt-4">
+        <Card className="mt-4">
         <table className="w-full text-left text-sm">
           <thead className="bg-slate-50 text-xs font-semibold text-slate-500">
             <tr>
@@ -223,7 +226,7 @@ export default function SealRegistryPage() {
                 <td className="px-5 py-4">
                   <Link
                     className="text-blue-600 hover:underline"
-                    to={`/seals/e/${r.id}`}
+                    to={`/admin/seals/e/${r.id}`}
                     onClick={() => {
                       localStorage.setItem("lastSelectedSealId", r.id);
                       window.dispatchEvent(new Event("lastSealChanged"));
@@ -318,7 +321,8 @@ export default function SealRegistryPage() {
             </button>
           </div>
         </div>
-      </Card>
-    </AppShell>
+        </Card>
+      </div>
+    </div>
   );
 }

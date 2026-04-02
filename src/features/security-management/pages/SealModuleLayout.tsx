@@ -3,9 +3,8 @@ import { NavLink, Outlet } from "react-router-dom";
 export const SealModuleLayout = () => {
     // Danh sách các tab ngang
     const tabs = [
-        { label: "Dashboard", path: "" }, // Đường dẫn mặc định (Overview)
-        { label: "Detail", path: "detail" },
-        { label: "Traceability", path: "traceability" },
+        { label: "Dashboard", path: "" }, // /admin/seals
+        { label: "Registry", path: "registry" },
     ];
 
     return (

@@ -26,7 +26,10 @@ export default function RowActions({
   const [kind, setKind] = useState<"replace" | "suspend">("replace");
 
   const viewDetail = () => {
-    const to = row.type === "Physical" ? `/seals/p/${row.id}` : `/seals/e/${row.id}`;
+    const to =
+      row.type === "Physical"
+        ? `/admin/seals/p/${row.id}`
+        : `/admin/seals/e/${row.id}`;
 
     localStorage.setItem("lastSelectedSealId", row.id);
     window.dispatchEvent(new Event("lastSealChanged"));

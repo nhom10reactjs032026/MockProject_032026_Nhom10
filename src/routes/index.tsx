@@ -1,5 +1,5 @@
 
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useParams } from "react-router-dom";
 
 import { Outlet, createBrowserRouter } from "react-router-dom";
 import { HomePage } from "../pages/HomePage";
@@ -45,6 +45,7 @@ import {
 import { SealModuleLayout } from "@/features/security-management/pages/SealModuleLayout";
 import SealDashboardPage from "@/features/security-management/pages/SealDashboardPage";
 import SealDetailPage from "@/features/security-management/pages/SealDetailPage";
+import { SecurityManagementLayout } from "@/features/security-management/pages/SecurityManagementLayout";
 import { TraceabilityLayout } from "@/features/security-management/pages/TraceabilityLayout";
 import { IncidentReportPage } from "@/features/security-management/pages/IncidentReportPage";
 import { IncidentDetailPage } from "@/features/security-management/pages/IncidentDetailPage";
@@ -62,10 +63,20 @@ import {
 } from "../features/security-management/modules/seals";
 import { UsageHistoryPage } from "../features/security-management/modules/usage-history";
 
+function LegacySealDetailRedirect({ kind }: { kind: "e" | "p" }) {
+  const { id } = useParams();
+  return (
+    <Navigate
+      to={id ? `/admin/seals/${kind}/${id}` : "/admin/seals"}
+      replace
+    />
+  );
+}
+
 export default function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/seals" replace />} />
+      <Route path="/" element={<Navigate to="/admin/seals" replace />} />
 
       {/* Public route */}
       <Route path="/account/login" element={<LoginPage />} />
@@ -73,13 +84,13 @@ export default function AppRoutes() {
       {/* Protected routes */}
       <Route element={<ProtectedRoute allowedRoles={["user", "admin", "notary"]} />}>
         <Route path="/security" element={<AccessControlAuthorizationPage />} />
-        <Route path="/seals" element={<SealRegistryPage />} />
-        <Route path="/seals/e/:id" element={<SealDetailElectricPage />} />
-        <Route path="/seals/p/:id" element={<SealDetailPhysicalPage />} />
+        <Route path="/seals" element={<Navigate to="/admin/seals" replace />} />
+        <Route path="/seals/e/:id" element={<LegacySealDetailRedirect kind="e" />} />
+        <Route path="/seals/p/:id" element={<LegacySealDetailRedirect kind="p" />} />
         <Route path="/usage" element={<UsageHistoryPage />} />
       </Route>
 
-      <Route path="*" element={<Navigate to="/seals" replace />} />
+      <Route path="*" element={<Navigate to="/admin/seals" replace />} />
     </Routes>
   );
 }
@@ -103,9 +114,9 @@ export const router = createBrowserRouter([
             children: [
               // SECURITY MANAGEMENT (module routes)
               { path: "security", element: <AccessControlAuthorizationPage /> },
-              { path: "seals", element: <SealRegistryPage /> },
-              { path: "seals/e/:id", element: <SealDetailElectricPage /> },
-              { path: "seals/p/:id", element: <SealDetailPhysicalPage /> },
+              { path: "seals", element: <Navigate to="/admin/seals" replace /> },
+              { path: "seals/e/:id", element: <LegacySealDetailRedirect kind="e" /> },
+              { path: "seals/p/:id", element: <LegacySealDetailRedirect kind="p" /> },
               { path: "usage", element: <UsageHistoryPage /> },
 
               {
@@ -192,41 +203,70 @@ export const router = createBrowserRouter([
                 element: <NotaryDetailsPage />,
               },
 
-              // MODULE SEAL & DIGITAL SIGNATURE
+              // SECURITY MANAGEMENT (3 modules) under shared horizontal tabs
               {
-                path: "admin/seals",
-                element: <SealModuleLayout />,
+                element: <SecurityManagementLayout />,
                 children: [
-                  { index: true, element: <SealDashboardPage /> },
                   {
-                    path: "registry",
-                    element: (
-                      <div className="p-20 font-bold">Registry Content</div>
-                    ),
-                  },
-                  { path: "detail", element: <SealDetailPage /> },
-                  {
-                    path: "traceability",
-                    element: <TraceabilityLayout />,
+                    path: "admin/seals",
+                    element: <SealModuleLayout />,
                     children: [
-                      { index: true, element: <IncidentReportPage /> },
-                      {
-                        path: "incident-detail",
-                        element: <IncidentDetailPage />,
-                      },
-                      {
-                        path: "seal-replacement-request",
-                        element: <SealReplacementPage />,
-                      },
-                      { path: "replacement", element: <ReplacementPage /> },
-                      {
-                        path: "notification-log",
-                        element: <NotificationLogPage />,
-                      },
-                      { path: "audit", element: <AuditCompliancePage /> },
+                      { index: true, element: <SealDashboardPage /> },
+                      { path: "registry", element: <SealRegistryPage /> },
+
+                      // SC_003.1 / SC_003.2
+                      { path: "e/:id", element: <SealDetailElectricPage /> },
+                      { path: "p/:id", element: <SealDetailPhysicalPage /> },
+
+                      // SC_007.x optional: replacement flow by seal
+                      { path: ":id/replacement", element: <SealReplacementPage /> },
                     ],
                   },
+
+                  // SC_006
+                  { path: "admin/security", element: <Navigate to="/admin/security/access-control" replace /> },
+                  { path: "admin/security/access-control", element: <AccessControlAuthorizationPage /> },
+
+                  // SC_005
+                  { path: "admin/usage", element: <Navigate to="/admin/traceability/usage" replace /> },
+                  { path: "admin/traceability", element: <Navigate to="/admin/traceability/usage" replace /> },
+                  { path: "admin/traceability/usage", element: <UsageHistoryPage /> },
                 ],
+              },
+
+              // SC_004
+              {
+                path: "admin/technical/keys",
+                element: <SealDetailPage />,
+              },
+
+              // SC_007.1 - SC_007.5
+              { path: "admin/incidents", element: <IncidentReportPage /> },
+              { path: "admin/incidents/:id", element: <IncidentDetailPage /> },
+              { path: "admin/incidents/:id/replacement", element: <SealReplacementPage /> },
+
+              // SC_007.6
+              { path: "admin/regulatory/notifications", element: <NotificationLogPage /> },
+              {
+                path: "admin/regulatory/notifications/:id",
+                element: (
+                  <div className="mx-auto min-h-screen max-w-[1400px] bg-transparent px-4 py-8 sm:px-6 lg:px-8">
+                    <div className="text-2xl font-bold">Regulatory Notification Detail</div>
+                    <div className="mt-2 text-sm text-slate-500">Placeholder page</div>
+                  </div>
+                ),
+              },
+
+              // SC_008
+              { path: "admin/compliance/audit", element: <AuditCompliancePage /> },
+              {
+                path: "admin/compliance/audit/:id",
+                element: (
+                  <div className="mx-auto min-h-screen max-w-[1400px] bg-transparent px-4 py-8 sm:px-6 lg:px-8">
+                    <div className="text-2xl font-bold">Audit Log Detail</div>
+                    <div className="mt-2 text-sm text-slate-500">Placeholder page</div>
+                  </div>
+                ),
               },
             ],
           },
