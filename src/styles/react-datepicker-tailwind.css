@@ -1,0 +1,89 @@
+/* Tailwind-ish theme for react-datepicker */
+
+.react-datepicker {
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji",
+    "Segoe UI Emoji";
+  border: 1px solid rgb(226 232 240); /* slate-200 */
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 14px 35px rgba(15, 23, 42, 0.15); /* slate-900 */
+}
+
+.react-datepicker__header {
+  background: rgb(248 250 252); /* slate-50 */
+  border-bottom: 1px solid rgb(226 232 240); /* slate-200 */
+  padding-top: 10px;
+}
+
+.react-datepicker__current-month,
+.react-datepicker-time__header,
+.react-datepicker-year-header {
+  font-weight: 700;
+  color: rgb(15 23 42); /* slate-900 */
+}
+
+.react-datepicker__day-name,
+.react-datepicker__day,
+.react-datepicker__time-name {
+  width: 2.25rem;
+  line-height: 2.25rem;
+  margin: 0.15rem;
+  border-radius: 0.75rem;
+  color: rgb(51 65 85); /* slate-700 */
+}
+
+.react-datepicker__day:hover {
+  background: rgb(241 245 249); /* slate-100 */
+}
+
+.react-datepicker__day--keyboard-selected {
+  background: rgb(226 232 240); /* slate-200 */
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--in-selecting-range,
+.react-datepicker__day--in-range {
+  background: rgb(37 99 235); /* blue-600 */
+  color: white;
+}
+
+.react-datepicker__day--in-selecting-range:not(.react-datepicker__day--selected),
+.react-datepicker__day--in-range:not(.react-datepicker__day--selected) {
+  background: rgb(219 234 254); /* blue-100 */
+  color: rgb(29 78 216); /* blue-700 */
+}
+
+.react-datepicker__day--today {
+  font-weight: 700;
+  outline: 2px solid rgb(191 219 254); /* blue-200 */
+  outline-offset: 1px;
+}
+
+.react-datepicker__navigation-icon::before {
+  border-color: rgb(100 116 139); /* slate-500 */
+}
+
+.react-datepicker__triangle {
+  display: none;
+}
+
+/* Popper container: make sure it's above Cards/sidebars */
+.react-datepicker-popper {
+  z-index: 9999 !important;
+}
+
+/* Clear (x) button */
+.react-datepicker__close-icon::after {
+  background-color: rgb(37 99 235); /* blue-600 */
+  color: white;
+  font-size: 14px;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+}
+
+/* Input wrapper (optional minor alignment) */
+.react-datepicker-wrapper,
+.react-datepicker__input-container {
+  width: 100%;
+}
