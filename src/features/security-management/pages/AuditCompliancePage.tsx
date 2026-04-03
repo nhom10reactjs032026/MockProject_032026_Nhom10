@@ -2,7 +2,14 @@ import { Download, Calendar, Search } from 'lucide-react';
 
 export const AuditCompliancePage = () => {
     return (
-        <div className="space-y-6">
+        <div className="animate-in fade-in duration-500 font-['Plus_Jakarta_Sans']">
+            <div className="mx-auto min-h-screen max-w-[1400px] bg-transparent px-4 py-8 sm:px-6 lg:px-8">
+                <div className="mb-6">
+                    <h1 className="text-2xl font-bold text-slate-900">Audit &amp; Compliance</h1>
+                    <p className="mt-1 text-sm text-slate-500">Audit trail and evidence reporting</p>
+                </div>
+
+                <div className="space-y-6">
             {/* Filters Section */}
             <div className="bg-white p-6 rounded-[28px] border border-blue-50 shadow-sm flex flex-wrap items-end gap-6">
                 <div className="space-y-2">
@@ -49,6 +56,8 @@ export const AuditCompliancePage = () => {
                         ))}
                     </tbody>
                 </table>
+            </div>
+                </div>
             </div>
         </div>
     );

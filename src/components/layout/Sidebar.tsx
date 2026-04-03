@@ -1,4 +1,3 @@
-import React from "react";
 import { NavLink } from "react-router-dom";
 import { BookOpen, type LucideIcon, X } from "lucide-react";
 

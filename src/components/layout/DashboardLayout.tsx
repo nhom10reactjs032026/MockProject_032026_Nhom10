@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Outlet, NavLink, useLocation } from "react-router-dom";
 import { Sidebar } from "./Sidebar";
 import { TopBar } from "./TopBar";
-import { Footer } from "./Footer";
+import Footer from "./Footer";
 import {
   LayoutDashboard,
   BookOpen,
@@ -10,6 +10,13 @@ import {
   Stamp,
   FileSignature,
   CalendarDays,
+  ShieldCheck,
+  History,
+  AlertTriangle,
+  Bell,
+  Key,
+  ClipboardList,
+  Contact,
 } from "lucide-react";
 import type { SidebarNavItem } from "./Sidebar";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -17,6 +24,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 export const DashboardLayout = () => {
   const location = useLocation();
   const { user } = useAuthStore();
+  const isJournal = location.pathname.startsWith("/notary-journal");
   // Mobile: sidebar slides in as overlay
   const [mobileOpen, setMobileOpen] = useState(false);
   // Desktop: sidebar collapses to icon-only
@@ -37,6 +45,41 @@ export const DashboardLayout = () => {
             icon: Stamp,
             label: "Seal & Digital Signature",
             path: "/admin/seals",
+          },
+          {
+            icon: History,
+            label: "Usage / Traceability",
+            path: "/admin/traceability/usage",
+          },
+          {
+            icon: ShieldCheck,
+            label: "Access Control",
+            path: "/admin/security/access-control",
+          },
+          {
+            icon: AlertTriangle,
+            label: "Incidents",
+            path: "/admin/incidents",
+          },
+          {
+            icon: Bell,
+            label: "Regulatory Notifications",
+            path: "/admin/regulatory/notifications",
+          },
+          {
+            icon: ClipboardList,
+            label: "Audit & Compliance",
+            path: "/admin/compliance/audit",
+          },
+          {
+            icon: Key,
+            label: "Technical",
+            path: "/admin/technical/keys",
+          },
+          {
+            icon: Contact,
+            label: "CRM",
+            path: "/crm",
           },
         ];
       case "notary":
@@ -82,7 +125,7 @@ export const DashboardLayout = () => {
         />
 
         {/* Sub-nav: Dashboard / Journal Manager */}
-        {location.pathname.startsWith("/notary-journal") && (
+        {isJournal && (
           <div className="bg-white border-b border-[#ebebeb] shrink-0">
             <div className="px-6 flex items-center gap-8">
               {user?.role === "admin" && (

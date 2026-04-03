@@ -1,5 +1,5 @@
-import React from "react";
-import { Users, Banknote, Briefcase } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Users, Banknote, Briefcase, ArrowLeft } from "lucide-react";
 import { CRMHeader } from "../components/CRMHeader";
 import { KPICard, PieChart } from "../components/KPICard";
 import { RevenueChart } from "../components/RevenueChart";
@@ -27,13 +27,22 @@ export const CrmDashboard: React.FC = () => {
       <div className="flex-1 overflow-y-auto">
         <div className="mx-auto max-w-[1200px] px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
           {!isLoading && <HolidayBanner data={holiday} />}
-          <div className="mb-6 lg:mb-8">
-            <h1 className="mb-1 text-2xl font-bold tracking-tight text-slate-900 lg:text-3xl">
-              Enterprise Overview
-            </h1>
-            <p className="text-sm font-medium text-slate-500">
-              Real-time performance metrics and client health status.
-            </p>
+          <div className="mb-6 lg:mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h1 className="mb-1 text-2xl font-bold tracking-tight text-slate-900 lg:text-3xl">
+                Enterprise Overview
+              </h1>
+              <p className="text-sm font-medium text-slate-500">
+                Real-time performance metrics and client health status.
+              </p>
+            </div>
+            <Link
+              to="/admin/notaries"
+              className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm w-fit"
+            >
+              <ArrowLeft size={16} />
+              Back to Notary Profile
+            </Link>
           </div>
 
           {isLoading ? (

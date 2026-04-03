@@ -1,0 +1,1 @@
+export { default as AccessControlPage } from "./pages/AccessControlPage";

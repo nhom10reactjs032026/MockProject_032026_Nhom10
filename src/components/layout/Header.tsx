@@ -1,11 +1,9 @@
-import React from "react";
 import {
   Search,
   User,
   ChevronDown,
   Menu,
   LogOut,
-  LayoutDashboard,
 } from "lucide-react";
 
 import { Link, useLocation, useNavigate } from "react-router-dom";
