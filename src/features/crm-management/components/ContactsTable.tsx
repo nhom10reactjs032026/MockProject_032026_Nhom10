@@ -24,6 +24,10 @@ interface ContactsTableProps {
   contacts: Contact[];
 }
 
+/**
+ * Extracts the first letters of the first and last name to create an avatar initial.
+ * E.g., "Sarah Jenkins" -> "SJ"
+ */
 const getInitials = (name: string) => {
   return name
     .split(" ")
@@ -33,6 +37,10 @@ const getInitials = (name: string) => {
     .slice(0, 2);
 };
 
+/**
+ * Deterministically assigns a background color for the fallback avatar
+ * based on the contact's index in the array to ensure visual variety.
+ */
 const getAvatarColor = (idx: number) => {
   const colors = [
     "bg-[#bfdbfe] text-[#1e40af]",
@@ -43,6 +51,9 @@ const getAvatarColor = (idx: number) => {
   return colors[idx % colors.length];
 };
 
+/**
+ * Component to display a tabular list of customer contacts.
+ */
 export const ContactsTable = ({ contacts }: ContactsTableProps) => {
   return (
     <Card className="border-slate-100 shadow-sm overflow-hidden">
@@ -61,9 +72,11 @@ export const ContactsTable = ({ contacts }: ContactsTableProps) => {
         </Button>
       </div>
 
+      {/* Main Table Content */}
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
+            {/* ... column headers ... */}
             <tr className="border-b border-slate-100 bg-slate-50/50">
               <th className="px-6 py-4 text-left text-[11px] font-bold text-slate-500 uppercase tracking-wider w-[5%]">
                 #
@@ -93,7 +106,9 @@ export const ContactsTable = ({ contacts }: ContactsTableProps) => {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
+            {/* Map through contact list and generate table rows */}
             {contacts.map((contact, idx) => {
+              // Extract first name for bolding, and the rest for the last name
               const [firstName, ...lastNameParts] = contact.name.split(" ");
               const lastName = lastNameParts.join(" ");
 
@@ -107,6 +122,8 @@ export const ContactsTable = ({ contacts }: ContactsTableProps) => {
                   </td>
                   <td className="px-6 py-5">
                     <div className="flex items-center gap-4">
+                      {/* Avatar Rendering Logic: Show image if exists, else show colored initials */}
+                      {/* Note: avatarUrl is hypothetical in the provided type, checking just in case */}
                       {contact.avatarUrl ? (
                         <img
                           src={contact.avatarUrl}
@@ -143,6 +160,7 @@ export const ContactsTable = ({ contacts }: ContactsTableProps) => {
                     {contact.phone}
                   </td>
 
+                  {/* Settings Checkboxes and Icons */}
                   <td className="px-2 py-5 text-center">
                     <input
                       type="checkbox"
@@ -188,12 +206,14 @@ export const ContactsTable = ({ contacts }: ContactsTableProps) => {
         </table>
       </div>
 
+      {/* Pagination Footer */}
       <div className="flex flex-col items-center justify-between gap-4 rounded-b-xl border-t border-slate-100 bg-white px-4 py-5 sm:flex-row sm:gap-0 sm:px-8">
         <p className="text-center text-sm font-medium text-slate-500 sm:text-left">
           Showing 1-10 of 422 customers
         </p>
 
         <div className="flex flex-wrap justify-center gap-1 sm:gap-2">
+          {/* ... pagination buttons ... */}
           <button className="flex h-8 w-8 items-center justify-center rounded text-slate-400 hover:bg-slate-100">
             <ChevronLeft className="h-5 w-5" />
           </button>

@@ -9,6 +9,10 @@ interface KPICardProps {
   chart?: React.ReactNode;
 }
 
+/**
+ * A highly reusable card component to display Key Performance Indicators.
+ * Supports rendering custom SVG charts or widgets in the right column.
+ */
 export const KPICard = ({
   title,
   value,
@@ -35,6 +39,8 @@ export const KPICard = ({
             <div className="text-3xl font-bold text-slate-900 mb-5">
               {value}
             </div>
+
+            {/* Render legend or sub-items if provided */}
             {subItems && (
               <div className="space-y-2.5">
                 {subItems.map((item, idx) => (
@@ -59,6 +65,10 @@ export const KPICard = ({
   );
 };
 
+/**
+ * A minimalist SVG Donut Chart component.
+ * Uses stroke-dasharray math to visually represent a percentage.
+ */
 export const PieChart = ({
   percentage,
   color,
@@ -70,8 +80,13 @@ export const PieChart = ({
 }) => {
   const radius = 32;
   const circumference = 2 * Math.PI * radius;
+  // Calculate stroke offset to represent percentage completion
   const offset = circumference - (percentage / 100) * circumference;
 
+  /**
+   * Helper function to determine exact X, Y coordinates for text labels
+   * positioning them dynamically around the donut ring.
+   */
   const getCoords = (startPercent: number, endPercent: number) => {
     const midPercent = (startPercent + endPercent) / 2;
     const angleInDegrees = (midPercent / 100) * 360 - 90;
@@ -108,6 +123,7 @@ export const PieChart = ({
           strokeDashoffset={offset}
         />
       </g>
+      {/* Primary Percentage Label */}
       <text
         x={p1.x}
         y={p1.y}
@@ -117,6 +133,7 @@ export const PieChart = ({
       >
         {percentage}%
       </text>
+      {/* Secondary (Remainder) Percentage Label */}
       <text
         x={p2.x}
         y={p2.y}

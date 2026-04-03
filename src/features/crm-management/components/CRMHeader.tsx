@@ -7,12 +7,17 @@ interface CRMHeaderProps {
   currentTab?: "dashboard" | "customers";
 }
 
+/**
+ * Top navigation header specific to the CRM module.
+ * Highlights the active tab based on the current route.
+ */
 export const CRMHeader: React.FC<CRMHeaderProps> = ({
   currentTab = "dashboard",
 }) => {
   return (
     <div className="border-b border-slate-200 bg-white">
       <div className="mx-auto flex max-w-[1400px] flex-col items-center justify-between gap-4 px-4 py-4 md:h-16 md:flex-row md:gap-0 md:px-6 md:py-0">
+        {/* Logo and Module Title */}
         <div className="flex w-full items-center justify-between md:w-1/4 md:justify-start md:gap-3">
           <div className="flex items-center gap-3">
             <div className="flex h-8 w-8 items-center justify-center rounded bg-[#1a1a1a]">
@@ -41,6 +46,7 @@ export const CRMHeader: React.FC<CRMHeaderProps> = ({
           </div>
         </div>
 
+        {/* Central Navigation Links */}
         <div className="flex w-full flex-1 items-center gap-8 overflow-x-auto md:justify-center">
           <Link
             to="/crm"
@@ -56,6 +62,7 @@ export const CRMHeader: React.FC<CRMHeaderProps> = ({
           </Link>
         </div>
 
+        {/* Action Buttons and User Settings */}
         <div className="flex w-full items-center justify-between md:w-1/3 md:justify-end md:gap-4">
           <div className="flex gap-2">
             <Button className="flex h-9 items-center gap-2 rounded-lg bg-[#c4a47c] px-3 font-semibold text-white hover:bg-[#b08d65] md:h-10 md:px-4 transition-colors">

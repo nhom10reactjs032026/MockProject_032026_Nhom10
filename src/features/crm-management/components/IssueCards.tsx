@@ -7,12 +7,17 @@ interface IssueCardsProps {
   contracts: ContractExpiring[];
 }
 
+/**
+ * Renders dual tables tracking urgent issues: Overdue Invoices and Expiring Contracts.
+ * Utilizes a grid layout to sit side-by-side on desktop.
+ */
 export const IssueCards: React.FC<IssueCardsProps> = ({
   invoices,
   contracts,
 }) => {
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+      {/* Panel 1: Critical Overdue Invoices */}
       <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
         <div className="flex items-center justify-between border-b border-slate-100 p-4 md:p-5">
           <div className="flex items-center gap-2">
@@ -54,6 +59,7 @@ export const IssueCards: React.FC<IssueCardsProps> = ({
         </div>
       </div>
 
+      {/* Panel 2: Contracts Nearing Expiration */}
       <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
         <div className="flex items-center justify-between border-b border-slate-100 p-4 md:p-5">
           <div className="flex items-center gap-2">

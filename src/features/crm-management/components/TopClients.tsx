@@ -6,6 +6,9 @@ interface TopClientsProps {
   clients: TopClientData[];
 }
 
+/**
+ * Utility function to dynamically map an icon string type to its respective Lucide React component.
+ */
 const renderIcon = (type: string) => {
   switch (type) {
     case "bank":
@@ -19,6 +22,9 @@ const renderIcon = (type: string) => {
   }
 };
 
+/**
+ * Widget component listing the top customers by contract value.
+ */
 export const TopClients = ({ clients }: TopClientsProps) => {
   return (
     <Card className="shadow-sm border-slate-200 h-full">
@@ -37,6 +43,7 @@ export const TopClients = ({ clients }: TopClientsProps) => {
               key={idx}
               className="flex items-center gap-4 group cursor-pointer"
             >
+              {/* Dynamic Icon Rendering */}
               <div className="w-10 h-10 bg-[#fbf9f6] text-[#1a1a1a] rounded-lg flex items-center justify-center transition-colors group-hover:bg-[#1a1a1a] group-hover:text-white">
                 {renderIcon(client.iconType)}
               </div>

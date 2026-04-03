@@ -13,7 +13,12 @@ import type {
   HolidayAnnouncement,
 } from "../types";
 
+/**
+ * Custom hook to manage data fetching and state for the CRM Dashboard.
+ * Handles parallel API requests, loading states, error handling, and derived metrics.
+ */
 export const useDashboardData = () => {
+  // State initialization for all dashboard widgets
   const [metrics, setMetrics] = useState<DashboardMetrics>();
   const [holiday, setHoliday] = useState<HolidayAnnouncement>();
   const [topClients, setTopClients] = useState<TopClientData[]>([]);
@@ -24,12 +29,15 @@ export const useDashboardData = () => {
     invoices: [],
     contracts: [],
   });
+  // UI feedback states
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadData = async () => {
       setIsLoading(true);
       try {
+        // Fetch all independent dashboard data in parallel to optimize loading time
         const [metricsData, clientsData, issuesData, holidayData] =
           await Promise.all([
             fetchDashboardMetrics(),
@@ -37,19 +45,23 @@ export const useDashboardData = () => {
             fetchIssueCardsData(),
             fetchHolidaySchedule(),
           ]);
+        // Update states with fetched data
         setMetrics(metricsData as DashboardMetrics);
         setTopClients(clientsData);
         setIssues(issuesData);
         setHoliday(holidayData);
       } catch (error) {
         console.error("Lỗi tải data Dashboard", error);
+        setError("Failed to load dashboard data. Please try again later.");
       } finally {
-        setIsLoading(false);
+        setIsLoading(false); // Ensure loading state is removed regardless of outcome
       }
     };
     loadData();
   }, []);
 
+  // --- Derived State Calculations ---
+  // Safely calculate percentages for the KPI Pie Charts
   const customerPct = metrics?.totalCustomers
     ? Math.round((metrics.customers.b2b / metrics.totalCustomers) * 100)
     : 0;
@@ -63,6 +75,7 @@ export const useDashboardData = () => {
       ? Math.round((metrics.jobs.b2b / metrics.jobsByCustomers) * 100)
       : 0;
 
+  // Utility function to format raw numbers into currency strings (e.g., $1.2K)
   const formatCurrency = (val: number = 0) =>
     `$${(val / 1000).toLocaleString()}K`;
 
@@ -72,6 +85,7 @@ export const useDashboardData = () => {
     topClients,
     issues,
     isLoading,
+    error,
     customerPct,
     revenuePct,
     jobsPct,

@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import { fetchCustomers } from "../api/crm.api";
 import type { Customer } from "../types";
 
+/**
+ * Custom hook to manage the customer list data fetching.
+ */
 export const useCustomers = () => {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [isLoading, setIsLoading] = useState(true);

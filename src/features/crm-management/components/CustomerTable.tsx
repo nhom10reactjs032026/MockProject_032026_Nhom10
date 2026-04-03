@@ -5,6 +5,10 @@ interface CustomerTableProps {
   customers: Customer[];
 }
 
+/**
+ * Reusable table component for displaying customer records.
+ * Incorporates specific styles for VIP tags and status badges.
+ */
 export const CustomerTable = ({ customers }: CustomerTableProps) => {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-slate-100">
@@ -12,6 +16,7 @@ export const CustomerTable = ({ customers }: CustomerTableProps) => {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-slate-100">
+              {/* ... headers ... */}
               <th className="px-6 py-5 text-left text-[11px] font-bold text-slate-500 uppercase tracking-wider">
                 ID
               </th>
@@ -53,6 +58,7 @@ export const CustomerTable = ({ customers }: CustomerTableProps) => {
                     <p className="font-bold text-slate-900 text-sm mb-1">
                       {customer.name}
                     </p>
+                    {/* Render Tags if available, applying specific colors for 'VIP' */}
                     {customer.tags && customer.tags.length > 0 && (
                       <span
                         className={`text-[10px] px-2 py-0.5 rounded font-bold uppercase tracking-wide ${
@@ -110,11 +116,13 @@ export const CustomerTable = ({ customers }: CustomerTableProps) => {
         </table>
       </div>
 
+      {/* Pagination Footer */}
       <div className="px-8 py-5 flex justify-between items-center border-t border-slate-100 bg-white rounded-b-xl">
         <p className="text-sm font-medium text-slate-500">
           Showing 1-10 of 422 customers
         </p>
         <div className="flex gap-2">
+          {/* ... pagination buttons ... */}
           <button className="flex items-center justify-center w-8 h-8 rounded hover:bg-slate-100 text-slate-400">
             <ChevronLeft className="w-5 h-5" />
           </button>
