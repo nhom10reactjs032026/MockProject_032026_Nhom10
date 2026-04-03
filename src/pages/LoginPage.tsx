@@ -72,14 +72,14 @@ export const LoginPage = () => {
 
         <div className="relative z-20 text-center space-y-4 px-6 md:container mx-auto">
           <h1 className="text-4xl sm:text-5xl font-bold text-white uppercase tracking-tight">
-            Đăng nhập tài khoản
+            Login Account
           </h1>
           <nav className="flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-widest text-white">
             <Link to="/" className="hover:text-[#c4a484] transition-colors">
-              Trang chủ
+              Home
             </Link>
             <span className="opacity-60 text-sm">/</span>
-            <span className="opacity-80">Đăng nhập tài khoản</span>
+            <span className="opacity-80">Login Account</span>
           </nav>
         </div>
       </section>
@@ -90,7 +90,7 @@ export const LoginPage = () => {
           <CardContent className="p-0 space-y-8">
             <div className="text-center">
               <h2 className="text-2xl font-bold text-foreground mb-6">
-                Đăng nhập
+                Login
               </h2>
             </div>
 
@@ -108,7 +108,7 @@ export const LoginPage = () => {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Nhập Địa chỉ Email"
+                    placeholder="Enter Email Address"
                     className="h-12 border-[#ebebeb] bg-white focus-visible:ring-1 focus-visible:ring-[#c4a484] rounded-none transition-all text-sm"
                   />
                 </div>
@@ -118,7 +118,7 @@ export const LoginPage = () => {
                     htmlFor="password"
                     className="text-sm font-semibold text-foreground"
                   >
-                    Mật khẩu <span className="text-red-500">*</span>
+                    Password <span className="text-red-500">*</span>
                   </Label>
 
                   <Input
@@ -126,7 +126,7 @@ export const LoginPage = () => {
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Nhập Mật khẩu"
+                    placeholder="Enter Password"
                     className="h-12 border-[#ebebeb] bg-white focus-visible:ring-1 focus-visible:ring-[#c4a484] rounded-none transition-all text-sm"
                   />
                 </div>
@@ -143,33 +143,33 @@ export const LoginPage = () => {
                 type="submit"
                 className="w-full h-11 bg-[#c4a484] hover:bg-[#b08e6d] text-white font-bold uppercase tracking-[0.2em] text-xs rounded-none transition-all shadow-md"
               >
-                ĐĂNG NHẬP
+                LOGIN
               </Button>
             </form>
 
             <div className="flex justify-between items-center text-[12px] font-medium text-[#c4a484]">
               <a href="#" className="hover:opacity-80 transition-opacity">
-                Quên mật khẩu?
+                Forgot password?
               </a>
               <Link
                 to="/account/register"
                 className="hover:opacity-80 transition-opacity"
               >
-                Đăng ký tài khoản
+                Register account
               </Link>
             </div>
 
             <div className="text-center space-y-6">
               <p className="text-[12px] text-muted-foreground leading-relaxed max-w-sm mx-auto">
-                Wolf Arch cam kết bảo mật và sẽ không bao giờ đăng hay chia sẻ
-                thông tin mà chưa có được sự đồng ý của bạn.
+                Wolf Arch is committed to security and will never post or share
+                information without your consent.
               </p>
 
               <div className="space-y-4">
                 <div className="flex items-center gap-4">
                   <div className="h-px flex-1 bg-border/50" />
                   <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-widest">
-                    Hoặc đăng nhập qua
+                    Or login with
                   </p>
                   <div className="h-px flex-1 bg-border/50" />
                 </div>

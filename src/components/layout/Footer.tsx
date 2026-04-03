@@ -1,6 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Facebook, Instagram, Twitter, Mail, MapPin, Phone } from "lucide-react";
+import {
+  Facebook,
+  Instagram,
+  Twitter,
+  Mail,
+  MapPin,
+  Phone,
+} from "lucide-react";
 
 export default function Footer() {
   return (
@@ -21,7 +28,7 @@ export default function Footer() {
 
           <div className="flex flex-col sm:flex-row items-center gap-12">
             <span className="text-xs font-bold uppercase tracking-widest opacity-40">
-              Kết nối cộng đồng
+              Connect with us
             </span>
             <div className="flex gap-4">
               <SocialIcon icon={<Facebook className="w-5 h-5" />} />
@@ -32,40 +39,55 @@ export default function Footer() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-16 py-20">
-          <FooterColumn title="Tư vấn 24/7">
-            <ContactItem icon={<Mail className="w-4 h-4 text-primary" />} text="support@wolfarch.us" />
-            <ContactItem icon={<MapPin className="w-4 h-4 text-primary" />} text="70 Lữ Gia, P.15, Q.11, Sài Gòn" />
-            <ContactItem icon={<Phone className="w-4 h-4 text-primary" />} text="+1 555-0199-WOLF" />
+          <FooterColumn title="24/7 Consultation">
+            <ContactItem
+              icon={<Mail className="w-4 h-4 text-primary" />}
+              text="conchocaobangdomixi36@gmail.com"
+            />
+            <ContactItem
+              icon={<MapPin className="w-4 h-4 text-primary" />}
+              text="48 Cao Thang, Hai Chau, Da Nang, Vietnam"
+            />
+            <ContactItem
+              icon={<Phone className="w-4 h-4 text-primary" />}
+              text="+84 905 123 456"
+            />
           </FooterColumn>
 
-          <FooterColumn title="Về chúng tôi">
-            <FooterLink label="Bản sắc Wolf Arch" />
-            <FooterLink label="Đội ngũ Luật sư" />
-            <FooterLink label="Dự án Tiêu biểu" />
-            <FooterLink label="Chính sách Bảo mật" />
+          <FooterColumn title="About us">
+            <FooterLink label="Wolf Arch Identity" />
+            <FooterLink label="Legal Team" />
+            <FooterLink label="Featured Projects" />
+            <FooterLink label="Privacy Policy" />
           </FooterColumn>
 
-          <FooterColumn title="Lĩnh vực">
-            <FooterLink label="Công chứng Real Estate" />
-            <FooterLink label="Di chúc & Thừa kế" />
-            <FooterLink label="Giấy ủy quyền đại diện" />
-            <FooterLink label="Hợp pháp hóa Apostille" />
+          <FooterColumn title="Fields">
+            <FooterLink label="Real Estate Notary" />
+            <FooterLink label="Wills & Estate Planning" />
+            <FooterLink label="Power of Attorney" />
+            <FooterLink label="Apostille & Legalization" />
           </FooterColumn>
 
-          <FooterColumn title="Dịch vụ số">
-            <FooterLink label="Cổng đăng ký Online" />
-            <FooterLink label="Tra cứu mã QR hồ sơ" />
-            <FooterLink label="Xác thực Blockchain" />
-            <FooterLink label="Lưu trữ chữ ký số" />
+          <FooterColumn title="Digital Services">
+            <FooterLink label="Online Registration Portal" />
+            <FooterLink label="QR Code Lookup" />
+            <FooterLink label="Blockchain Authentication" />
+            <FooterLink label="Digital Signature Storage" />
           </FooterColumn>
         </div>
 
         <div className="pt-12 flex flex-col sm:flex-row justify-between items-center gap-6 text-[9px] uppercase font-bold tracking-widest opacity-40">
           <p>© 2026 Wolf Notary Services USA - Legal Excellence Guaranteed.</p>
           <div className="flex gap-10">
-            <a href="#" className="hover:text-primary transition-colors">Privacy</a>
-            <a href="#" className="hover:text-primary transition-colors">Terms</a>
-            <a href="#" className="hover:text-primary transition-colors">Cookies</a>
+            <a href="#" className="hover:text-primary transition-colors">
+              Privacy
+            </a>
+            <a href="#" className="hover:text-primary transition-colors">
+              Terms
+            </a>
+            <a href="#" className="hover:text-primary transition-colors">
+              Cookies
+            </a>
           </div>
         </div>
       </div>
@@ -73,9 +95,17 @@ export default function Footer() {
   );
 }
 
-const FooterColumn = ({ title, children }: { title: string; children: React.ReactNode }) => (
+const FooterColumn = ({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) => (
   <div className="space-y-8">
-    <h3 className="text-xs font-bold uppercase tracking-[0.4em] text-primary/80">{title}</h3>
+    <h3 className="text-xs font-bold uppercase tracking-[0.4em] text-primary/80">
+      {title}
+    </h3>
     <div className="flex flex-col gap-4">{children}</div>
   </div>
 );
@@ -89,7 +119,13 @@ const FooterLink = ({ label }: { label: string }) => (
   </a>
 );
 
-const ContactItem = ({ icon, text }: { icon: React.ReactNode; text: string }) => (
+const ContactItem = ({
+  icon,
+  text,
+}: {
+  icon: React.ReactNode;
+  text: string;
+}) => (
   <div className="flex items-center gap-4 group cursor-pointer">
     <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-secondary/70 group-hover:bg-primary/20 transition-all shadow-sm">
       {icon}

@@ -1,10 +1,4 @@
-import {
-  Search,
-  User,
-  ChevronDown,
-  Menu,
-  LogOut,
-} from "lucide-react";
+import { Search, User, ChevronDown, Menu, LogOut } from "lucide-react";
 
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -174,7 +168,7 @@ const NavItems = ({
   if (isDashboard) {
     return (
       <>
-        <NavItem label="Trang chủ" href="/" active={currentPath === "/"} />
+        <NavItem label="Home" href="/" active={currentPath === "/"} />
 
         {user?.role === "admin" && (
           <>
@@ -206,32 +200,32 @@ const NavItems = ({
 
   return (
     <>
-      <NavItem label="Trang chủ" active={currentPath === "/"} href="/" />
+      <NavItem label="Home" active={currentPath === "/"} href="/" />
 
       {user?.role === "admin" && (
         <NavItem
-          label="Quản trị"
+          label="Admin Dashboard"
           href="/admin/dashboard"
           active={currentPath.startsWith("/admin")}
         />
       )}
       {user?.role === "notary" && (
         <NavItem
-          label="Bảng điều khiển"
+          label="Notary Dashboard"
           href="/notary/dashboard"
           active={currentPath.startsWith("/notary")}
         />
       )}
       {user?.role === "user" && (
         <NavItem
-          label="Lịch sử"
+          label="History"
           href="/history"
           active={currentPath === "/history"}
         />
       )}
-      <NavItem label="Giới thiệu" active={currentPath === "/about"} />
-      <NavItem label="Dịch vụ" active={currentPath === "/services"} />
-      <NavItem label="Liên hệ" active={currentPath === "/contact"} />
+      <NavItem label="About" active={currentPath === "/about"} />
+      <NavItem label="Services" active={currentPath === "/services"} />
+      <NavItem label="Contact" active={currentPath === "/contact"} />
     </>
   );
 };

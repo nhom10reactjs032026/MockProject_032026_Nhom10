@@ -23,19 +23,19 @@ export const HomePage = () => {
         <div className="relative z-20 container mx-auto px-10 py-12 sm:px-20">
           <div className="max-w-4xl space-y-8">
             <h1 className="text-5xl sm:text-8xl md:text-9xl font-bold text-white uppercase drop-shadow-2xl animate-in fade-in slide-in-from-bottom-8 duration-1000">
-              Pháp lý <br />
-              <span className="text-white/60">Tin cậy.</span>
+              Legal <br />
+              <span className="text-white/60">Reliable.</span>
             </h1>
 
             <p className="text-base sm:text-lg text-white/80 font-medium max-w-xl leading-relaxed animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300">
-              Giải pháp công chứng số hoá hàng đầu tại Hoa Kỳ. Chúng tôi kết hợp
-              công nghệ hiện đại với sự tận tâm để bảo vệ giá trị pháp lý cho
-              mọi giao dịch.
+              Wolf Arch is a leading provider of notary services in the United
+              States. We combine modern technology with dedicated service to
+              protect the legal value of every transaction.
             </p>
 
             <div className="pt-8 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-500">
               <Button className="h-14 px-10 bg-primary hover:bg-primary/90 text-primary-foreground font-bold uppercase tracking-widest text-xs rounded-full shadow-xl group transition-all duration-300">
-                Tư vấn miễn phí
+                Free Consultation
                 <ArrowRight className="ml-3 w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Button>
             </div>
@@ -83,21 +83,20 @@ export const HomePage = () => {
                 </span>
               </div>
               <h2 className="text-5xl sm:text-7xl font-bold text-foreground uppercase tracking-tight">
-                Kiến tạo{" "}
-                <span className="text-primary opacity-80">niềm tin</span> <br />{" "}
-                qua từng hồ sơ
+                Building <span className="text-primary opacity-80">trust</span>{" "}
+                <br /> through every document
               </h2>
               <p className="text-muted-foreground font-medium text-base leading-relaxed max-w-lg">
-                Wolf Arch không chỉ là một văn phòng công chứng, mà là người bảo
-                vệ pháp lý tận tâm. Mỗi quy trình được thiết kế nhằm mang lại sự
-                nhẹ nhàng nhất.
+                Wolf Arch is not just a notary office, but a dedicated legal
+                protector. Each process is designed to bring the most
+                comfortable experience.
               </p>
             </div>
 
             <div className="grid grid-cols-3 gap-10">
-              <StatItem value="1500+" label="Hồ sơ/Tháng" />
-              <StatItem value="50+" label="Tiểu bang" />
-              <StatItem value="24/7" label="Hỗ trợ" />
+              <StatItem value="1500+" label="Documents/Month" />
+              <StatItem value="50+" label="States" />
+              <StatItem value="24/7" label="Support" />
             </div>
 
             <div className="pt-4">
@@ -105,7 +104,7 @@ export const HomePage = () => {
                 variant="outline"
                 className="h-14 px-10 border-primary text-primary hover:bg-primary hover:text-white rounded-full font-black uppercase tracking-widest text-xs group transition-all duration-300"
               >
-                Tìm hiểu thêm
+                Learn more
               </Button>
             </div>
           </div>
@@ -117,28 +116,28 @@ export const HomePage = () => {
         <div className="container mx-auto px-6 sm:px-12 space-y-20">
           <div className="text-center space-y-4 max-w-2xl mx-auto">
             <span className="text-primary font-bold uppercase tracking-[0.4em] text-[10px]">
-              Ưu thế của chúng tôi
+              Our advantages
             </span>
             <h2 className="text-5xl sm:text-7xl font-bold text-foreground uppercase tracking-tight">
-              Tại sao chọn <span className="text-primary">Wolf Arch</span>
+              Why choose <span className="text-primary">Wolf Arch</span>
             </h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <ServiceCard
               icon={<Shield className="w-10 h-10" />}
-              title="Bảo mật NIST"
-              desc="Hệ thống lưu trữ tài liệu mã hóa chuẩn liên bang Hoa Kỳ, đảm bảo an toàn tuyệt đối."
+              title="NIST Security"
+              desc="Federal-standard encrypted document storage system, ensuring absolute security."
             />
             <ServiceCard
               icon={<Globe className="w-10 h-10" />}
-              title="Công chứng RON"
-              desc="Dịch vụ công chứng trực tuyến giúp quý khách hàng tiết kiệm thời gian tối đa."
+              title="RON Notary"
+              desc="Online notary service that helps customers save maximum time."
             />
             <ServiceCard
               icon={<FileText className="w-10 h-10" />}
-              title="Xác thực hồ sơ"
-              desc="Chứng nhận Apostille và hợp pháp hóa lãnh sự cho mọi loại giấy tờ quốc tế."
+              title="Document Authentication"
+              desc="Apostille certification and legalization for all types of international documents."
             />
           </div>
         </div>
