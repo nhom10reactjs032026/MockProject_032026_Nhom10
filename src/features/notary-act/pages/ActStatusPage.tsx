@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { getFullActInfo } from "../api/mockActDetails";
 import { mockActs } from "../api/mockData";
+import { ActMenu } from "../components/overview/ActMenu";
 
 interface AuditLogEntry {
     id: string;
@@ -11,13 +12,16 @@ interface AuditLogEntry {
     action: string;
     details: string;
 }
-
+interface TimelineEvent {
+    status: string;
+    timestamp: string;
+    completed: boolean;
+}
 export const ActStatusPage = () => {
     const { id } = useParams();
-    const location = useLocation();
 
     const [actInfo, setActInfo] = useState<any>(null);
-    const [timeline, setTimeline] = useState<any[]>([]);
+    const [timeline, setTimeline] = useState<TimelineEvent[]>([]);
     const [auditLogs, setAuditLogs] = useState<AuditLogEntry[]>([]);
     const [currentStatus, setCurrentStatus] = useState<string>("");
     const [voidReason, setVoidReason] = useState("");
@@ -27,18 +31,8 @@ export const ActStatusPage = () => {
     const [voidSuccess, setVoidSuccess] = useState(false);
     const [legalHold, setLegalHold] = useState(false);
 
-    const tabs = [
-        { label: "Overview", path: `/notary-acts/${id}` },
-        { label: "Set up", path: `/notary-acts/${id}/setup` },
-        { label: "Signers and identity", path: `/notary-acts/${id}/signers` },
-        { label: "Execution", path: `/notary-acts/${id}/execution` },
-        { label: "Certificate", path: `/notary-acts/${id}/certificate` },
-        { label: "Journal Entry", path: `/notary-acts/${id}/journal` },
-        { label: "Status", path: `/notary-acts/${id}/status` },
-        { label: "Export", path: `/notary-acts/${id}/export` },
-    ];
 
-    const buildTimeline = (timelineData: any, status: string) => {
+    const buildTimeline = (timelineData: any, status: string): TimelineEvent[] => {
         const events = [
             { status: 'Draft', timestamp: '', completed: false },
             { status: 'Completed', timestamp: '', completed: false },
@@ -70,12 +64,14 @@ export const ActStatusPage = () => {
     };
 
     useEffect(() => {
+        try {
+
         if (!id) return;
         const fullInfo = getFullActInfo(id);
         if (fullInfo) {
             setActInfo(fullInfo);
             const act = mockActs.find((a) => a.id === id);
-            const statusFromAct = act?.status || "Inprocess";
+            const statusFromAct = act?.status || "In process";
             setCurrentStatus(statusFromAct);
 
             const timelineEvents = buildTimeline(fullInfo.timeline, statusFromAct);
@@ -125,6 +121,10 @@ export const ActStatusPage = () => {
 
             setAuditLogs(logs);
         }
+                } catch (error) {
+            console.error(error);
+            setActInfo(null);
+        }
     }, [id]);
 
     const handleVoid = () => {
@@ -166,7 +166,13 @@ export const ActStatusPage = () => {
             setTimeout(() => setVoidSuccess(false), 3000);
         }, 1000);
     };
-
+    if (!actInfo) {
+        return (
+            <div className="flex items-center justify-center min-h-screen text-gray-500">
+                No content available
+            </div>
+        );
+    }
     if (!actInfo) {
         return (
             <div className="flex items-center justify-center min-h-screen">
@@ -179,37 +185,19 @@ export const ActStatusPage = () => {
         <div className="animate-in fade-in duration-500 bg-[#f8fbff]/30 min-h-screen pb-12">
             <div className="max-w-[1400px] mx-auto py-8">
                 {/* Tabs */}
-                <div className="mb-6">
-                    <div className="flex items-center gap-8 border-b border-gray-100 px-8 mb-6 overflow-x-auto whitespace-nowrap">
-                        {tabs.map((tab) => {
-                            const isActive = location.pathname === tab.path;
-                            return (
-                                <Link
-                                    key={tab.label}
-                                    to={tab.path}
-                                    className={`py-4 text-sm font-medium border-b-2 transition-colors ${isActive
-                                        ? "border-blue-600 text-blue-600"
-                                        : "border-transparent text-gray-500 hover:text-gray-900"
-                                        }`}
-                                >
-                                    {tab.label}
-                                </Link>
-                            );
-                        })}
-                    </div>
-                    <div className="px-8 flex justify-between items-center">
-                        <div className="flex items-center gap-2 text-xs font-bold text-gray-400 tracking-wider">
-                            <Link to="/notary-acts">NOTARIAL ACTS LIST</Link>
-                            <ChevronRight size={16} />
-                            <span className="text-blue-600">STATUS</span>
-                        </div>
+                <ActMenu />
+
+                <div className="p-8 flex justify-between items-center">
+                    <div className="flex items-center gap-2 text-xs font-bold text-gray-400 r">
+                        <Link to="/notary-acts">NOTARIAL ACTS LIST</Link>
+                        <span className="ml-10"><ChevronRight size={16} /></span>
+                        <span className="text-blue-600">STATUS</span>
                     </div>
                 </div>
-
-                <div className="px-8">
+                <div className="bg-white p-8 border-t-2 border-b-2 border-black-200">
                     {/* Header */}
                     <div className="mb-6">
-                        <h1 className="text-2xl font-bold text-gray-900">Status, Void, and Audit History</h1>
+                        <h1 className="text-2xl font-bold text-gray-900 border-b-1">Status, Void, and Audit History</h1>
                     </div>
 
                     <div className="space-y-8">
@@ -267,7 +255,7 @@ export const ActStatusPage = () => {
                         </div>
 
                         {/* Void Workflow */}
-                        {currentStatus !== "Voided" && (
+                        {currentStatus !== "Voided" && currentStatus !== "Locked" && (
                             <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6">
                                 <h2 className="text-base font-bold text-gray-900 mb-4 flex items-center gap-2">
                                     <AlertTriangle size={18} className="text-amber-500" />
@@ -279,11 +267,12 @@ export const ActStatusPage = () => {
                                             Void Reason *
                                         </label>
                                         <select
+                                            disabled={legalHold}
                                             value={voidReason}
                                             onChange={(e) => setVoidReason(e.target.value)}
                                             className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         >
-                                            <option value="">Select reason</option>
+                                            <option value="">Select a reason</option>
                                             <option value="Incorrect information">Incorrect information</option>
                                             <option value="Duplicate act">Duplicate act</option>
                                             <option value="Signer requested cancellation">Signer requested cancellation</option>
@@ -296,9 +285,9 @@ export const ActStatusPage = () => {
                                             Additional Notes
                                         </label>
                                         <textarea
+                                            disabled={legalHold}
                                             rows={3}
-                                            placeholder="Enter any additional notes..."
-                                            value={voidNotes}
+                                            placeholder="Enter any additional notes for voiding..." value={voidNotes}
                                             onChange={(e) => setVoidNotes(e.target.value)}
                                             className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y"
                                         />
@@ -312,16 +301,16 @@ export const ActStatusPage = () => {
                                             className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
                                         />
                                         <label htmlFor="approvalRequired" className="text-sm text-gray-700">
-                                            Approval required for voiding (company policy)
+                                            Approval required for voiding
                                         </label>
                                     </div>
                                     <div className="pt-2">
                                         <button
                                             onClick={handleVoid}
-                                            disabled={isVoiding}
+                                            disabled={isVoiding || legalHold || !voidReason}
                                             className={`inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${isVoiding
-                                                ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                                                : "bg-red-600 hover:bg-red-700 text-white shadow-md"
+                                                ? "bg-gray-200 text-black cursor-not-allowed cursor-pointer"
+                                                : "bg-red-600 hover:bg-red-700 text-white shadow-md cursor-pointer"
                                                 }`}
                                         >
                                             {isVoiding ? (
@@ -361,12 +350,27 @@ export const ActStatusPage = () => {
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-100">
+
+                                        {auditLogs.length === 0 && (
+                                            <tr>
+                                                <td colSpan={4} className="text-center py-6 text-gray-400">
+                                                    No audit records available
+                                                </td>
+                                            </tr>
+                                        )}
                                         {auditLogs.map((log) => (
                                             <tr key={log.id} className="hover:bg-gray-50">
                                                 <td className="px-4 py-3 text-gray-600">{log.timestamp}</td>
                                                 <td className="px-4 py-3 font-medium text-gray-900">{log.user}</td>
                                                 <td className="px-4 py-3">
-                                                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
+                                                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium
+                                                    ${log.action === "Voided"
+                                                            ? "bg-red-50 text-red-700"
+                                                            : log.action === "Locked"
+                                                                ? "bg-gray-100 text-gray-700"
+                                                                : "bg-blue-50 text-blue-700"
+                                                        }
+                                                    `}>
                                                         {log.action}
                                                     </span>
                                                 </td>
@@ -397,7 +401,7 @@ export const ActStatusPage = () => {
                                         Place this record on legal hold
                                     </label>
                                     <p className="text-xs text-gray-500 mt-1">
-                                        When enabled, this record cannot be modified or deleted, even if it is not yet voided or locked.
+                                        When enabled, this record Placing a record on legal hold prevents any modification or deletion, even if not voided or locked.
                                     </p>
                                 </div>
                             </div>

@@ -1,8 +1,9 @@
-import { AlertTriangle, ArrowRight, CheckCircle2, ChevronRight, CircleDashed, Clock, DollarSign, FileText, Fingerprint, ListChecks, MapPin, MoreHorizontal, PenTool, Printer, Recycle, RefreshCcw, RefreshCcwDot, RefreshCw, Upload, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { AlertTriangle, CheckCircle2, ChevronRight, DollarSign, Fingerprint, ListChecks, MapPin, MoreHorizontal, PenTool, Printer, RefreshCw, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { getFullActInfo } from "../api/mockActDetails";
 import { mockActs } from "../api/mockData";
+import { ActMenu } from "../components/overview/ActMenu";
 
 interface SignerInfo {
   name: string;
@@ -23,6 +24,8 @@ interface JournalEntry {
   thumbprintPreview?: string;
   signatureRecapture: File | null;
   signaturePreview?: string;
+  notarySignature: File | null;
+  notarySignaturePreview?: string;
 }
 
 export const ActJournalPage = () => {
@@ -41,53 +44,53 @@ export const ActJournalPage = () => {
     thumbprintPreview: undefined,
     signatureRecapture: null,
     signaturePreview: undefined,
+    notarySignature: null,
+    notarySignaturePreview: undefined
+
   });
   const [compliancePassed, setCompliancePassed] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [thumbprintRequired, setThumbprintRequired] = useState(false);
-
+  const printRef = useRef<HTMLDivElement>(null);
   // Lấy thông tin act
   useEffect(() => {
     if (!id) return;
     const fullInfo = getFullActInfo(id);
-    if (fullInfo) {
-      setActInfo(fullInfo);
-      const actFromWork = mockActs.find(a => a.id === id);
-      if (actFromWork) {
-        setJournal(prev => ({
-          ...prev,
-          actType: actFromWork.type,
-          dateTime: `${actFromWork.dateTime} ${actFromWork.time} ${actFromWork.timezone}`,
-        }));
-      } else {
-        setJournal(prev => ({
-          ...prev,
-          actType: fullInfo.certificateActType || '',
-          dateTime: fullInfo.date || '',
-        }));
-      }
-      // Tạo danh sách signers
-      const signersList = fullInfo.signers?.map((name: string, idx: number) => ({
-        name,
-        role: idx === 0 ? 'Grantor' : 'Grantee',
-        id: idx === 0 ? 'DL123456789' : 'PENDING',
-        idType: idx === 0 ? 'Driver License' : 'ID Pending',
-        idVerified: idx === 0 ? true : false,
-      })) || [];
-      setJournal(prev => ({ ...prev, signers: signersList }));
 
-      const state = actFromWork?.state || fullInfo.state || '';
-      setThumbprintRequired(state === 'California');
-    }
+    if (!fullInfo) return;
+    setActInfo(fullInfo);
+
+    const actFromWork = mockActs.find(a => a.id === id);
+
+    // Tạo danh sách signers
+    const signersList = fullInfo.signers?.map((name: string, idx: number) => ({
+      name,
+      role: idx === 0 ? 'Grantor' : 'Grantee',
+      id: idx === 0 ? 'DL123456789' : 'PENDING',
+      idType: idx === 0 ? 'Driver License' : 'ID Pending',
+      idVerified: idx === 0 ? true : false,
+    })) || [];
+
+    setJournal(prev => ({
+      ...prev,
+      actType: actFromWork?.type || fullInfo.certificateActType || '',
+      dateTime: actFromWork
+        ? `${actFromWork.dateTime} ${actFromWork.time} ${actFromWork.timezone}`
+        : fullInfo.date || '',
+      signers: signersList,
+    }));
+
+    const state = actFromWork?.state || fullInfo.state || '';
+    setThumbprintRequired(state === 'California')
+
   }, [id]);
 
   useEffect(() => {
-    const hasFee = journal.fee !== null && journal.fee > 0;
+    const hasFee = journal.fee !== null;
     const hasLocation = journal.location.trim().length > 0;
     const hasThumbprint = thumbprintRequired ? journal.thumbprint !== null : true;
-
     const allMandatoryFilled = hasFee && hasLocation && hasThumbprint;
     setCompliancePassed(allMandatoryFilled);
   }, [journal.fee, journal.location, journal.thumbprint, thumbprintRequired]);
@@ -160,16 +163,6 @@ export const ActJournalPage = () => {
     }, 1500);
   };
 
-  const tabs = [
-    { label: 'Overview', path: `/notary-acts/${id}` },
-    { label: 'Set up', path: `/notary-acts/${id}/setup` },
-    { label: 'Signers and identity', path: `/notary-acts/${id}/signers` },
-    { label: 'Execution', path: `/notary-acts/${id}/execution` },
-    { label: 'Certificate', path: `/notary-acts/${id}/certificate` },
-    { label: 'Journal Entry', path: `/notary-acts/${id}/journal` },
-    { label: 'Status', path: `/notary-acts/${id}/status` },
-    { label: 'Export', path: `/notary-acts/${id}/export` },
-  ];
 
   if (!actInfo) {
     return (
@@ -184,31 +177,12 @@ export const ActJournalPage = () => {
       <div className="animate-in fade-in duration-500 bg-[#f8fbff]/30 min-h-screen pb-12">
         <div className="max-w-[1400px] mx-auto py-8">
           {/* Tabs */}
-          <div className="mb-6">
-            <div className="flex items-center gap-8 border-b border-gray-100 px-8 mb-6 overflow-x-auto whitespace-nowrap">
-              {tabs.map((tab) => {
-                const isActive = location.pathname === tab.path;
-                return (
-                  <Link
-                    key={tab.label}
-                    to={tab.path}
-                    className={`py-4 text-sm font-medium border-b-2 transition-colors ${
-                      isActive
-                        ? 'border-blue-600 text-blue-600'
-                        : 'border-transparent text-gray-500 hover:text-gray-900'
-                    }`}
-                  >
-                    {tab.label}
-                  </Link>
-                );
-              })}
-            </div>
-            <div className="px-8 flex justify-between items-center">
-              <div className="flex items-center gap-2 text-xs font-bold text-gray-400 tracking-wider">
-                <Link to="/notary-acts">NOTARIAL ACTS LIST</Link>
-                <span className="ml-10"><ChevronRight size={16} /></span>
-                <span className="text-blue-600">Journal Entry</span>
-              </div>
+          <ActMenu />
+          <div className="p-8 flex justify-between items-center">
+            <div className="flex items-center gap-2 text-xs font-bold text-gray-400 r">
+              <Link to="/notary-acts">NOTARIAL ACTS LIST</Link>
+              <span className="ml-10"><ChevronRight size={16} /></span>
+              <span className="text-blue-600">JOURNAL ENTRY</span>
             </div>
           </div>
 
@@ -223,14 +197,14 @@ export const ActJournalPage = () => {
               <div className="lg:col-span-2 space-y-6">
                 {/* Auto-Populated Fields Card */}
                 <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6">
-                  <h2 className="text-base font-bold text-gray-900 mb-4">
+                  <h2 className="text-xl font-bold text-gray-900 mb-4">
                     Auto-Populated Fields
                   </h2>
 
                   <div className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-[11px] font-bold text-gray-600 uppercase tracking-wider mb-1">
+                        <label className="block text-sm font-bold text-black   mb-1">
                           Date and Time
                         </label>
                         <input
@@ -241,7 +215,7 @@ export const ActJournalPage = () => {
                         />
                       </div>
                       <div>
-                        <label className="block text-[11px] font-bold text-gray-600 uppercase tracking-wider mb-1">
+                        <label className="block text-sm font-bold text-black   mb-1">
                           Act Type
                         </label>
                         <input
@@ -254,7 +228,7 @@ export const ActJournalPage = () => {
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-bold text-gray-600 uppercase tracking-wider mb-1">
+                      <label className="block text-sm font-bold text-gray-600   mb-1">
                         Signer Information
                       </label>
                       <div className="bg-gray-100 border border-gray-200 rounded-lg p-3 text-sm text-gray-700 min-h-[80px]">
@@ -267,7 +241,7 @@ export const ActJournalPage = () => {
                             ))}
                           </ul>
                         ) : (
-                          <p className="text-gray-500">No signer data available</p>
+                          <p className="text-black">No signer data available</p>
                         )}
                       </div>
                     </div>
@@ -276,10 +250,10 @@ export const ActJournalPage = () => {
 
                 {/* Manual Fields Card */}
                 <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6">
-                  <h2 className="text-base font-bold text-gray-900 mb-4">Manual Fields</h2>
+                  <h2 className="text-xl font-bold text-gray-900 mb-4">Manual Fields</h2>
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-xs font-semibold text-gray-500 uppercase tracking-widest mb-1">Fee Charged ($)</label>
+                      <label className="block text-sm font-semibold text-black   mb-1">Fee Charged ($)</label>
                       <div className="relative">
                         <span className="absolute inset-y-0 left-0 flex items-center pl-3">
                           <DollarSign size={16} className="text-gray-400" />
@@ -289,6 +263,7 @@ export const ActJournalPage = () => {
                           step="0.01"
                           min="0"
                           placeholder="$15.00"
+                          onWheel={(e) => (e.target as HTMLInputElement).blur()}
                           value={journal.fee === null ? '' : journal.fee}
                           onChange={handleFeeChange}
                           className="w-full pl-8 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -296,7 +271,7 @@ export const ActJournalPage = () => {
                       </div>
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-gray-500 uppercase tracking-widest mb-1">Location of Act</label>
+                      <label className="block text-sm font-semibold text-black   mb-1">Location of Act</label>
                       <div className="relative">
                         <span className="absolute inset-y-0 left-0 flex items-center pl-3">
                           <MapPin size={16} className="text-gray-400" />
@@ -311,7 +286,7 @@ export const ActJournalPage = () => {
                       </div>
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-gray-500 uppercase tracking-widest mb-1">Notary Notes & Statutory Disclosures</label>
+                      <label className="block text-sm font-semibold text-black   mb-1">Notary Notes & Statutory Disclosures</label>
                       <textarea
                         rows={4}
                         placeholder="Enter any additional notes for the journal entry..."
@@ -328,16 +303,16 @@ export const ActJournalPage = () => {
                   {/* Left: Signer Signature */}
                   <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6">
                     <div className="flex items-center justify-between mb-4">
-                      <h2 className="text-base font-bold text-gray-900">Signer Signature</h2>
+                      <h2 className="text-xl font-bold text-gray-900">Signer Signature</h2>
                       <button
                         onClick={handleSignatureRecapture}
-                        className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700 hover:bg-blue-200 transition"
+                        className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-sm font-bold  text-blue-700 hover:bg-blue-200 transition"
                       >
                         <RefreshCw size={12} />
                         RECAPTURE
                       </button>
                     </div>
-                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center bg-gray-50 min-h-[150px] flex flex-col items-center justify-center">
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-22 text-center bg-gray-50 min-h-[150px] flex flex-col items-center justify-center">
                       {journal.signaturePreview ? (
                         <div className="relative">
                           <img src={journal.signaturePreview} alt="Signature" className="max-h-24 mx-auto" />
@@ -359,12 +334,12 @@ export const ActJournalPage = () => {
                   {/* Right: Signer Thumbprint */}
                   <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6">
                     <div className="flex items-center justify-between mb-2">
-                      <h2 className="text-base font-bold text-gray-900">Signer Thumbprint</h2>
+                      <h2 className="text-xl font-bold text-gray-900">Signer Thumbprint</h2>
                       {thumbprintRequired && (
-                        <span className="text-xs text-red-500 font-medium">Required</span>
+                        <span className="text-sm text-red-500 font-medium">Required</span>
                       )}
                     </div>
-                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center bg-gray-50 min-h-[150px] flex flex-col items-center justify-center">
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-15 text-center bg-gray-50 min-h-[150px] flex flex-col items-center justify-center">
                       {journal.thumbprintPreview ? (
                         <div className="relative">
                           <img src={journal.thumbprintPreview} alt="Thumbprint" className="w-24 h-24 object-contain mx-auto" />
@@ -378,7 +353,7 @@ export const ActJournalPage = () => {
                       ) : (
                         <>
                           <Fingerprint size={32} className="text-gray-400 mb-2" />
-                          <p className="text-sm text-gray-500 mb-2">Capture thumbprint image</p>
+                          <p className="text-sm text-gray-500 mb-2 uppercase font-bold">THUMBPRINT AREA</p>
                           <button
                             onClick={handleThumbprintCapture}
                             className="inline-flex items-center gap-2 rounded-xl border border-gray-300 px-4 py-1.5 bg-white text-blue-500 font-bold text-sm hover:bg-blue-50 transition"
@@ -389,14 +364,14 @@ export const ActJournalPage = () => {
                       )}
                     </div>
                     {thumbprintRequired && !journal.thumbprintPreview && (
-                      <p className="text-xs text-amber-600 mt-2">Thumbprint is required for this state</p>
+                      <p className="text-sm text-amber-600 mt-2">Thumbprint is required for this state</p>
                     )}
                   </div>
                 </div>
 
                 {/* Journal Compliance Check Card */}
                 <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 mt-6">
-                  <h2 className="text-base font-bold text-gray-900 mb-4">Journal Compliance Check</h2>
+                  <h2 className="text-xl font-bold text-gray-900 mb-4">Journal Compliance Check</h2>
                   <div className="flex items-center gap-2">
                     {compliancePassed ? (
                       <CheckCircle2 size={20} className="text-emerald-500" />
@@ -408,7 +383,7 @@ export const ActJournalPage = () => {
                     </span>
                   </div>
                   {showWarning && !compliancePassed && (
-                    <div className="mt-2 p-2 bg-amber-50 text-amber-700 text-xs rounded-md flex items-center gap-1">
+                    <div className="mt-2 p-2 bg-amber-50 text-amber-700 text-sm rounded-md flex items-center gap-1">
                       <AlertTriangle size={14} />
                       Please fill in all mandatory fields (Fee, Location, {thumbprintRequired ? 'Thumbprint' : ''}) before saving.
                     </div>
@@ -416,7 +391,9 @@ export const ActJournalPage = () => {
                   <hr className="my-4 border-gray-200" />
                   <div>
                     <p className="text-sm text-gray-600">
-                      This entry will be automatically recorded in your Master Notary Journal.
+                      This entry will be automatically recorded in your <Link to="#" className="text-blue-600  no-underline font-bold">
+                        Master Notary Journal
+                      </Link>.
                     </p>
                   </div>
                 </div>
@@ -432,11 +409,10 @@ export const ActJournalPage = () => {
                   <button
                     onClick={handleSave}
                     disabled={!compliancePassed || isSaving}
-                    className={`px-8 py-2.5 rounded-xl flex items-center gap-2 text-sm font-bold transition-all ${
-                      compliancePassed && !isSaving
-                        ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-md cursor-pointer'
-                        : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                    }`}
+                    className={`px-8 py-2.5 rounded-xl flex items-center gap-2 text-sm font-bold transition-all ${compliancePassed && !isSaving
+                      ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-md cursor-pointer'
+                      : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                      }`}
                   >
                     {isSaving ? (
                       <>
@@ -456,7 +432,7 @@ export const ActJournalPage = () => {
                   {/* Compliance Details */}
                   <div className="bg-white border border-gray-200 rounded-xl p-6 space-y-6">
                     <div>
-                      <h2 className="flex items-center justify-start gap-2 text-base font-bold text-gray-900 mb-4">
+                      <h2 className="flex items-center justify-start gap-2 text-xl font-bold text-gray-900 mb-4">
                         <ListChecks className="text-blue-500" size={18} />
                         Compliance Details
                       </h2>
@@ -467,7 +443,7 @@ export const ActJournalPage = () => {
                             <CheckCircle2 className="text-emerald-500 mt-0.5" size={18} />
                             <div>
                               <b className="block text-gray-900">Identity Verification</b>
-                              <p className="text-gray-500 text-xs">Verified via Real-Time ID Check</p>
+                              <p className="text-black text-sm">Verified via Real-Time ID Check</p>
                             </div>
                           </li>
 
@@ -479,7 +455,7 @@ export const ActJournalPage = () => {
                             )}
                             <div>
                               <b className="block text-gray-900">Mandatory Fields</b>
-                              <span className="block text-gray-500 text-xs">
+                              <span className="block text-black text-sm">
                                 {compliancePassed ? 'All required inputs completed' : 'Missing required fields'}
                               </span>
                             </div>
@@ -491,14 +467,14 @@ export const ActJournalPage = () => {
                             </div>
                             <div>
                               <b className="block text-amber-600">Final Notary Seal</b>
-                              <span className="block text-amber-500 text-xs">Pending final submission</span>
+                              <span className="block text-amber-500 text-sm">Pending final submission</span>
                             </div>
                           </li>
                         </ul>
                       </div>
 
                       <div className="bg-blue-100 border border-blue-300 rounded-xl p-6 mt-6">
-                        <label className="text-blue-600 uppercase text-sm font-bold">State statute reference</label>
+                        <label className="text-blue-600  text-sm font-bold">State statute reference</label>
                         <p className="text-sm text-blue-700 mt-1">
                           "Notary shall record in the sequential journal the date, time, and type of each official act." - GC $8206
                         </p>
@@ -541,7 +517,9 @@ export const ActJournalPage = () => {
             </div>
             <h3 className="text-xl font-bold text-gray-900 mb-2">Journal Entry Saved</h3>
             <p className="text-sm text-gray-600 mb-6">
-              The journal entry has been successfully recorded in your Master Notary Journal.
+              The journal entry has been successfully recorded in your <Link to="#" className="text-blue-600 underline">
+                Master Notary Journal
+              </Link>.
             </p>
             <button
               onClick={() => {

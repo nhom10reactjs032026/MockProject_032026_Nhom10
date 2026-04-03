@@ -18,23 +18,23 @@ export const ActOverviewHeader = () => {
   return (
     <div className="mb-6">
       {/* Sub Navigation */}
-      <div className="flex items-center gap-8 border-b border-gray-100 px-4 mb-6 overflow-x-auto whitespace-nowrap">
+      <div className="flex items-center justify-around mb-3 bg-white ">
         {tabs.map((tab) => {
-          const isActive = location.pathname === tab.path || (tab.label === 'Overview' && location.pathname === `/notary-acts/${id}/`);
+          const isActive = location.pathname === tab.path;
           return (
             <Link
               key={tab.label}
               to={tab.path}
-              className={`py-4 text-sm font-medium border-b-2 transition-colors ${
-                isActive
-                  ? 'border-blue-600 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-900'
-              }`}
+              className={`py-4 text-sm font-medium border-b-2 transition-colors ${isActive
+                ? 'border-blue-600 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-900'
+                }`}
             >
               {tab.label}
             </Link>
           );
         })}
+
       </div>
 
       {/* Breadcrumb & Title */}

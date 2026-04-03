@@ -1,22 +1,23 @@
 import { useState } from 'react';
 import { Link, useParams, useLocation } from 'react-router-dom';
-import { 
-  MapPin, 
-  UserCheck, 
-  PenTool, 
-  Lock, 
+import {
+  MapPin,
+  UserCheck,
+  PenTool,
+  Lock,
   AlignLeft,
   CheckCircle2,
   LockKeyhole,
   UploadCloud
 } from 'lucide-react';
+import { ActMenu } from '../components/overview/ActMenu';
 
 export const ActExecutionPage = () => {
   const { id } = useParams();
   const location = useLocation();
 
   const [isVerified, setIsVerified] = useState(true);
-  const [oathStatus, setOathStatus] = useState<'yes'|'no'>('yes');
+  const [oathStatus, setOathStatus] = useState<'yes' | 'no'>('yes');
   const [hasSignature1, setHasSignature1] = useState(true);
   const [hasSignature2, setHasSignature2] = useState(false);
   const [wetSignature1, setWetSignature1] = useState<string | null>(null);
@@ -37,7 +38,7 @@ export const ActExecutionPage = () => {
     <div className="animate-in fade-in duration-500 bg-[#f8fbff]/30 min-h-screen pb-12">
       <div className="max-w-[1400px] mx-auto py-8">
         {/* Header exact match with the screenshot */}
-        <div className="mb-6">
+        {/* <div className="mb-6">
           <div className="flex items-center gap-8 border-b border-gray-100 px-8 mb-6 overflow-x-auto whitespace-nowrap">
             {tabs.map((tab) => {
               const isActive = location.pathname === tab.path;
@@ -69,11 +70,12 @@ export const ActExecutionPage = () => {
               Record
             </button>
           </div>
-        </div>
+        </div> */}
+        <ActMenu />
 
         {/* Content Container */}
         <div className="px-8 max-w-4xl mx-auto space-y-6">
-          
+
           {/* Row 1: Forms */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Personal Appearance */}
@@ -85,11 +87,11 @@ export const ActExecutionPage = () => {
                 <div className="w-full">
                   <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide">Personal Appearance</h3>
                   <p className="text-xs text-gray-500 mt-1">Confirm physical presence of principal.</p>
-                  
+
                   <div className="mt-4 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       {/* Toggle Switch */}
-                      <div 
+                      <div
                         onClick={() => setIsVerified(!isVerified)}
                         className={`w-12 h-6 rounded-full p-1 cursor-pointer transition-colors relative flex items-center ${isVerified ? 'bg-violet-600' : 'bg-gray-300'}`}
                       >
@@ -113,25 +115,23 @@ export const ActExecutionPage = () => {
                 <div className="w-full">
                   <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide">Oath/Affirmation</h3>
                   <p className="text-xs text-gray-500 mt-1">Administered according to law?</p>
-                  
+
                   <div className="mt-4 flex items-center gap-2">
-                    <button 
+                    <button
                       onClick={() => setOathStatus('yes')}
-                      className={`flex-1 py-1.5 font-bold text-sm rounded-lg transition-colors shadow-sm border-2 ${
-                        oathStatus === 'yes' 
-                          ? 'bg-violet-50 border-violet-600 text-violet-700' 
+                      className={`flex-1 py-1.5 font-bold text-sm rounded-lg transition-colors shadow-sm border-2 ${oathStatus === 'yes'
+                          ? 'bg-violet-50 border-violet-600 text-violet-700'
                           : 'bg-white border-gray-200 text-gray-500 hover:bg-gray-50'
-                      }`}
+                        }`}
                     >
                       Yes
                     </button>
-                    <button 
+                    <button
                       onClick={() => setOathStatus('no')}
-                      className={`flex-1 py-1.5 font-bold text-sm rounded-lg transition-colors shadow-sm border-2 ${
-                        oathStatus === 'no' 
-                          ? 'bg-rose-50 border-rose-500 text-rose-600' 
+                      className={`flex-1 py-1.5 font-bold text-sm rounded-lg transition-colors shadow-sm border-2 ${oathStatus === 'no'
+                          ? 'bg-rose-50 border-rose-500 text-rose-600'
                           : 'bg-white border-gray-200 text-gray-500 hover:bg-gray-50'
-                      }`}
+                        }`}
                     >
                       No
                     </button>
@@ -162,9 +162,9 @@ export const ActExecutionPage = () => {
                 <div>
                   <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">WET SIGNATURE UPLOAD</label>
                   <label className="h-32 border-2 border-dashed border-gray-200 rounded-xl bg-gray-50 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-gray-100 transition-colors relative block w-full">
-                    <input 
-                      type="file" 
-                      className="hidden" 
+                    <input
+                      type="file"
+                      className="hidden"
                       onChange={(e) => {
                         if (e.target.files && e.target.files[0]) {
                           setWetSignature1(e.target.files[0].name);
@@ -189,7 +189,7 @@ export const ActExecutionPage = () => {
                 <div>
                   <div className="flex justify-between items-center mb-2">
                     <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest">ELECTRONIC SIGNATURE</label>
-                    <button 
+                    <button
                       onClick={() => setHasSignature1(!hasSignature1)}
                       className="text-[10px] font-bold text-blue-600 hover:text-blue-800 uppercase tracking-widest"
                     >
@@ -225,9 +225,9 @@ export const ActExecutionPage = () => {
                 <div>
                   <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">WET SIGNATURE UPLOAD</label>
                   <label className="h-32 border-2 border-dashed border-gray-200 rounded-xl bg-gray-50 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-gray-100 transition-colors relative block w-full">
-                    <input 
-                      type="file" 
-                      className="hidden" 
+                    <input
+                      type="file"
+                      className="hidden"
                       onChange={(e) => {
                         if (e.target.files && e.target.files[0]) {
                           setWetSignature2(e.target.files[0].name);
@@ -252,7 +252,7 @@ export const ActExecutionPage = () => {
                 <div>
                   <div className="flex justify-between items-center mb-2">
                     <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest">ELECTRONIC SIGNATURE</label>
-                    <button 
+                    <button
                       onClick={() => setHasSignature2(!hasSignature2)}
                       className="text-[10px] font-bold text-blue-600 hover:text-blue-800 uppercase tracking-widest"
                     >
@@ -288,9 +288,9 @@ export const ActExecutionPage = () => {
               Date and Time Lock
             </h2>
             <div className="relative w-full border border-gray-200 rounded-xl overflow-hidden flex bg-white focus-within:ring-2 focus-within:ring-blue-500">
-              <input 
-                type="text" 
-                defaultValue="2023-10-27 11:30 AM" 
+              <input
+                type="text"
+                defaultValue="2023-10-27 11:30 AM"
                 className="flex-1 bg-transparent px-4 py-3 text-sm font-bold text-gray-700 outline-none"
               />
               <button className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-600 px-6 py-3 text-sm font-bold transition-colors">
@@ -307,12 +307,12 @@ export const ActExecutionPage = () => {
               <AlignLeft size={18} className="text-blue-600" />
               Notes and Observations
             </h2>
-            
-            <textarea 
+
+            <textarea
               placeholder="Enter session details, principal capacity, or irregularities..."
               className="w-full bg-gray-50/50 border border-gray-200 rounded-xl px-4 py-3 text-sm font-medium text-gray-700 outline-none focus:bg-white focus:ring-2 focus:ring-blue-500 resize-none h-32"
             ></textarea>
-            
+
             <div className="mt-4 flex items-center gap-4 text-[10px] font-bold uppercase tracking-widest">
               <span className="text-gray-400 flex items-center gap-1.5"><UploadCloud size={14} /> AUTO-SAVED</span>
               <span className="text-emerald-500 flex items-center gap-1.5"><CheckCircle2 size={14} /> JOURNAL COMPLIANT</span>

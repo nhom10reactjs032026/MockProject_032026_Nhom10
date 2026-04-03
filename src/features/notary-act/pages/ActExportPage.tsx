@@ -1,8 +1,8 @@
-import { AlertTriangle, Archive, BadgeCheck, Ban, Braces, CheckCircle2, ChevronRight, Eye, FileText, Gavel, History, Lock, Printer, RefreshCw, Share2, Upload, User, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { BadgeCheck, Ban, Braces, CheckCircle2, ChevronRight, FileText, Gavel, History, Lock, Printer, RefreshCw, Share2, User, X } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
 import { Link, useLocation, useParams, useNavigate } from "react-router-dom";
 import { getFullActInfo } from "../api/mockActDetails";
-
+import { ActMenu } from "../components/overview/ActMenu";
 interface DownloadActivity {
   id: string;
   user: string;
@@ -10,12 +10,12 @@ interface DownloadActivity {
   documentId: string;
   format: string;
   timestamp: string;
-  status: "Verified" | "Pending Auth" | "Archived";
+  status: "Verified" | "Pending Auth" | "Archived" | "Voided";
 }
 
 export const ActExportPage = () => {
+
   const { id } = useParams();
-  const location = useLocation();
   const navigate = useNavigate();
 
   const [actInfo, setActInfo] = useState<any>(null);
@@ -31,23 +31,14 @@ export const ActExportPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
 
-  const tabs = [
-    { label: "Overview", path: `/notary-acts/${id}` },
-    { label: "Set up", path: `/notary-acts/${id}/setup` },
-    { label: "Signers and identity", path: `/notary-acts/${id}/signers` },
-    { label: "Execution", path: `/notary-acts/${id}/execution` },
-    { label: "Certificate", path: `/notary-acts/${id}/certificate` },
-    { label: "Journal Entry", path: `/notary-acts/${id}/journal` },
-    { label: "Status", path: `/notary-acts/${id}/status` },
-    { label: "Export", path: `/notary-acts/${id}/export` },
-  ];
+  const printRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!id) return;
     const fullInfo = getFullActInfo(id);
     if (fullInfo) {
       setActInfo(fullInfo);
-      
+
       const mockActivities: DownloadActivity[] = Array.from({ length: 12 }).map((_, index) => ({
         id: `${index + 1}`,
         user: index % 2 === 0 ? fullInfo.clientName : "A. Regulator",
@@ -55,16 +46,30 @@ export const ActExportPage = () => {
         documentId: `${fullInfo.actId}-${index % 3 === 0 ? 'CERT' : 'DOC'}`,
         format: index % 3 === 0 ? "PDF" : index % 3 === 1 ? "CERTIFIED" : "JSON",
         timestamp: `2023-10-${20 + index} 11:${10 + index} AM`,
-        status: index % 4 === 0 ? "Pending Auth" : index % 5 === 0 ? "Archived" : "Verified",
+        status:
+          index % 4 === 0
+            ? "Pending Auth"
+            : index % 5 === 0
+              ? "Archived"
+              : index % 6 === 0
+                ? "Voided"
+                : "Verified",
       }));
       setActivityLogs(mockActivities);
     }
   }, [id]);
 
   const handleGenerateLink = () => {
+    if (!clientAccess && !regulatorAccess) {
+      alert("At least one access role must be enabled.");
+      return;
+    }
+
     setGeneratingLink(true);
     setTimeout(() => {
-      const fakeLink = `https://notaryapp.com/secure/${id}/${Math.random().toString(36).substring(2, 10)}`;
+      const fakeLink = `https://notaryapp.com/secure/${id}/${Math.random()
+        .toString(36)
+        .substring(2, 10)}`;
       setGeneratedLink(fakeLink);
       setShowLinkModal(true);
       setGeneratingLink(false);
@@ -72,13 +77,48 @@ export const ActExportPage = () => {
   };
 
   const handlePrintReport = () => {
+    const printContents = printRef.current?.innerHTML;
+    const originalContent = document.body.innerHTML;
+
+    if (!printContents) return;
+
+    document.body.innerHTML = `
+    <html>
+      <head>
+        <title>Audit Report</title>
+        <style>
+          body { font-family: Arial, sans-serif; padding: 20px; }
+          table { width: 100%; border-collapse: collapse; }
+          th, td { border: 1px solid #ddd; padding: 8px; }
+          th { background: #f5f5f5; text-align: left; }
+          h2 { margin-bottom: 4px; }
+          .print-header { margin-bottom: 20px; }
+        </style>
+      </head>
+      <body>
+        ${printContents}
+      </body>
+    </html>
+  `;
     window.print();
+    document.body.innerHTML = originalContent;
+    window.location.reload();
   };
 
-  const handleExportClick = (format: "secure-pdf" | "certified-copy" | "raw-json") => {
+  const handleExportClick = (
+    format: "secure-pdf" | "certified-copy" | "raw-json"
+  ) => {
     setExportFormat(format);
-    
-    alert(`Đang tự động tải xuống file định dạng: ${format.toUpperCase()}`);
+
+    const blob = new Blob(["Mock file content"], {
+      type: "text/plain",
+    });
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `act-${id}.${format}`;
+    a.click();
   };
 
   const handleDone = () => {
@@ -110,7 +150,7 @@ export const ActExportPage = () => {
       <div className="animate-in fade-in duration-500 bg-[#f8fbff]/30 min-h-screen pb-12">
         <div className="max-w-[1400px] mx-auto py-8">
           {/* Tabs */}
-          <div className="mb-6">
+          {/* <div className="mb-6">
             <div className="flex items-center gap-8 border-b border-gray-100 px-8 mb-6 overflow-x-auto whitespace-nowrap">
               {tabs.map((tab) => {
                 const isActive = location.pathname === tab.path;
@@ -129,15 +169,23 @@ export const ActExportPage = () => {
               })}
             </div>
             <div className="px-8 flex justify-between items-center">
-              <div className="flex items-center gap-2 text-xs font-bold text-gray-400 tracking-wider">
+              <div className="flex items-center gap-2 text-xs font-bold text-gray-400 ">
                 <Link to="/notary-acts">NOTARIAL ACTS LIST</Link>
                 <ChevronRight size={16} />
                 <span className="text-blue-600">EXPORT</span>
               </div>
             </div>
+          </div> */}
+          <ActMenu />
+          <div className="p-8 flex justify-between items-center">
+            <div className="flex items-center gap-2 text-xs font-bold text-gray-400 r">
+              <Link to="/notary-acts">NOTARIAL ACTS LIST</Link>
+              <span className="ml-10"><ChevronRight size={16} /></span>
+              <span className="text-blue-600">EXPORT</span>
+            </div>
           </div>
-
           <div className="px-8">
+
             {/* Header */}
             <div className="flex justify-between items-start mb-8">
               <div>
@@ -174,12 +222,13 @@ export const ActExportPage = () => {
               <div className="space-y-6">
                 {/* Export Options Card */}
                 <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                  <h2 className="text-xs font-bold text-gray-900 tracking-wider uppercase mb-4">
+                  <h2 className="text-xs font-bold text-gray-900  uppercase mb-4">
                     Export Options
                   </h2>
 
                   <div className="space-y-3">
                     <button
+                      disabled={exportFormat === "secure-pdf"}
                       onClick={() => handleExportClick("secure-pdf")}
                       className={`w-full flex items-center p-4 rounded-2xl border transition-all duration-200 group ${exportFormat === "secure-pdf"
                         ? "border-blue-500 bg-blue-50/50 shadow-sm"
@@ -197,6 +246,7 @@ export const ActExportPage = () => {
                     </button>
 
                     <button
+                      disabled={exportFormat === "certified-copy"}
                       onClick={() => handleExportClick("certified-copy")}
                       className={`w-full flex items-center p-4 rounded-2xl border transition-all duration-200 group ${exportFormat === "certified-copy"
                         ? "border-blue-500 bg-blue-50/50 shadow-sm"
@@ -214,6 +264,7 @@ export const ActExportPage = () => {
                     </button>
 
                     <button
+                      disabled={exportFormat === "raw-json"}
                       onClick={() => handleExportClick("raw-json")}
                       className={`w-full flex items-center p-4 rounded-2xl border transition-all duration-200 group ${exportFormat === "raw-json"
                         ? "border-blue-500 bg-blue-50/50 shadow-sm"
@@ -233,7 +284,9 @@ export const ActExportPage = () => {
                 </div>
 
                 {/* Access Control Card */}
-                <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6">
+                <div
+
+                  className="bg-white border border-gray-200 rounded-xl shadow-sm p-6">
                   <h2 className="text-base font-bold text-gray-900 mb-4">Access Control</h2>
 
                   <div className="space-y-3">
@@ -282,7 +335,9 @@ export const ActExportPage = () => {
 
               {/* Right Column - Download Activity Logs (span 2) */}
               <div className="lg:col-span-2">
-                <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6">
+                <div
+                  ref={printRef}
+                  className="bg-white border border-gray-200 rounded-xl shadow-sm p-6">
                   <div className="flex justify-between items-center mb-4">
                     <div>
                       <h2 className="text-base font-bold text-gray-900">Download Activity Logs</h2>
@@ -299,7 +354,7 @@ export const ActExportPage = () => {
 
                   <div className="overflow-x-auto min-h-[300px]">
                     <table className="w-full text-left text-sm">
-                      <thead className="bg-slate-50 text-slate-500 text-xs font-bold uppercase tracking-wider border-b border-gray-100">
+                      <thead className="bg-slate-50 text-slate-500 text-xs font-bold uppercase  border-b border-gray-100">
                         <tr>
                           <th className="px-6 py-4">USER / ROLE</th>
                           <th className="px-6 py-4">DOCUMENT ID</th>
@@ -343,6 +398,12 @@ export const ActExportPage = () => {
                                   Verified
                                 </span>
                               )}
+                              {log.status === "Voided" && (
+                                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700">
+                                  <Ban size={14} className="text-red-600" />
+                                  Voided
+                                </span>
+                              )}
                               {log.status === "Pending Auth" && (
                                 <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-orange-100 text-orange-700">
                                   <Lock size={14} className="text-orange-600" />
@@ -355,6 +416,7 @@ export const ActExportPage = () => {
                                   Archived
                                 </span>
                               )}
+
                             </td>
                           </tr>
                         ))}
@@ -376,7 +438,7 @@ export const ActExportPage = () => {
                         >
                           &lt;
                         </button>
-                        
+
                         {Array.from({ length: totalPages }).map((_, idx) => {
                           const pageNum = idx + 1;
                           const isActive = currentPage === pageNum;
@@ -384,11 +446,10 @@ export const ActExportPage = () => {
                             <button
                               key={pageNum}
                               onClick={() => goToPage(pageNum)}
-                              className={`px-3 py-1 rounded-lg font-medium transition-colors ${
-                                isActive 
-                                  ? 'bg-blue-600 text-white shadow-sm' 
-                                  : 'bg-white border border-gray-200 hover:bg-gray-50 text-gray-700'
-                              }`}
+                              className={`px-3 py-1 rounded-lg font-medium transition-colors ${isActive
+                                ? 'bg-blue-600 text-white shadow-sm'
+                                : 'bg-white border border-gray-200 hover:bg-gray-50 text-gray-700'
+                                }`}
                             >
                               {pageNum}
                             </button>
@@ -454,7 +515,7 @@ export const ActExportPage = () => {
                 <X size={20} />
               </button>
             </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">Secure Link Generated</h3>
+            <h3 className="text-xs font-bold text-gray-900 mb-2">Secure Link Generated</h3>
             <p className="text-sm text-gray-600 mb-4">
               This link will expire in 24 hours and requires OTP authentication.
             </p>

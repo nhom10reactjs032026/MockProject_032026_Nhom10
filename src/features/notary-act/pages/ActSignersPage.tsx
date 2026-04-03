@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { Link, useParams, useLocation } from 'react-router-dom';
-import { 
-  UserPlus, 
-  CheckCircle2, 
-  Pencil, 
-  X, 
+import {
+  UserPlus,
+  CheckCircle2,
+  Pencil,
+  X,
   UploadCloud,
   ArrowLeft,
   ArrowRight
 } from 'lucide-react';
+import { ActMenu } from '../components/overview/ActMenu';
 
 export const ActSignersPage = () => {
   const { id } = useParams();
@@ -32,7 +33,7 @@ export const ActSignersPage = () => {
     <div className="animate-in fade-in duration-500 bg-[#f8fbff]/30 min-h-screen pb-12">
       <div className="max-w-[1400px] mx-auto py-8">
         {/* Header exact match with the screenshot */}
-        <div className="mb-6">
+        {/* <div className="mb-6">
           <div className="flex items-center gap-8 border-b border-gray-100 px-8 mb-6 overflow-x-auto whitespace-nowrap">
             {tabs.map((tab) => {
               const isActive = location.pathname === tab.path;
@@ -57,12 +58,13 @@ export const ActSignersPage = () => {
             <span>›</span>
             <span className="text-blue-600">SIGNERS AND IDENTITY</span>
           </div>
-        </div>
+        </div> */}
+        <ActMenu />
 
         {/* Content Container */}
         <div className="px-8 max-w-6xl">
           <div className="flex flex-col lg:flex-row gap-8">
-            
+
             {/* LEFT COLUMN: Signer List */}
             <div className="w-full lg:w-1/3 space-y-4">
               <div className="flex items-center justify-between mb-2">
@@ -99,7 +101,6 @@ export const ActSignersPage = () => {
             <div className="w-full lg:w-2/3">
               <div className="bg-white border border-gray-100 rounded-2xl p-8 shadow-sm">
                 <h2 className="text-lg font-bold text-gray-900 mb-8">Identity Verification for Alice Wonderland</h2>
-
                 <div className="space-y-6">
                   {/* Row 1 */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -122,28 +123,27 @@ export const ActSignersPage = () => {
                     </div>
                     <div>
                       <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">ID NUMBER</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         defaultValue="DL123456789"
                         className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                   </div>
-
                   {/* Row 2 */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">ISSUING AUTHORITY</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         defaultValue="California DMV"
                         className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                     <div>
                       <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">EXPIRATION DATE</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         defaultValue="12/31/2028"
                         className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
@@ -154,7 +154,7 @@ export const ActSignersPage = () => {
                   <div className="pt-2">
                     <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">VERIFICATION METHOD</label>
                     <div className="space-y-3">
-                      <label 
+                      <label
                         className={`flex items-center gap-3 cursor-pointer transition-opacity ${verificationMethod === 'physical' ? 'opacity-100' : 'opacity-50'}`}
                         onClick={() => setVerificationMethod('physical')}
                       >
@@ -163,7 +163,7 @@ export const ActSignersPage = () => {
                         </div>
                         <span className={`text-sm ${verificationMethod === 'physical' ? 'font-medium text-gray-900' : 'text-gray-600'}`}>Physical Presence</span>
                       </label>
-                      <label 
+                      <label
                         className={`flex items-center gap-3 cursor-pointer transition-opacity ${verificationMethod === 'ron' ? 'opacity-100' : 'opacity-50'}`}
                         onClick={() => setVerificationMethod('ron')}
                       >
@@ -174,14 +174,13 @@ export const ActSignersPage = () => {
                       </label>
                     </div>
                   </div>
-
                   {/* Attachments */}
                   <div className="pt-2">
                     <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">ATTACHMENTS</label>
                     <label className="border border-dashed border-gray-300 rounded-xl p-8 flex flex-col items-center justify-center text-center bg-gray-50/50 hover:bg-gray-50 cursor-pointer transition-colors relative block w-full">
-                      <input 
-                        type="file" 
-                        className="hidden" 
+                      <input
+                        type="file"
+                        className="hidden"
                         onChange={(e) => {
                           if (e.target.files && e.target.files[0]) {
                             setUploadedFile(e.target.files[0].name);
@@ -195,12 +194,12 @@ export const ActSignersPage = () => {
                           <p className="text-[10px] font-bold text-blue-600 hover:text-blue-800 uppercase tracking-widest mt-2" onClick={(e) => { e.preventDefault(); setUploadedFile(null); }}>REMOVE</p>
                         </div>
                       ) : (
-                         <>
+                        <>
                           <UploadCloud size={24} className="text-gray-400 mb-2" />
                           <p className="text-sm font-medium text-gray-500">
                             Drag and drop ID images here, or <span className="text-blue-600 hover:underline">Browse Files</span>
                           </p>
-                         </>
+                        </>
                       )}
                     </label>
                   </div>
@@ -213,23 +212,21 @@ export const ActSignersPage = () => {
                       Status: Valid
                     </div>
                   </div>
-
                 </div>
               </div>
             </div>
-
           </div>
 
           {/* Footer Actions */}
           <div className="mt-12 flex items-center justify-between">
-            <Link 
+            <Link
               to={`/notary-acts/${id}/setup`}
               className="px-6 py-2 flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-gray-900 transition-colors"
             >
               <ArrowLeft size={16} />
               Back
             </Link>
-            <Link 
+            <Link
               to={`/notary-acts/${id}/execution`}
               className="px-8 py-2.5 bg-blue-600 hover:bg-blue-700 transition-colors text-white text-sm font-bold rounded-xl flex items-center gap-2 shadow-md"
             >
@@ -237,7 +234,6 @@ export const ActSignersPage = () => {
               <ArrowRight size={16} />
             </Link>
           </div>
-          
         </div>
       </div>
     </div>
