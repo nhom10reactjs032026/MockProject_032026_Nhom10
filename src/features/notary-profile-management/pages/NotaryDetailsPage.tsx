@@ -3,7 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { useNotaryDetail } from "../hooks/useNotaries";
+import { useNotaryDetail, useUpdateNotary } from "../hooks/useNotaries";
 import {
   Loader2,
   ArrowLeft,
@@ -13,6 +13,16 @@ import {
   Fingerprint,
   Ban,
 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { useState } from "react";
+import { toast } from "sonner";
 
 // Tab Components
 import { NotaryOverview } from "../components/details/tabs/NotaryOverview";
@@ -21,9 +31,25 @@ import { NotaryLegalCommission } from "../components/details/tabs/NotaryLegalCom
 import { NotaryBondInsurance } from "../components/details/tabs/NotaryBondInsurance";
 import { NotaryServiceCapability } from "../components/details/tabs/NotaryServiceCapability";
 import { NotaryDocuments } from "../components/details/tabs/NatoryDocuments";
+
 export const NotaryDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
   const { data: notary, isLoading } = useNotaryDetail(id || "");
+  const updateNotary = useUpdateNotary();
+  const [isDeactivateDialogOpen, setIsDeactivateDialogOpen] = useState(false);
+
+  const handleDeactivate = async () => {
+    try {
+      await updateNotary.mutateAsync({
+        id: id || "",
+        data: { status: "Deactive" },
+      });
+      toast.success("Notary deactivated successfully");
+      setIsDeactivateDialogOpen(false);
+    } catch (error) {
+      toast.error("Failed to deactivate notary");
+    }
+  };
 
   if (isLoading) {
     return (
@@ -56,6 +82,8 @@ export const NotaryDetailsPage = () => {
       </div>
     );
   }
+
+  const isActive = notary.status === "Active";
 
   return (
     <div className="animate-in fade-in duration-500 bg-[#f8fbff]/30 min-h-screen">
@@ -91,11 +119,17 @@ export const NotaryDetailsPage = () => {
                   <h1 className="text-[32px] font-bold text-slate-900 tracking-tight">
                     {notary.firstName} {notary.lastName}
                   </h1>
-                  <Badge className="bg-emerald-500 hover:bg-emerald-600 text-white border-none px-4 py-1 rounded-full font-bold text-xs">
-                    Active
+                  <Badge 
+                    className={`${
+                      isActive 
+                        ? "bg-emerald-500 hover:bg-emerald-600" 
+                        : "bg-slate-400 hover:bg-slate-500"
+                    } text-white border-none px-4 py-1 rounded-full font-bold text-xs transition-colors`}
+                  >
+                    {isActive ? "Active" : "Inactive"}
                   </Badge>
                   <Badge className="bg-[#b3d334] text-white border-none px-4 py-1 rounded-full font-bold text-xs">
-                    Rating: 4.8/5.0
+                    Rating: {notary.rating?.toFixed(1) || "4.8"}/5.0
                   </Badge>
                 </div>
 
@@ -110,24 +144,27 @@ export const NotaryDetailsPage = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <Phone size={16} className="text-slate-300" />
-                    <span>+1 (555) 234-567</span>
+                    <span>{notary.phone}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <MapPin size={16} className="text-slate-300" />
-                    <span>San Diego, California</span>
+                    <span>{notary.city}, {notary.state}</span>
                   </div>
                 </div>
               </div>
             </div>
 
             <div className="w-full lg:w-auto self-start pt-2">
-              <Button
-                variant="outline"
-                className="text-rose-400 border-rose-100 hover:bg-rose-50 hover:text-rose-500 rounded-2xl px-8 h-12 flex items-center gap-3 font-bold border-2 transition-all"
-              >
-                <Ban size={18} />
-                Deactive
-              </Button>
+              {isActive && (
+                <Button
+                  variant="outline"
+                  onClick={() => setIsDeactivateDialogOpen(true)}
+                  className="text-rose-400 border-rose-100 hover:bg-rose-50 hover:text-rose-500 rounded-2xl px-8 h-12 flex items-center gap-3 font-bold border-2 transition-all"
+                >
+                  <Ban size={18} />
+                  Deactivate
+                </Button>
+              )}
             </div>
           </div>
         </div>
@@ -176,7 +213,44 @@ export const NotaryDetailsPage = () => {
           <TabsContent value="documents">
             <NotaryDocuments />
           </TabsContent>
+          <TabsContent value="audit">
+            <div className="bg-white p-12 rounded-3xl border border-dashed border-slate-200 text-center">
+              <p className="text-slate-400 font-medium italic">Audit history coming soon...</p>
+            </div>
+          </TabsContent>
         </Tabs>
+
+        {/* Deactivation Confirmation Dialog */}
+        <Dialog open={isDeactivateDialogOpen} onOpenChange={setIsDeactivateDialogOpen}>
+          <DialogContent className="rounded-3xl p-8 max-w-md">
+            <DialogHeader className="space-y-4">
+              <div className="w-16 h-16 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                <Ban size={32} />
+              </div>
+              <DialogTitle className="text-2xl font-bold text-center text-slate-900">Confirm Deactivation</DialogTitle>
+              <DialogDescription className="text-center text-slate-500 text-base leading-relaxed">
+                Are you sure you want to deactivate <span className="font-bold text-slate-900">{notary.firstName} {notary.lastName}</span>? This action will restrict their access to the platform.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter className="flex flex-col sm:flex-row gap-3 mt-8 sm:justify-center">
+              <Button 
+                variant="outline" 
+                onClick={() => setIsDeactivateDialogOpen(false)}
+                className="rounded-xl h-12 px-8 font-bold border-slate-200 order-2 sm:order-1"
+              >
+                Cancel
+              </Button>
+              <Button 
+                onClick={handleDeactivate}
+                disabled={updateNotary.isPending}
+                className="bg-rose-500 hover:bg-rose-600 text-white rounded-xl h-12 px-10 font-bold shadow-lg shadow-rose-100 order-1 sm:order-2"
+              >
+                {updateNotary.isPending ? <Loader2 className="animate-spin mr-2" /> : null}
+                Confirm Deactivate
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
         <style>{`
           .tab-trigger {

@@ -10,6 +10,7 @@ import { AdminLayout } from "../components/layout/AdminLayout";
 import {
   NotaryManagementPage,
   NotaryDetailsPage,
+  NotaryCreatePage,
 } from "@/features/notary-profile-management";
 
 import { PlanSchedulingPage } from "../features/scheduling/pages/PlanSchedulingPage";
@@ -198,6 +199,7 @@ export const router = createBrowserRouter([
                 ),
               },
               { path: "admin/notaries", element: <NotaryManagementPage /> },
+              { path: "admin/notaries/create", element: <NotaryCreatePage /> },
               {
                 path: "admin/notaries/:id",
                 element: <NotaryDetailsPage />,

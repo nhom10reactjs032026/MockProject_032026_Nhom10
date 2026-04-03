@@ -4,7 +4,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Edit3, Save, Upload, Camera, Loader2 } from 'lucide-react';
+import { Edit3, Save, Upload, Camera, Loader2, X } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
@@ -78,23 +78,23 @@ export const NotaryPersonalInfo = ({ notaryId }: NotaryPersonalInfoProps) => {
           image: profileImage || undefined,
         },
       });
-      
-      toast.success('Information saved successfully!', {
-        description: 'The notary profile has been updated.',
-      });
+      toast.success('Information updated successfully.'); // FUNC_01, FUNC_08
       setIsEditing(false);
-    } catch (error) {
-      toast.error('Failed to update profile', {
-        description: 'An error occurred while saving changes.',
-      });
+    } catch (error: any) {
+      if (error.field === 'email') {
+         form.setError('email', { message: error.message }); // FUNC_05
+      } else {
+        toast.error('Failed to update profile');
+      }
     }
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error('File too large', { description: 'Maximum file size is 5MB' });
+      const allowedTypes = ['image/jpeg', 'image/png'];
+      if (!allowedTypes.includes(file.type) || file.size > 5 * 1024 * 1024) {
+        toast.error('Invalid file format. Allowed formats: JPG, PNG. Max 5MB.'); // FUNC_09
         return;
       }
       const reader = new FileReader();
@@ -107,28 +107,49 @@ export const NotaryPersonalInfo = ({ notaryId }: NotaryPersonalInfoProps) => {
   };
 
   if (isLoading) {
-    return <Skeleton className="h-[500px] w-full rounded-3xl" />;
+    return (
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-12 p-8">
+        <Skeleton className="h-48 w-48 rounded-full mx-auto" />
+        <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-8">
+          <Skeleton className="h-20 w-full rounded-2xl" />
+          <Skeleton className="h-20 w-full rounded-2xl" />
+          <Skeleton className="h-20 w-full rounded-2xl" />
+          <Skeleton className="h-20 w-full rounded-2xl" />
+        </div>
+      </div>
+    );
   }
 
   if (!notary) return null;
 
+  // Format date for display yyyy-mm-dd (GUI_PI_17)
+  const formatDOB = (dateStr?: string) => {
+     if (!dateStr) return 'Not provided';
+     try {
+       const date = new Date(dateStr);
+       return date.toISOString().split('T')[0];
+     } catch (e) {
+       return dateStr;
+     }
+  };
+
   return (
-    <div className="bg-white rounded-3xl border border-gray-100 p-8 shadow-sm animate-in fade-in duration-500">
-      <div className="flex justify-between items-start mb-8">
+    <div className="bg-white rounded-[2.5rem] border border-gray-100 p-10 shadow-sm animate-in fade-in duration-700 relative overflow-hidden group">
+      <div className="flex flex-col sm:flex-row justify-between items-start gap-6 mb-12 relative z-10">
         <div>
-          <h2 className="text-2xl font-bold text-slate-800">Personal Information</h2>
-          <p className="text-sm text-slate-400 font-medium">Manage the notary's basic personal details</p>
+          <h2 className="text-[32px] font-bold text-slate-900 tracking-tight leading-none mb-3">Personal Information</h2>
+          <p className="text-slate-400 font-medium">Detailed secure identification and contact records</p>
         </div>
         {!isEditing ? (
           <Button 
             onClick={() => setIsEditing(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-6 py-2 h-11 flex items-center gap-2 shadow-lg shadow-blue-100"
+            className="group/btn bg-blue-600 hover:bg-blue-700 text-white rounded-[1.25rem] px-8 h-12 flex items-center gap-3 shadow-xl shadow-blue-100 transition-all active:scale-95"
           >
-            <Edit3 size={18} />
-            Edit Section
+            <Edit3 size={18} className="group-hover/btn:rotate-12 transition-transform" />
+            <span className="font-bold">Edit Section</span>
           </Button>
         ) : (
-          <div className="flex gap-3">
+          <div className="flex gap-4">
             <Button 
               variant="outline" 
               onClick={() => {
@@ -136,14 +157,14 @@ export const NotaryPersonalInfo = ({ notaryId }: NotaryPersonalInfoProps) => {
                 form.reset();
               }}
               disabled={updateNotary.isPending}
-              className="rounded-xl border-gray-200 h-11 px-6"
+              className="rounded-[1.25rem] border-gray-200 h-12 px-8 font-bold text-slate-500 hover:bg-slate-50 transition-all"
             >
               Cancel
             </Button>
             <Button 
               onClick={form.handleSubmit(onSubmit)}
               disabled={updateNotary.isPending}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-6 py-2 h-11 flex items-center gap-2 shadow-lg shadow-emerald-100"
+              className="bg-emerald-500 hover:bg-emerald-600 text-white rounded-[1.25rem] px-8 h-12 flex items-center gap-3 shadow-xl shadow-emerald-100 transition-all font-bold active:scale-95"
             >
               {updateNotary.isPending ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
               {updateNotary.isPending ? 'Saving...' : 'Save Changes'}
@@ -152,31 +173,31 @@ export const NotaryPersonalInfo = ({ notaryId }: NotaryPersonalInfoProps) => {
         )}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-12">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 relative z-10">
         {/* Photo Section */}
-        <div className="lg:col-span-1 flex flex-col items-center">
+        <div className="lg:col-span-3 flex flex-col items-center">
           <div 
-            className={`relative group ${isEditing ? 'cursor-pointer' : 'cursor-default'}`} 
+            className={`relative group/image ${isEditing ? 'cursor-pointer hover:scale-105' : 'cursor-default'} transition-all duration-500`} 
             onClick={() => isEditing && fileInputRef.current?.click()}
           >
-            <div className="h-48 w-48 rounded-full border-4 border-slate-50 overflow-hidden bg-slate-100 shadow-inner flex items-center justify-center relative">
+            <div className="h-52 w-52 rounded-[3.5rem] border-[8px] border-slate-50 overflow-hidden bg-slate-100 shadow-xl flex items-center justify-center relative">
               {profileImage ? (
-                <img src={profileImage} alt="Profile" className="h-full w-full object-cover" />
+                <img src={profileImage} alt="Profile" className="h-full w-full object-cover group-hover/image:scale-110 transition-transform duration-700" />
               ) : (
-                <Camera size={48} className="text-slate-300" />
+                <Camera size={56} className="text-slate-300" />
               )}
               {isEditing && (
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                   <Upload className="text-white" size={32} />
+                <div className="absolute inset-0 bg-blue-600/60 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover/image:opacity-100 transition-all duration-300">
+                   <Upload className="text-white animate-bounce" size={40} />
                 </div>
               )}
             </div>
             {isEditing && (
               <Button 
                 size="icon" 
-                className="absolute bottom-2 right-2 rounded-full h-10 w-10 bg-blue-600 hover:bg-blue-700 shadow-xl border-4 border-white"
+                className="absolute -bottom-2 -right-2 rounded-2xl h-12 w-12 bg-white text-blue-600 hover:bg-blue-50 shadow-xl border-4 border-slate-50 group-hover/image:rotate-12 transition-all active:scale-90"
               >
-                <Camera size={18} />
+                <Camera size={20} />
               </Button>
             )}
             <input 
@@ -187,19 +208,19 @@ export const NotaryPersonalInfo = ({ notaryId }: NotaryPersonalInfoProps) => {
               accept="image/png, image/jpeg"
             />
           </div>
-          <p className="mt-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Profile Photo</p>
-          {isEditing && (
-            <p className="mt-2 text-[10px] text-slate-400 italic text-center">JPG or PNG, max 5MB</p>
-          )}
+          <div className="mt-6 text-center">
+            <p className="text-[10px] font-black text-slate-800 uppercase tracking-[0.2em] mb-1">Official Identification</p>
+            <p className="text-[11px] text-slate-400 font-medium">Headshot updated Mar 2026</p>
+          </div>
         </div>
 
         {/* Info Form */}
-        <div className="lg:col-span-3">
+        <div className="lg:col-span-9">
           {!isEditing ? (
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
                 <InfoField label="First Name" value={notary.firstName} />
                 <InfoField label="Last Name" value={notary.lastName} />
-                <InfoField label="Date of Birth" value={notary.dob} />
+                <InfoField label="Date of Birth" value={formatDOB(notary.dob)} isHighLight />
                 <InfoField label="Email Address" value={notary.email} />
                 <InfoField label="Phone Number" value={notary.phone} />
                 <InfoField label="Street Address" value={notary.addressLine1} />
@@ -209,18 +230,18 @@ export const NotaryPersonalInfo = ({ notaryId }: NotaryPersonalInfoProps) => {
              </div>
           ) : (
             <Form {...form}>
-              <form className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+              <form className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
                 <FormField
                   control={form.control}
                   name="firstName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-slate-600 font-bold">First Name</FormLabel>
+                      <FormLabel className="text-slate-800 font-bold text-sm tracking-tight ml-1">First Name</FormLabel>
                       <FormControl>
                         <Input 
                           {...field} 
-                          placeholder="Ex: James" 
-                          className="rounded-xl h-12 bg-gray-50 border-gray-100 focus:bg-white transition-all" 
+                          placeholder="First Name" 
+                          className="rounded-[1.25rem] h-14 bg-slate-50/50 border-gray-100 focus:bg-white focus:ring-2 focus:ring-blue-500/10 transition-all text-base font-medium px-6" 
                         />
                       </FormControl>
                       <FormMessage />
@@ -232,12 +253,12 @@ export const NotaryPersonalInfo = ({ notaryId }: NotaryPersonalInfoProps) => {
                   name="lastName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-slate-600 font-bold">Last Name</FormLabel>
+                      <FormLabel className="text-slate-800 font-bold text-sm tracking-tight ml-1">Last Name</FormLabel>
                       <FormControl>
                         <Input 
                           {...field} 
-                          placeholder="Ex: Smith" 
-                          className="rounded-xl h-12 bg-gray-50 border-gray-100 focus:bg-white transition-all" 
+                          placeholder="Last Name" 
+                          className="rounded-[1.25rem] h-14 bg-slate-50/50 border-gray-100 focus:bg-white focus:ring-2 focus:ring-blue-500/10 transition-all text-base font-medium px-6" 
                         />
                       </FormControl>
                       <FormMessage />
@@ -249,12 +270,12 @@ export const NotaryPersonalInfo = ({ notaryId }: NotaryPersonalInfoProps) => {
                   name="dob"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-slate-600 font-bold">Date of Birth</FormLabel>
+                      <FormLabel className="text-slate-800 font-bold text-sm tracking-tight ml-1">Date of Birth</FormLabel>
                       <FormControl>
                         <Input 
                           type="date" 
                           {...field} 
-                          className="rounded-xl h-12 bg-gray-50 border-gray-100 focus:bg-white transition-all" 
+                          className="rounded-[1.25rem] h-14 bg-slate-50/50 border-gray-100 focus:bg-white focus:ring-2 focus:ring-blue-500/10 transition-all text-base font-medium px-6" 
                         />
                       </FormControl>
                       <FormMessage />
@@ -266,12 +287,12 @@ export const NotaryPersonalInfo = ({ notaryId }: NotaryPersonalInfoProps) => {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-slate-600 font-bold">Email Address</FormLabel>
+                      <FormLabel className="text-slate-800 font-bold text-sm tracking-tight ml-1">Email Address</FormLabel>
                       <FormControl>
                         <Input 
                           {...field} 
-                          placeholder="notary@example.com" 
-                          className="rounded-xl h-12 bg-gray-50 border-gray-100 focus:bg-white transition-all" 
+                          placeholder="email@example.com" 
+                          className="rounded-[1.25rem] h-14 bg-slate-50/50 border-gray-100 focus:bg-white focus:ring-2 focus:ring-blue-500/10 transition-all text-base font-medium px-6" 
                         />
                       </FormControl>
                       <FormMessage />
@@ -282,13 +303,13 @@ export const NotaryPersonalInfo = ({ notaryId }: NotaryPersonalInfoProps) => {
                   control={form.control}
                   name="phone"
                   render={({ field }) => (
-                    <FormItem className="md:col-span-2">
-                      <FormLabel className="text-slate-600 font-bold">Phone Number</FormLabel>
+                    <FormItem>
+                      <FormLabel className="text-slate-800 font-bold text-sm tracking-tight ml-1">Phone Number</FormLabel>
                       <FormControl>
                         <Input 
                           {...field} 
-                          placeholder="+1 (555) 000-0000" 
-                          className="rounded-xl h-12 bg-gray-50 border-gray-100 focus:bg-white transition-all" 
+                          placeholder="Phone Number" 
+                          className="rounded-[1.25rem] h-14 bg-slate-50/50 border-gray-100 focus:bg-white focus:ring-2 focus:ring-blue-500/10 transition-all text-base font-medium px-6" 
                         />
                       </FormControl>
                       <FormMessage />
@@ -300,12 +321,12 @@ export const NotaryPersonalInfo = ({ notaryId }: NotaryPersonalInfoProps) => {
                   name="addressLine1"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-slate-600 font-bold">Street Address</FormLabel>
+                      <FormLabel className="text-slate-800 font-bold text-sm tracking-tight ml-1">Street Address</FormLabel>
                       <FormControl>
                         <Input 
                           {...field} 
-                          placeholder="123 Harmony Street" 
-                          className="rounded-xl h-12 bg-gray-50 border-gray-100 focus:bg-white transition-all" 
+                          placeholder="Street Address" 
+                          className="rounded-[1.25rem] h-14 bg-slate-50/50 border-gray-100 focus:bg-white focus:ring-2 focus:ring-blue-500/10 transition-all text-base font-medium px-6" 
                         />
                       </FormControl>
                       <FormMessage />
@@ -317,12 +338,12 @@ export const NotaryPersonalInfo = ({ notaryId }: NotaryPersonalInfoProps) => {
                   name="zipCode"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-slate-600 font-bold">Zip Code</FormLabel>
+                      <FormLabel className="text-slate-800 font-bold text-sm tracking-tight ml-1">Zip Code</FormLabel>
                       <FormControl>
                         <Input 
                           {...field} 
-                          placeholder="90001" 
-                          className="rounded-xl h-12 bg-gray-50 border-gray-100 focus:bg-white transition-all" 
+                          placeholder="Zip Code" 
+                          className="rounded-[1.25rem] h-14 bg-slate-50/50 border-gray-100 focus:bg-white focus:ring-2 focus:ring-blue-500/10 transition-all text-base font-medium px-6" 
                         />
                       </FormControl>
                       <FormMessage />
@@ -334,12 +355,12 @@ export const NotaryPersonalInfo = ({ notaryId }: NotaryPersonalInfoProps) => {
                   name="city"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-slate-600 font-bold">City</FormLabel>
+                      <FormLabel className="text-slate-800 font-bold text-sm tracking-tight ml-1">City</FormLabel>
                       <FormControl>
                         <Input 
                           {...field} 
-                          placeholder="Los Angeles" 
-                          className="rounded-xl h-12 bg-gray-50 border-gray-100 focus:bg-white transition-all" 
+                          placeholder="City" 
+                          className="rounded-[1.25rem] h-14 bg-slate-50/50 border-gray-100 focus:bg-white focus:ring-2 focus:ring-blue-500/10 transition-all text-base font-medium px-6" 
                         />
                       </FormControl>
                       <FormMessage />
@@ -351,22 +372,22 @@ export const NotaryPersonalInfo = ({ notaryId }: NotaryPersonalInfoProps) => {
                   name="state"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-slate-600 font-bold">State</FormLabel>
+                      <FormLabel className="text-slate-800 font-bold text-sm tracking-tight ml-1">State</FormLabel>
                       <Select 
                         onValueChange={field.onChange} 
                         value={field.value}
                       >
                         <FormControl>
-                          <SelectTrigger className="rounded-xl h-12 bg-gray-50 border-gray-100 focus:bg-white transition-all">
+                          <SelectTrigger className="rounded-[1.25rem] h-14 bg-slate-50/50 border-gray-100 focus:bg-white focus:ring-2 focus:ring-blue-500/10 transition-all text-base font-medium px-6 outline-none">
                             <SelectValue placeholder="Select State" />
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent className="rounded-xl border-gray-100">
-                          <SelectItem value="California">California</SelectItem>
-                          <SelectItem value="Texas">Texas</SelectItem>
-                          <SelectItem value="New York">New York</SelectItem>
-                          <SelectItem value="Florida">Florida</SelectItem>
-                          <SelectItem value="Washington">Washington</SelectItem>
+                        <SelectContent className="rounded-2xl border-gray-100 shadow-2xl p-2">
+                          <SelectItem value="California" className="rounded-xl">California</SelectItem>
+                          <SelectItem value="Texas" className="rounded-xl">Texas</SelectItem>
+                          <SelectItem value="New York" className="rounded-xl">New York</SelectItem>
+                          <SelectItem value="Florida" className="rounded-xl">Florida</SelectItem>
+                          <SelectItem value="Washington" className="rounded-xl">Washington</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -386,13 +407,18 @@ interface InfoFieldProps {
   label: string;
   value?: string;
   isFullWidth?: boolean;
+  isHighLight?: boolean;
 }
 
-const InfoField = ({ label, value, isFullWidth }: InfoFieldProps) => (
-  <div className={isFullWidth ? 'md:col-span-2' : ''}>
-    <Label className="text-slate-400 font-bold text-[11px] uppercase tracking-widest mb-2 block">{label}</Label>
-    <div className="h-12 w-full bg-slate-50/50 rounded-xl px-4 flex items-center border border-slate-100">
-       <span className="text-slate-700 font-medium">{value || 'Not provided'}</span>
+const InfoField = ({ label, value, isFullWidth, isHighLight }: InfoFieldProps) => (
+  <div className={`space-y-3 ${isFullWidth ? 'md:col-span-2' : ''} group/field`}>
+    <Label className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.15em] ml-1 group-hover/field:text-blue-500 transition-colors">
+      {label}
+    </Label>
+    <div className={`h-14 w-full ${isHighLight ? 'bg-blue-50/50' : 'bg-slate-50/50'} rounded-[1.25rem] px-6 flex items-center border ${isHighLight ? 'border-blue-100' : 'border-slate-50/50'} group-hover/field:border-blue-200 transition-all shadow-sm shadow-transparent group-hover/field:shadow-blue-50 group-hover/field:translate-x-1`}>
+       <span className={`text-slate-800 text-base font-bold tracking-tight ${isHighLight ? 'text-blue-700' : ''}`}>
+         {value || 'Not provided'}
+       </span>
     </div>
   </div>
 );

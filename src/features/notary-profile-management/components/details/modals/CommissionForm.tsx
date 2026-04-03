@@ -26,8 +26,10 @@ import {
   SelectTrigger, 
   SelectValue 
 } from '@/components/ui/select';
-import { Upload, Loader2 } from 'lucide-react';
+import { Upload, Loader2, FileText, CheckCircle2, AlertCircle } from 'lucide-react';
 import { commissionSchema, type CommissionFormValues } from '../../../schemas/notary-commission.schema';
+import { useState, useRef } from 'react';
+import { toast } from 'sonner';
 import type { Commission } from '../../../types/notary.types';
 
 interface CommissionFormProps {
@@ -45,6 +47,9 @@ export const CommissionForm = ({
   initialData, 
   isSubmitting 
 }: CommissionFormProps) => {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const form = useForm<CommissionFormValues>({
     resolver: zodResolver(commissionSchema),
     defaultValues: {
@@ -54,6 +59,20 @@ export const CommissionForm = ({
       expiryDate: '',
     },
   });
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const validTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
+    if (!validTypes.includes(file.type)) {
+      toast.error('Invalid file format. Allowed formats: PDF, JPG, PNG.'); // FUNC_10
+      return;
+    }
+
+    setSelectedFile(file);
+    form.setValue('document', file);
+  };
 
   useEffect(() => {
     if (initialData) {
@@ -81,7 +100,7 @@ export const CommissionForm = ({
             {initialData ? 'Edit Commission' : 'Upload Commission'}
           </DialogTitle>
           <DialogDescription className="text-slate-400 font-medium">
-            Fill in the details below to {initialData ? 'update' : 'add'} a commission record.
+            System displays the "Configure Commission" form with all required fields (State, Commission Number, Issue Date, Expiration Date, Document)
           </DialogDescription>
         </DialogHeader>
 
@@ -170,16 +189,34 @@ export const CommissionForm = ({
               </div>
 
               <div className="space-y-3">
-                <FormLabel className="text-slate-600 font-bold">Commission Document (Optional)</FormLabel>
-                <div className="border-2 border-dashed border-slate-200 rounded-2xl p-8 flex flex-col items-center justify-center gap-3 bg-slate-50/50 hover:bg-slate-50 transition-colors cursor-pointer group">
-                  <div className="h-12 w-12 rounded-full bg-white shadow-sm flex items-center justify-center text-slate-400 group-hover:text-blue-500 transition-colors">
-                    <Upload size={24} />
+                <FormLabel className="text-slate-600 font-bold">Commission Document (Required for Upload)</FormLabel>
+                <input 
+                  type="file" 
+                  ref={fileInputRef}
+                  className="hidden" 
+                  accept=".pdf,.jpg,.jpeg,.png"
+                  onChange={handleFileChange}
+                />
+                <div 
+                  onClick={() => fileInputRef.current?.click()}
+                  className={`border-2 border-dashed ${selectedFile ? 'border-emerald-200 bg-emerald-50/30' : 'border-slate-200 bg-slate-50/50'} rounded-2xl p-8 flex flex-col items-center justify-center gap-3 hover:bg-slate-50 transition-colors cursor-pointer group`}
+                >
+                  <div className={`h-12 w-12 rounded-full flex items-center justify-center transition-colors shadow-sm ${selectedFile ? 'bg-emerald-100 text-emerald-600' : 'bg-white text-slate-400 group-hover:text-blue-500'}`}>
+                    {selectedFile ? <CheckCircle2 size={24} /> : <Upload size={24} />}
                   </div>
                   <div className="text-center">
-                    <p className="text-sm font-bold text-slate-700">Click to upload or drag & drop</p>
-                    <p className="text-[11px] text-slate-400 font-medium mt-1">PDF, PNG, JPG (max. 10MB)</p>
+                    <p className={`text-sm font-bold ${selectedFile ? 'text-emerald-700' : 'text-slate-700'}`}>
+                      {selectedFile ? selectedFile.name : 'Click to upload or drag & drop'}
+                    </p>
+                    <p className="text-[11px] text-slate-400 font-medium mt-1">Allowed formats: PDF, PNG, JPG (max. 10MB)</p>
                   </div>
                 </div>
+                {form.formState.errors.document && (
+                  <p className="text-sm font-medium text-rose-500 flex items-center gap-1 mt-1">
+                    <AlertCircle size={14} />
+                    {form.formState.errors.document.message as string}
+                  </p>
+                )}
               </div>
             </div>
 

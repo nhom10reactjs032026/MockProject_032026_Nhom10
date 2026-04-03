@@ -45,6 +45,11 @@ export const NotaryLegalCommission = ({ notaryId }: NotaryLegalCommissionProps) 
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [stateFilter, setStateFilter] = useState('all');
+  const [expiryFilter, setExpiryFilter] = useState('all'); // Added for GUI_LC_33
+
+  // Pagination state (GUI_LC_46)
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   // State for Form Modal
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -58,7 +63,8 @@ export const NotaryLegalCommission = ({ notaryId }: NotaryLegalCommissionProps) 
 
     if (searchTerm) {
       result = result.filter(c => 
-        c.commissionNumber.toLowerCase().includes(searchTerm.toLowerCase())
+        c.commissionNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        c.id.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
@@ -74,6 +80,13 @@ export const NotaryLegalCommission = ({ notaryId }: NotaryLegalCommissionProps) 
 
     return result;
   }, [notary, searchTerm, statusFilter, stateFilter]);
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredCommissions.length / itemsPerPage);
+  const currentItems = filteredCommissions.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   // Expiry Alerts Logic
   const expiringSoonCount = useMemo(() => {
@@ -99,30 +112,28 @@ export const NotaryLegalCommission = ({ notaryId }: NotaryLegalCommissionProps) 
             status: new Date(values.expiryDate) > new Date() ? 'Valid' : 'Expired'
           }
         });
-        toast.success('Commission updated', { description: 'The record has been updated successfully.' });
+        toast.success('Commission record updated successfully.'); // FUNC_10
       } else {
         await addMutation.mutateAsync({
           notaryId,
           data: values
         });
-        toast.success('Commission uploaded', { description: 'New commission record has been added.' });
+        toast.success('Commission record uploaded successfully');
       }
-      // Audit log recorded (A-SC004-02-AC5)
-      console.log(`Audit Log: ${editingCommission ? 'Updated' : 'Created'} commission for notary ${notaryId}`);
       setIsFormOpen(false);
       setEditingCommission(null);
     } catch (error) {
-      toast.error('Operation failed', { description: 'Something went wrong. Please try again.' });
+      toast.error('Unable to update commission record. Please try again.'); // FUNC_15
     }
   };
 
   const handleDelete = async (id: string) => {
-     if (window.confirm('Are you sure you want to delete this commission record?')) {
+     if (window.confirm('Do you want to delete this commission record?')) { // User requirement says "Confirm the deletion in the popup"
        try {
          await deleteMutation.mutateAsync({ notaryId, commissionId: id });
-         toast.success('Commission deleted');
+         toast.success('Commission record deleted successfully.'); // FUNC_13
        } catch (error) {
-         toast.error('Failed to delete');
+         toast.error('Failed to delete commission');
        }
      }
   };
@@ -153,9 +164,9 @@ export const NotaryLegalCommission = ({ notaryId }: NotaryLegalCommissionProps) 
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
          <div className="flex items-center gap-4">
-           <h2 className="text-[28px] font-bold text-slate-900 tracking-tight">Commission Information</h2>
+           <h2 className="text-[28px] font-bold text-slate-900 tracking-tight leading-none">Commission Information</h2>
            {hasExpired && (
-             <Badge className="bg-rose-50 text-rose-500 border-none font-bold text-[10px] uppercase h-6 px-3 rounded-full">
+             <Badge className="bg-rose-50 text-rose-500 border-none font-bold text-[10px] uppercase h-6 px-3 rounded-full flex items-center justify-center">
                Expired
              </Badge>
            )}
@@ -173,19 +184,19 @@ export const NotaryLegalCommission = ({ notaryId }: NotaryLegalCommissionProps) 
       </div>
 
       {/* Filter & Search Bar */}
-      <div className="bg-white/50 backdrop-blur-sm p-2 rounded-3xl border border-gray-100 flex flex-col md:flex-row gap-4 mb-6">
-        <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4 p-2">
+      <div className="bg-white/70 backdrop-blur-md p-4 rounded-[2rem] border border-gray-100 flex flex-col xl:flex-row gap-6 mb-8 shadow-sm">
+        <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="space-y-2">
             <Label className="text-[10px] uppercase font-bold text-slate-400 tracking-[0.1em] ml-2">Status</Label>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="bg-white border-none text-slate-600 shadow-sm h-11 rounded-2xl px-4 focus:ring-1 ring-blue-100">
+              <SelectTrigger className="bg-slate-50/50 border-gray-100 text-slate-600 shadow-none h-11 rounded-2xl px-4 focus:ring-2 ring-blue-500/20 active:scale-95 transition-all">
                 <SelectValue placeholder="All Statuses" />
               </SelectTrigger>
-              <SelectContent className="rounded-2xl border-gray-100 shadow-xl">
+              <SelectContent className="rounded-2xl border-gray-100 shadow-xl overflow-hidden">
                 <SelectItem value="all">All Statuses</SelectItem>
                 <SelectItem value="Valid">Valid</SelectItem>
                 <SelectItem value="Expired">Expired</SelectItem>
-                <SelectItem value="Pending">Pending</SelectItem>
+                <SelectItem value="Not eligible">Not eligible</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -193,10 +204,10 @@ export const NotaryLegalCommission = ({ notaryId }: NotaryLegalCommissionProps) 
           <div className="space-y-2">
             <Label className="text-[10px] uppercase font-bold text-slate-400 tracking-[0.1em] ml-2">State</Label>
             <Select value={stateFilter} onValueChange={setStateFilter}>
-              <SelectTrigger className="bg-white border-none text-slate-600 shadow-sm h-11 rounded-2xl px-4 focus:ring-1 ring-blue-100">
+              <SelectTrigger className="bg-slate-50/50 border-gray-100 text-slate-600 shadow-none h-11 rounded-2xl px-4 focus:ring-2 ring-blue-500/20 active:scale-95 transition-all">
                 <SelectValue placeholder="All States" />
               </SelectTrigger>
-              <SelectContent className="rounded-2xl border-gray-100 shadow-xl">
+              <SelectContent className="rounded-2xl border-gray-100 shadow-xl overflow-hidden">
                 <SelectItem value="all">All States</SelectItem>
                 <SelectItem value="California">California</SelectItem>
                 <SelectItem value="Texas">Texas</SelectItem>
@@ -204,26 +215,41 @@ export const NotaryLegalCommission = ({ notaryId }: NotaryLegalCommissionProps) 
               </SelectContent>
             </Select>
           </div>
+
+          <div className="space-y-2">
+            <Label className="text-[10px] uppercase font-bold text-slate-400 tracking-[0.1em] ml-2">Expiration</Label>
+            <Select value={expiryFilter} onValueChange={setExpiryFilter}>
+              <SelectTrigger className="bg-slate-50/50 border-gray-100 text-slate-600 shadow-none h-11 rounded-2xl px-4 focus:ring-2 ring-blue-500/20 active:scale-95 transition-all">
+                <SelectValue placeholder="30 days left" />
+              </SelectTrigger>
+              <SelectContent className="rounded-2xl border-gray-100 shadow-xl overflow-hidden">
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="30">30 days left</SelectItem>
+                <SelectItem value="60">60 days left</SelectItem>
+                <SelectItem value="90">90 days left</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
-        <div className="flex flex-col justify-end p-2 sm:min-w-[300px]">
+        <div className="flex flex-col justify-end xl:min-w-[400px]">
           <div className="relative group">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 h-4 w-4 transition-colors group-focus-within:text-blue-500" />
             <Input 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-11 bg-white border-none text-slate-600 shadow-sm h-11 rounded-2xl focus:ring-1 ring-blue-100 transition-all" 
-              placeholder="Search commission by number..." 
+              className="pl-11 bg-slate-50/50 border-gray-100 text-slate-600 shadow-none h-11 rounded-2xl focus:ring-2 ring-blue-500/20 transition-all" 
+              placeholder="Search commission..." 
             />
           </div>
         </div>
       </div>
 
       {/* Table Section */}
-      <div className="rounded-3xl border border-gray-100 bg-white shadow-sm overflow-hidden">
+      <div className="rounded-[2rem] border border-gray-100 bg-white shadow-sm overflow-hidden">
         <Table>
           <TableHeader>
-            <TableRow className="bg-slate-50/70 border-b border-gray-100 h-14">
+            <TableRow className="bg-slate-50/70 border-b border-gray-100 h-16">
               <TableHead className="pl-8 font-bold text-slate-400 uppercase text-[11px] tracking-widest w-24">ID</TableHead>
               <TableHead className="font-bold text-slate-400 uppercase text-[11px] tracking-widest">Commission Number</TableHead>
               <TableHead className="font-bold text-slate-400 uppercase text-[11px] tracking-widest">Commission State</TableHead>
@@ -234,11 +260,13 @@ export const NotaryLegalCommission = ({ notaryId }: NotaryLegalCommissionProps) 
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredCommissions.length > 0 ? (
-              filteredCommissions.map((comm) => (
+            {currentItems.length > 0 ? (
+              currentItems.map((comm) => (
                 <TableRow key={comm.id} className="hover:bg-slate-50/50 transition-all border-b border-gray-50 last:border-0 group h-20">
                   <TableCell className="pl-8">
-                    <span className="text-blue-500 font-bold text-sm tracking-tight">{comm.id}</span>
+                    <button className="text-blue-600 font-bold text-sm tracking-tight hover:underline">
+                      #{comm.id.startsWith('#') ? comm.id.slice(1) : comm.id}
+                    </button>
                   </TableCell>
                   <TableCell className="font-bold text-slate-800 text-[15px]">{comm.commissionNumber}</TableCell>
                   <TableCell className="text-slate-500 font-medium">{comm.state}</TableCell>
@@ -249,18 +277,20 @@ export const NotaryLegalCommission = ({ notaryId }: NotaryLegalCommissionProps) 
                       variant="outline" 
                       className={`border-none px-4 py-1.5 rounded-full font-bold text-[10px] uppercase tracking-wider ${
                           comm.status === 'Valid' 
-                          ? 'bg-emerald-50 text-emerald-600' 
+                          ? 'bg-emerald-100 text-emerald-600' 
                           : comm.status === 'Expired'
-                          ? 'bg-rose-50 text-rose-600'
-                          : 'bg-amber-50 text-amber-600'
+                          ? 'bg-rose-100 text-rose-600'
+                          : comm.status === 'Not eligible'
+                          ? 'bg-orange-100 text-orange-600'
+                          : 'bg-amber-100 text-amber-600'
                       }`}
                     >
                       {comm.status}
                     </Badge>
                   </TableCell>
                   <TableCell className="pr-8 text-right">
-                    <div className="flex justify-end gap-2 pr-2">
-                      <Button variant="ghost" size="icon" className="h-9 w-9 text-blue-500 hover:text-blue-700 hover:bg-blue-50/80 rounded-xl transition-all">
+                    <div className="flex justify-end gap-2">
+                      <Button variant="ghost" size="icon" className="h-10 w-10 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all shadow-none">
                         <Eye size={18} />
                       </Button>
                       <Button 
@@ -270,7 +300,7 @@ export const NotaryLegalCommission = ({ notaryId }: NotaryLegalCommissionProps) 
                         }}
                         variant="ghost" 
                         size="icon" 
-                        className="h-9 w-9 text-emerald-500 hover:text-emerald-700 hover:bg-emerald-50/80 rounded-xl transition-all"
+                        className="h-10 w-10 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all shadow-none"
                       >
                         <Pencil size={18} />
                       </Button>
@@ -278,7 +308,7 @@ export const NotaryLegalCommission = ({ notaryId }: NotaryLegalCommissionProps) 
                          onClick={() => handleDelete(comm.id)}
                          variant="ghost" 
                          size="icon" 
-                         className="h-9 w-9 text-rose-400 hover:text-rose-600 hover:bg-rose-50/80 rounded-xl transition-all"
+                         className="h-10 w-10 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all shadow-none"
                       >
                         <Trash2 size={18} />
                       </Button>
@@ -288,8 +318,11 @@ export const NotaryLegalCommission = ({ notaryId }: NotaryLegalCommissionProps) 
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={7} className="h-40 text-center text-slate-400 font-medium italic">
-                   No commission records found.
+                <TableCell colSpan={7} className="h-64 text-center">
+                  <div className="flex flex-col items-center justify-center gap-3 text-slate-400">
+                    <Search size={40} className="opacity-20" />
+                    <p className="font-medium italic">No commission records found matching your filters.</p>
+                  </div>
                 </TableCell>
               </TableRow>
             )}
@@ -297,7 +330,48 @@ export const NotaryLegalCommission = ({ notaryId }: NotaryLegalCommissionProps) 
         </Table>
       </div>
 
-      {/* Form Modal */}
+      {/* Pagination Container */}
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pb-12 mt-4 px-2">
+        <p className="text-[13px] text-slate-400 font-medium">
+          Showing <span className="text-slate-900 font-bold">{(currentPage - 1) * itemsPerPage + 1}</span> to <span className="text-slate-900 font-bold">{Math.min(currentPage * itemsPerPage, filteredCommissions.length)}</span> of <span className="text-slate-900 font-bold">{filteredCommissions.length}</span> entries
+        </p>
+        <div className="flex items-center gap-2">
+           <Button 
+             variant="outline" 
+             size="icon" 
+             disabled={currentPage === 1}
+             onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+             className="h-10 w-10 rounded-xl border-gray-100 bg-white hover:bg-blue-50 hover:text-blue-600 hover:border-blue-100 shadow-sm transition-all"
+           >
+             <ChevronLeft size={18} />
+           </Button>
+           
+           {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+             <Button
+               key={page}
+               onClick={() => setCurrentPage(page)}
+               className={`h-10 w-10 rounded-xl font-bold transition-all ${
+                 currentPage === page 
+                 ? "bg-blue-600 text-white shadow-lg shadow-blue-200 hover:bg-blue-700" 
+                 : "bg-white border border-gray-100 text-slate-400 hover:bg-slate-50 hover:text-slate-600"
+               }`}
+             >
+               {page}
+             </Button>
+           ))}
+
+           <Button 
+             variant="outline" 
+             size="icon" 
+             disabled={currentPage === totalPages || totalPages === 0}
+             onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+             className="h-10 w-10 rounded-xl border-gray-100 bg-white hover:bg-blue-50 hover:text-blue-600 hover:border-blue-100 shadow-sm transition-all"
+           >
+             <ChevronRight size={18} />
+           </Button>
+        </div>
+      </div>
+
       <CommissionForm 
         isOpen={isFormOpen} 
         onClose={() => setIsFormOpen(false)} 
@@ -305,20 +379,6 @@ export const NotaryLegalCommission = ({ notaryId }: NotaryLegalCommissionProps) 
         onSubmit={handleFormSubmit}
         isSubmitting={addMutation.isPending || updateMutation.isPending}
       />
-
-      {/* Pagination Container */}
-      <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-[13px] text-slate-400 font-medium pb-12 mt-4">
-        <p>Showing 1 to {filteredCommissions.length} of {filteredCommissions.length} entries</p>
-        <div className="flex items-center gap-2">
-           <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl border border-gray-100 bg-white hover:bg-slate-50 shadow-sm text-slate-400">
-             <ChevronLeft size={18} />
-           </Button>
-           <Button className="h-9 w-9 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-md shadow-blue-100">1</Button>
-           <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl border border-gray-100 bg-white hover:bg-slate-50 shadow-sm text-slate-400">
-             <ChevronRight size={18} />
-           </Button>
-        </div>
-      </div>
     </div>
   );
 };

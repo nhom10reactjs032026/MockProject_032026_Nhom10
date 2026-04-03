@@ -3,6 +3,7 @@ import {
   getNotariesList, 
   getNotaryDetail, 
   updateNotary,
+  createNotary,
   addCommission,
   updateCommission,
   deleteCommission
@@ -21,6 +22,16 @@ export const useNotaryDetail = (id: string) => {
     queryKey: ['notary-detail', id],
     queryFn: () => getNotaryDetail(id),
     enabled: !!id,
+  });
+};
+
+export const useCreateNotary = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: any) => createNotary(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notaries'] });
+    },
   });
 };
 

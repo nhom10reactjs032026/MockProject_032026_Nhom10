@@ -14,12 +14,18 @@ export const getNotariesList = async (
   // Search logic (Name, Email, Phone)
   if (filters?.search) {
     const searchLower = filters.search.toLowerCase();
-    filteredData = filteredData.filter(
-      (item) =>
-        item.name.toLowerCase().includes(searchLower) ||
-        item.email?.toLowerCase().includes(searchLower) ||
-        item.phone?.includes(searchLower)
-    );
+    const cleanSearch = filters.search.replace(/\D/g, ''); // For phone number matching
+
+    filteredData = filteredData.filter((item) => {
+      const nameMatch = item.name.toLowerCase().includes(searchLower);
+      const emailMatch = item.email?.toLowerCase().includes(searchLower);
+      
+      // Normalize both phone numbers for robust matching (FUNC_08)
+      const cleanPhone = item.phone?.replace(/\D/g, '') || '';
+      const phoneMatch = cleanPhone.includes(cleanSearch) || (item.phone?.includes(filters.search!) ?? false);
+
+      return nameMatch || emailMatch || (cleanSearch.length > 0 && phoneMatch);
+    });
   }
 
   // Filter by Status
@@ -43,6 +49,9 @@ export const getNotariesList = async (
     );
   }
 
+  // Sorting ascending by Notary ID column (GUI_07)
+  filteredData.sort((a, b) => a.id.localeCompare(b.id));
+
   const total = filteredData.length;
   const totalPages = Math.ceil(total / pageSize);
   const start = (page - 1) * pageSize;
@@ -58,6 +67,30 @@ export const getNotariesList = async (
   };
 };
 
+export const createNotary = async (data: Omit<Notary, 'id' | 'status'>): Promise<Notary> => {
+  // Simulate API delay
+  await new Promise((resolve) => setTimeout(resolve, 800));
+  
+  // Check for duplicate email (FUNC_05)
+  const existing = MOCK_NOTARIES.find(n => n.email.toLowerCase() === data.email.toLowerCase());
+  if (existing) {
+    const error = new Error('This email is already in use');
+    (error as any).field = 'email';
+    throw error;
+  }
+
+  const newNotary: Notary = {
+    ...data,
+    id: `NT-${String(MOCK_NOTARIES.length + 1).padStart(3, '0')}`, // Unique ID generation
+    status: 'Active', // Default status for new notary
+    image: `https://api.dicebear.com/7.x/avataaars/svg?seed=${data.firstName}`,
+    capability: data.capability || 'Mobile Notary',
+  };
+  
+  MOCK_NOTARIES.unshift(newNotary); // Add to beginning for list display
+  return newNotary;
+};
+
 export const getNotaryDetail = async (id: string): Promise<Notary | undefined> => {
   // Simulate API delay
   await new Promise((resolve) => setTimeout(resolve, 300));
@@ -70,6 +103,16 @@ export const updateNotary = async (id: string, data: Partial<Notary>): Promise<N
   
   const index = MOCK_NOTARIES.findIndex(n => n.id === id);
   if (index === -1) throw new Error('Notary not found');
+
+  // Check for duplicate email (FUNC_05)
+  if (data.email) {
+    const existing = MOCK_NOTARIES.find(n => n.email.toLowerCase() === data.email?.toLowerCase() && n.id !== id);
+    if (existing) {
+      const error = new Error('This email is already in use.');
+      (error as any).field = 'email';
+      throw error;
+    }
+  }
   
   const updatedNotary = { ...MOCK_NOTARIES[index], ...data };
   MOCK_NOTARIES[index] = updatedNotary;
@@ -88,7 +131,8 @@ export const addCommission = async (notaryId: string, commission: Omit<Commissio
     status: new Date(commission.expiryDate) > new Date() ? 'Valid' : 'Expired'
   };
 
-  notary.commissions = [newCommission, ...(notary.commissions || [])];
+  if (!notary.commissions) notary.commissions = [];
+  notary.commissions = [newCommission, ...notary.commissions];
   return newCommission;
 };
 
