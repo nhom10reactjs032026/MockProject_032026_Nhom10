@@ -3,6 +3,7 @@ import { Card } from "../../../../../components/ui/card";
 import { Button } from "../../../../../components/ui/button";
 import ConfirmDialog from "../../../components/ui/ConfirmDialog";
 import { Input } from "../../../../../components/ui/input";
+import AddRoleDialog, { type AddRoleForm } from "../components/AddRoleDialog";
 
 import {
   ACCESS_RULES,
@@ -87,6 +88,31 @@ export default function AccessControlAuthorizationPage() {
     setRuleStatusOverride(selected.index, next);
   };
 
+  const handleAddRoleSave = (data: AddRoleForm) => {
+    const sealTypeMap = {
+      digital: "Digital Seal",
+      physical: "Physical Seal",
+      signature: "Digital Signature",
+    } as const;
+
+    setRows((prev) => {
+      const nextIndex = prev.length ? Math.max(...prev.map((x) => x.index)) + 1 : 1;
+      const nextRow: AccessRuleRow = {
+        index: nextIndex,
+        ruleId: `NEW-${nextIndex}`,
+        user: data.notaryName,
+        sealType: sealTypeMap[data.sealType],
+        requiredConditions: data.requiredConditions.activeCommission
+          ? "Active Commission"
+          : "None",
+        approvalProcess: data.approval.type === "manual" ? "Manual Approval" : "Automatic Approval",
+        status: "Active",
+      };
+
+      return [nextRow, ...prev];
+    });
+  };
+
   return (
     <div className="animate-in fade-in duration-500 font-['Plus_Jakarta_Sans']">
       <div className="mx-auto min-h-screen max-w-[1400px] bg-transparent px-4 py-8 sm:px-6 lg:px-8">
@@ -95,7 +121,7 @@ export default function AccessControlAuthorizationPage() {
             Access Control &amp; Authorization
           </div>
 
-          <Button onClick={() => alert("Add New Rule (mock)")}>Add New Rule</Button>
+          <AddRoleDialog onSave={handleAddRoleSave} />
         </div>
 
         <ConfirmDialog
