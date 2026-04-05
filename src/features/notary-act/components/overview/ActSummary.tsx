@@ -1,4 +1,9 @@
+import { useParams } from 'react-router-dom';
+import { useAct } from '../../hooks/useAct';
+
 export const ActSummary = () => {
+  const { id } = useParams();
+  const { act } = useAct(id);
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
       <h2 className="text-base font-bold text-gray-900 mb-6 flex items-center gap-2">
@@ -17,19 +22,19 @@ export const ActSummary = () => {
       <div className="grid grid-cols-2 gap-y-6 gap-x-12 px-2">
         <div>
           <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">ACT TYPE</p>
-          <p className="text-sm font-semibold text-gray-900">Acknowledgment of Signature</p>
+          <p className="text-sm font-semibold text-gray-900">{act?.type || 'Acknowledgment of Signature'}</p>
         </div>
         <div>
           <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">FILING DATE</p>
-          <p className="text-sm font-semibold text-gray-900">October 24, 2023</p>
+          <p className="text-sm font-semibold text-gray-900">{act?.dateTime || 'October 24, 2023'}</p>
         </div>
         <div>
           <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">JURISDICTION</p>
-          <p className="text-sm font-semibold text-gray-900">Los Angeles County, CA</p>
+          <p className="text-sm font-semibold text-gray-900">{act?.state ? `${act.state} County` : 'Los Angeles County, CA'}</p>
         </div>
         <div>
           <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">ASSIGNED NOTARY</p>
-          <p className="text-sm font-semibold text-gray-900">Sarah Jenkins (ID: 982451)</p>
+          <p className="text-sm font-semibold text-gray-900">{act ? 'Sarah Jenkins' : 'Sarah Jenkins (ID: 982451)'}</p>
         </div>
       </div>
     </div>

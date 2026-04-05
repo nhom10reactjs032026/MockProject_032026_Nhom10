@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useParams, useLocation } from 'react-router-dom';
+import { useAct } from '../hooks/useAct';
 import { 
   MapPin, 
   UserCheck, 
@@ -15,12 +16,17 @@ export const ActExecutionPage = () => {
   const { id } = useParams();
   const location = useLocation();
 
+  const { act, isLoading } = useAct(id);
   const [isVerified, setIsVerified] = useState(true);
   const [oathStatus, setOathStatus] = useState<'yes'|'no'>('yes');
-  const [hasSignature1, setHasSignature1] = useState(true);
-  const [hasSignature2, setHasSignature2] = useState(false);
-  const [wetSignature1, setWetSignature1] = useState<string | null>(null);
-  const [wetSignature2, setWetSignature2] = useState<string | null>(null);
+  
+  const [signatures, setSignatures] = useState({
+    signer1: { hasSignature: true, wetSignature: null as string | null },
+    signer2: { hasSignature: false, wetSignature: null as string | null }
+  });
+
+  const participant1 = act?.clientName || 'Alice Wonderland';
+  const participant2 = act?.clientType.replace('For: ', '').trim() || 'Jhon Doe';
 
   const tabs = [
     { label: 'Overview', path: `/notary-acts/${id}` },
@@ -71,8 +77,13 @@ export const ActExecutionPage = () => {
           </div>
         </div>
 
-        {/* Content Container */}
+        {isLoading ? (
+          <div className="flex justify-center items-center py-32">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          </div>
+        ) : (
         <div className="px-8 max-w-4xl mx-auto space-y-6">
+          {/* Content Container */}
           
           {/* Row 1: Forms */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -155,7 +166,7 @@ export const ActExecutionPage = () => {
 
             {/* Signer Block 1 */}
             <div className="mb-8">
-              <h3 className="text-sm font-bold text-gray-900">Alice Wonderland</h3>
+              <h3 className="text-sm font-bold text-gray-900">{participant1}</h3>
               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-0.5 mb-4">GRANTOR</p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -167,15 +178,15 @@ export const ActExecutionPage = () => {
                       className="hidden" 
                       onChange={(e) => {
                         if (e.target.files && e.target.files[0]) {
-                          setWetSignature1(e.target.files[0].name);
+                          setSignatures(prev => ({ ...prev, signer1: { ...prev.signer1, wetSignature: e.target.files![0].name }}));
                         }
                       }}
                     />
-                    {wetSignature1 ? (
+                    {signatures.signer1.wetSignature ? (
                       <div className="flex flex-col items-center p-2">
                         <CheckCircle2 size={24} className="text-emerald-500 mb-2" />
-                        <p className="text-sm font-bold text-gray-900 truncate max-w-[200px]">{wetSignature1}</p>
-                        <p className="text-[10px] font-bold text-blue-600 hover:text-blue-800 uppercase tracking-widest mt-2" onClick={(e) => { e.preventDefault(); setWetSignature1(null); }}>REMOVE</p>
+                        <p className="text-sm font-bold text-gray-900 truncate max-w-[200px]">{signatures.signer1.wetSignature}</p>
+                        <p className="text-[10px] font-bold text-blue-600 hover:text-blue-800 uppercase tracking-widest mt-2" onClick={(e) => { e.preventDefault(); setSignatures(prev => ({ ...prev, signer1: { ...prev.signer1, wetSignature: null }})); }}>REMOVE</p>
                       </div>
                     ) : (
                       <>
@@ -190,10 +201,10 @@ export const ActExecutionPage = () => {
                   <div className="flex justify-between items-center mb-2">
                     <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest">ELECTRONIC SIGNATURE</label>
                     <button 
-                      onClick={() => setHasSignature1(!hasSignature1)}
+                      onClick={() => setSignatures(prev => ({ ...prev, signer1: { ...prev.signer1, hasSignature: !prev.signer1.hasSignature } }))}
                       className="text-[10px] font-bold text-blue-600 hover:text-blue-800 uppercase tracking-widest"
                     >
-                      {hasSignature1 ? 'CLEAR' : 'RE-SIGN'}
+                      {signatures.signer1.hasSignature ? 'CLEAR' : 'RE-SIGN'}
                     </button>
                   </div>
                   <div className="h-32 border-2 border-gray-100 rounded-xl bg-white flex flex-col items-center justify-center relative overflow-hidden group hover:border-blue-200 transition-colors">
@@ -202,8 +213,8 @@ export const ActExecutionPage = () => {
                     </div>
                     {/* Placeholder signature */}
                     <div className="relative z-10 w-full h-full flex items-center justify-center pointer-events-none">
-                      {hasSignature1 ? (
-                        <span style={{ fontFamily: 'cursive' }} className="text-3xl font-light text-slate-800">Alice Wonderland</span>
+                      {signatures.signer1.hasSignature ? (
+                        <span style={{ fontFamily: 'cursive' }} className="text-3xl font-light text-slate-800">{participant1}</span>
                       ) : (
                         <div className="w-full h-full border-b border-gray-100 flex items-end justify-center pb-2"></div>
                       )}
@@ -218,7 +229,7 @@ export const ActExecutionPage = () => {
 
             {/* Signer Block 2 (Repeated in Mockup) */}
             <div className="pt-8 border-t border-gray-100">
-              <h3 className="text-sm font-bold text-gray-900">Jhon Doe</h3>
+              <h3 className="text-sm font-bold text-gray-900">{participant2}</h3>
               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-0.5 mb-4">GRANTEE</p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -230,15 +241,15 @@ export const ActExecutionPage = () => {
                       className="hidden" 
                       onChange={(e) => {
                         if (e.target.files && e.target.files[0]) {
-                          setWetSignature2(e.target.files[0].name);
+                          setSignatures(prev => ({ ...prev, signer2: { ...prev.signer2, wetSignature: e.target.files![0].name }}));
                         }
                       }}
                     />
-                    {wetSignature2 ? (
+                    {signatures.signer2.wetSignature ? (
                       <div className="flex flex-col items-center p-2">
                         <CheckCircle2 size={24} className="text-emerald-500 mb-2" />
-                        <p className="text-sm font-bold text-gray-900 truncate max-w-[200px]">{wetSignature2}</p>
-                        <p className="text-[10px] font-bold text-blue-600 hover:text-blue-800 uppercase tracking-widest mt-2" onClick={(e) => { e.preventDefault(); setWetSignature2(null); }}>REMOVE</p>
+                        <p className="text-sm font-bold text-gray-900 truncate max-w-[200px]">{signatures.signer2.wetSignature}</p>
+                        <p className="text-[10px] font-bold text-blue-600 hover:text-blue-800 uppercase tracking-widest mt-2" onClick={(e) => { e.preventDefault(); setSignatures(prev => ({ ...prev, signer2: { ...prev.signer2, wetSignature: null }})); }}>REMOVE</p>
                       </div>
                     ) : (
                       <>
@@ -253,10 +264,10 @@ export const ActExecutionPage = () => {
                   <div className="flex justify-between items-center mb-2">
                     <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest">ELECTRONIC SIGNATURE</label>
                     <button 
-                      onClick={() => setHasSignature2(!hasSignature2)}
+                      onClick={() => setSignatures(prev => ({ ...prev, signer2: { ...prev.signer2, hasSignature: !prev.signer2.hasSignature } }))}
                       className="text-[10px] font-bold text-blue-600 hover:text-blue-800 uppercase tracking-widest"
                     >
-                      {hasSignature2 ? 'CLEAR' : 'RE-SIGN'}
+                      {signatures.signer2.hasSignature ? 'CLEAR' : 'RE-SIGN'}
                     </button>
                   </div>
                   <div className="h-32 border-2 border-gray-100 rounded-xl bg-white flex flex-col items-center justify-center relative overflow-hidden group hover:border-blue-200 transition-colors">
@@ -265,8 +276,8 @@ export const ActExecutionPage = () => {
                     </div>
                     {/* Placeholder stroke line for sign */}
                     <div className="relative z-10 w-full h-full flex items-center justify-center pointer-events-none">
-                      {hasSignature2 ? (
-                        <span style={{ fontFamily: 'cursive' }} className="text-3xl font-light text-slate-800">Jhon Doe</span>
+                      {signatures.signer2.hasSignature ? (
+                        <span style={{ fontFamily: 'cursive' }} className="text-3xl font-light text-slate-800">{participant2}</span>
                       ) : (
                         <div className="w-full h-full border-b border-gray-100 flex items-end justify-center pb-2"></div>
                       )}
@@ -338,6 +349,7 @@ export const ActExecutionPage = () => {
           </div>
 
         </div>
+        )}
       </div>
     </div>
   );

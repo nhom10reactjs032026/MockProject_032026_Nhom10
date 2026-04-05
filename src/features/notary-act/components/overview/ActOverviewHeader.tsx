@@ -1,8 +1,10 @@
 import { Link, useLocation, useParams } from 'react-router-dom';
+import { useAct } from '../../hooks/useAct';
 
 export const ActOverviewHeader = () => {
   const { id } = useParams();
   const location = useLocation();
+  const { act } = useAct(id);
 
   const tabs = [
     { label: 'Overview', path: `/notary-acts/${id}` },
@@ -47,14 +49,14 @@ export const ActOverviewHeader = () => {
 
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <h1 className="text-3xl font-bold text-gray-900">#ACT-94022</h1>
-            <span className="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-bold bg-amber-100 text-amber-700 uppercase tracking-widest">
-              In progress
+            <h1 className="text-3xl font-bold text-gray-900">{act?.actId || '#ACT-94022'}</h1>
+            <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest ${act?.status === 'Completed' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
+              {act?.status || 'In progress'}
             </span>
           </div>
           <p className="text-sm font-medium text-gray-500 flex items-center gap-2">
             <span className="w-4 h-4 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-[10px]">🔗</span>
-            Linked Job: <a href="#" className="text-blue-600 hover:underline">#JOB-4421</a>
+            Linked Job: <a href="#" className="text-blue-600 hover:underline">{act?.reference || '#JOB-4421'}</a>
           </p>
         </div>
       </div>

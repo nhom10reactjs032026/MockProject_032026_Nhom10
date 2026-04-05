@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useParams, useLocation } from 'react-router-dom';
+import { useAct } from '../hooks/useAct';
 import { 
   UserPlus, 
   CheckCircle2, 
@@ -14,8 +15,11 @@ export const ActSignersPage = () => {
   const { id } = useParams();
   const location = useLocation();
 
+  const { act, isLoading } = useAct(id);
   const [verificationMethod, setVerificationMethod] = useState('physical');
   const [uploadedFile, setUploadedFile] = useState<string | null>(null);
+
+  const signerName = act?.clientName || 'Alice Wonderland';
 
   const tabs = [
     { label: 'Overview', path: `/notary-acts/${id}` },
@@ -59,8 +63,13 @@ export const ActSignersPage = () => {
           </div>
         </div>
 
-        {/* Content Container */}
+        {isLoading ? (
+          <div className="flex justify-center items-center py-32">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          </div>
+        ) : (
         <div className="px-8 max-w-6xl">
+          {/* Content Container */}
           <div className="flex flex-col lg:flex-row gap-8">
             
             {/* LEFT COLUMN: Signer List */}
@@ -76,7 +85,7 @@ export const ActSignersPage = () => {
               <div className="bg-white border-2 border-blue-100 p-4 rounded-xl shadow-[0_2px_10px_-4px_rgba(37,99,235,0.2)] cursor-pointer">
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="font-bold text-gray-900 text-sm">Alice Wonderland</h3>
+                    <h3 className="font-bold text-gray-900 text-sm">{signerName}</h3>
                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">GRANTOR</p>
                   </div>
                   <div className="flex items-center gap-2">
@@ -98,7 +107,7 @@ export const ActSignersPage = () => {
             {/* RIGHT COLUMN: Verification Details */}
             <div className="w-full lg:w-2/3">
               <div className="bg-white border border-gray-100 rounded-2xl p-8 shadow-sm">
-                <h2 className="text-lg font-bold text-gray-900 mb-8">Identity Verification for Alice Wonderland</h2>
+                <h2 className="text-lg font-bold text-gray-900 mb-8">Identity Verification for {signerName}</h2>
 
                 <div className="space-y-6">
                   {/* Row 1 */}
@@ -237,8 +246,9 @@ export const ActSignersPage = () => {
               <ArrowRight size={16} />
             </Link>
           </div>
-          
+
         </div>
+        )}
       </div>
     </div>
   );

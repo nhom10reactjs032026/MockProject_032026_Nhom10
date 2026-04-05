@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useParams, useLocation } from 'react-router-dom';
+import { useAct } from '../hooks/useAct';
 import { 
   CheckCircle2, 
   FileText, 
@@ -14,8 +15,19 @@ export const ActSetupPage = () => {
   const { id } = useParams();
   const location = useLocation();
 
+  const { act, isLoading } = useAct(id);
   const [actType, setActType] = useState('Acknowledgment');
   const [actions, setActions] = useState({ oath: true, thumbprint: false });
+
+  useEffect(() => {
+    if (act?.type) {
+      if (['Acknowledgment', 'Jurat (Verification upon Oath)', 'Copy Certification'].includes(act.type)) {
+        setActType(act.type);
+      } else {
+        setActType('Acknowledgment');
+      }
+    }
+  }, [act]);
 
   const tabs = [
     { label: 'Overview', path: `/notary-acts/${id}` },
@@ -59,8 +71,13 @@ export const ActSetupPage = () => {
           </div>
         </div>
 
-        {/* Form Container */}
+        {isLoading ? (
+          <div className="flex justify-center items-center py-32">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          </div>
+        ) : (
         <div className="px-8 max-w-5xl">
+          {/* Form Container */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
              
             {/* LEFT COLUMN */}
@@ -117,7 +134,8 @@ export const ActSetupPage = () => {
                     <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">DOCUMENT TITLE</label>
                     <input 
                       type="text" 
-                      defaultValue="Mortgage Agreement - Refinance"
+                      defaultValue={act?.reference || "Mortgage Agreement - Refinance"}
+                      key={act?.reference || "default-ref"}
                       className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
@@ -148,7 +166,8 @@ export const ActSetupPage = () => {
                     <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">SELECT STATE</label>
                     <select
                       className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
-                      defaultValue="California"
+                      defaultValue={act?.state || "California"}
+                      key={act?.state || "default-state"}
                       style={{
                         backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
                         backgroundPosition: `right 1rem center`,
@@ -251,6 +270,7 @@ export const ActSetupPage = () => {
           </div>
           
         </div>
+        )}
       </div>
     </div>
   );
