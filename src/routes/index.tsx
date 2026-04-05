@@ -40,18 +40,8 @@ import {
 } from "../features/crm-management";
 
 // --- IMPORT MODULE SEAL ---
-import { SealModuleLayout } from "@/features/security-management/pages/SealModuleLayout";
-import SealDashboardPage from "@/features/security-management/pages/SealDashboardPage";
-import SealDetailPage from "@/features/security-management/pages/SealDetailPage";
-import { SecurityManagementLayout } from "@/features/security-management/pages/SecurityManagementLayout";
-import { TraceabilityLayout } from "@/features/security-management/pages/TraceabilityLayout";
-import { IncidentReportPage } from "@/features/security-management/pages/IncidentReportPage";
-import { IncidentDetailPage } from "@/features/security-management/pages/IncidentDetailPage";
-import { SealReplacementPage } from "@/features/security-management/pages/SealReplacementPage";
-import { ReplacementPage } from "@/features/security-management/pages/ReplacementPage";
-import { NotificationLogPage } from "@/features/security-management/pages/NotificationLogPage";
-import { AuditCompliancePage } from "@/features/security-management/pages/AuditCompliancePage";
 
+import { SecurityManagementLayout } from "@/features/security-management/pages/SecurityManagementLayout";
 
 import AccessControlAuthorizationPage from "../features/security-management/modules/access-control/pages/AccessControlAuthorizationPage";
 import {
@@ -60,6 +50,23 @@ import {
   SealRegistryPage,
 } from "../features/security-management/modules/seals";
 import { UsageHistoryPage } from "../features/security-management/modules/usage-history";
+
+// --- SEAL & DIGITAL SIGNATURE MODULE (ADMIN SIDE) ---
+import { SealModuleLayout } from "@/features/security-management/pages/admin/SealModuleLayout";
+import SealDashboardPage from "@/features/security-management/pages/admin/SealDashboardPage";
+import SealTechnicalPage from "@/features/security-management/pages/admin/SealTechnicalPage";
+import { RiskHandlingLayout as AdminRiskLayout } from "@/features/security-management/pages/admin/RiskHandlingLayout";
+import { IncidentDetailPage } from "@/features/security-management/pages/admin/IncidentDetailPage";
+import { ReplacementPage } from "@/features/security-management/pages/admin/ReplacementPage";
+import { NotificationLogPage } from "@/features/security-management/pages/admin/NotificationLogPage";
+import { AuditCompliancePage } from "@/features/security-management/pages/admin/AuditCompliancePage";
+import { SealReplacementApprovalPage } from "@/features/security-management/pages/admin/SealReplacementApprovalPage";
+import { OversightLayout } from "@/features/security-management/pages/admin/OversightLayout";
+
+// --- SEAL & DIGITAL SIGNATURE MODULE (NOTARY SIDE) ---
+import { RiskHandlingLayout as NotaryRiskLayout } from "@/features/security-management/pages/notary/RiskHandlingLayout";
+import { IncidentReportPage } from "@/features/security-management/pages/notary/IncidentReportPage";
+import { SealReplacementPage } from "@/features/security-management/pages/notary/SealReplacementPage";
 
 function LegacySealDetailRedirect({ kind }: { kind: "e" | "p" }) {
   const { id } = useParams();
@@ -70,8 +77,6 @@ function LegacySealDetailRedirect({ kind }: { kind: "e" | "p" }) {
     />
   );
 }
-
-
 
 
 
@@ -88,6 +93,7 @@ export const router = createBrowserRouter([
       { path: "planning", element: <PlanSchedulingPage /> },
       { path: "account/login", element: <LoginPage /> },
 
+
       {
         path: "/profile",
         element: <div className="p-20 text-center font-bold">👤 THÔNG TIN CÁ NHÂN (USER/ADMIN/NOTARY)</div>,
@@ -101,11 +107,13 @@ export const router = createBrowserRouter([
         element: <CustomerDetailPage />,
       },
 
-      // USER ROUTES (Dành cho người dùng đã đăng nhập)
+
+      // USER ROUTES (For logged in users)
       {
         element: <ProtectedRoute allowedRoles={["user", "admin", "notary"]} />,
         children: [
           {
+
             element: <JournalLayout />,
             children: [
               // SECURITY MANAGEMENT (module routes)
@@ -119,7 +127,7 @@ export const router = createBrowserRouter([
                 path: "profile",
                 element: (
                   <div className="p-20 text-center font-bold">
-                    👤 THÔNG TIN CÁ NHÂN (USER/ADMIN/NOTARY)
+                    👤 PERSONAL INFORMATION (USER/ADMIN/NOTARY)
                   </div>
                 ),
               },
@@ -127,7 +135,7 @@ export const router = createBrowserRouter([
                 path: "history",
                 element: (
                   <div className="p-20 text-center font-bold">
-                    📝 LỊCH SỬ GIAO DỊCH
+                    📝 TRANSACTION HISTORY
                   </div>
                 ),
               },
@@ -136,7 +144,7 @@ export const router = createBrowserRouter([
         ],
       },
 
-      // NOTARY ROUTES (Dành cho công chứng viên)
+      // NOTARY GENERAL ROUTES
       {
         element: <ProtectedRoute allowedRoles={["notary", "admin"]} />,
         children: [
@@ -144,7 +152,7 @@ export const router = createBrowserRouter([
             path: "notary/dashboard",
             element: (
               <div className="p-20 text-center font-bold text-blue-600">
-                📜 BẢNG ĐIỀU KHIỂN CÔNG CHỨNG VIÊN
+                📜 NOTARY DASHBOARD
               </div>
             ),
           },
@@ -152,14 +160,14 @@ export const router = createBrowserRouter([
             path: "notary/verify",
             element: (
               <div className="p-20 text-center font-bold text-blue-600">
-                ✅ XÁC THỰC HỒ SƠ
+                ✅ DOCUMENT VERIFICATION
               </div>
             ),
           },
         ],
       },
 
-      // ADMIN ROUTES
+      // ADMIN CORE ROUTES
       {
         element: <ProtectedRoute allowedRoles={["admin"]} />,
         children: [
@@ -201,6 +209,9 @@ export const router = createBrowserRouter([
               },
 
               // SECURITY MANAGEMENT (3 modules) under shared horizontal tabs
+
+              // MODULE SEAL & DIGITAL SIGNATURE (ADMIN SIDE)
+
               {
                 element: <SecurityManagementLayout />,
                 children: [
@@ -217,8 +228,24 @@ export const router = createBrowserRouter([
 
                       // SC_007.x optional: replacement flow by seal
                       { path: ":id/replacement", element: <SealReplacementPage /> },
+
+                  { path: "technical", element: <SealTechnicalPage /> },
+                  {
+                    path: "risk-handling",
+                    element: <AdminRiskLayout />,
+                    children: [
+                      // Default sub-route for Risk Handling
+                      { index: true, element: <IncidentDetailPage /> },
+
+                      { path: "replacement-request", element: <SealReplacementApprovalPage /> },
+                      { path: "replacement", element: <ReplacementPage /> },
+                      { path: "notification-log", element: <NotificationLogPage /> },
+                      // { path: "audit", element: <AuditCompliancePage /> },
+
                     ],
                   },
+                ],
+              },
 
                   // SC_006
                   { path: "admin/security", element: <Navigate to="/admin/security/access-control" replace /> },
@@ -234,7 +261,7 @@ export const router = createBrowserRouter([
               // SC_004
               {
                 path: "admin/technical/keys",
-                element: <SealDetailPage />,
+                element: <SealTechnicalPage />,
               },
 
               // SC_007.1 - SC_007.5
@@ -273,6 +300,34 @@ export const router = createBrowserRouter([
                   { index: true, element: <CrmDashboard /> },
                   { path: "customers", element: <CustomerListPage /> },
                   { path: "customers/:id", element: <CustomerDetailPage /> },
+                ],
+              },
+              {
+                path: "admin/oversight",
+                element: <OversightLayout />,
+                children: [
+                  { index: true, element: <AuditCompliancePage /> }, // Audit is now the default page for Oversight
+                ]
+              },
+            ],
+          },
+        ],
+      },
+
+      // NOTARY RISK HANDLING MODULE (Newly implemented)
+      {
+        path: "notary-risk",
+        element: <JournalLayout />,
+        children: [
+          {
+            element: <ProtectedRoute allowedRoles={["notary", "admin"]} />,
+            children: [
+              {
+                element: <NotaryRiskLayout />,
+                children: [
+                  { index: true, element: <IncidentReportPage /> },
+                  { path: "incident", element: <IncidentReportPage /> },
+                  { path: "replacement", element: <SealReplacementPage /> },
                 ],
               },
             ],
@@ -345,6 +400,7 @@ export const router = createBrowserRouter([
         element: <JournalLayout />,
         children: [
           { index: true, element: <ActListPage /> },
+          // Static paths defined before dynamic :id to prevent conflicts
           { path: "registry", element: <ErrorPage /> },
           { path: "detail", element: <ErrorPage /> },
           { path: "technical", element: <ErrorPage /> },
@@ -352,6 +408,7 @@ export const router = createBrowserRouter([
           { path: "security", element: <ErrorPage /> },
           { path: "risk", element: <ErrorPage /> },
           { path: "oversight", element: <ErrorPage /> },
+          // Dynamic routes
           { path: ":id", element: <ActOverviewPage /> },
           { path: ":id/setup", element: <ActSetupPage /> },
           { path: ":id/signers", element: <ActSignersPage /> },

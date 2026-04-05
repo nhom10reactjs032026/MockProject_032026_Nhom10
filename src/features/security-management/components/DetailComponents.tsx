@@ -1,6 +1,6 @@
 import React from 'react';
 
-// Badge trạng thái Active/Secure
+// Status badge Active/Secure
 export const StatusBadge = ({ status }: { status: string }) => {
     const isActive = status.toLowerCase().includes('active');
     return (
@@ -12,7 +12,7 @@ export const StatusBadge = ({ status }: { status: string }) => {
     );
 };
 
-// Thanh tiến trình Validity/Rotation
+// Progress bar for Validity/Rotation
 export const ProgressBar = ({ progress, color = "bg-blue-600" }: { progress: number, color?: string }) => (
     <div className="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
         <div className={`${color} h-full transition-all duration-500`} style={{ width: `${progress}%` }}></div>

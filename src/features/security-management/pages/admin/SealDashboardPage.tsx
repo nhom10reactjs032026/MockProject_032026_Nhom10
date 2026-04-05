@@ -1,7 +1,7 @@
-import { SealStatCard } from '../components/SealStatCard';
-import { ViolationBarChart } from '../components/ViolationBarChart';
-import { DistributionDonutChart } from '../components/DistributionDonutChart';
-import { UsageChart } from '../components/UsageChart';
+import { SealStatCard } from '../../components/SealStatCard';
+import { ViolationBarChart } from '../../components/ViolationBarChart';
+import { DistributionDonutChart } from '../../components/DistributionDonutChart';
+import { UsageChart } from '../../components/UsageChart';
 
 export default function SealDashboardPage() {
     return (

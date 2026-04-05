@@ -17,6 +17,8 @@ import {
   Key,
   ClipboardList,
   Contact,
+  ShieldAlert,
+  Eye,
 } from "lucide-react";
 import type { SidebarNavItem } from "./Sidebar";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -81,16 +83,24 @@ export const DashboardLayout = () => {
             label: "CRM",
             path: "/crm",
           },
+          {
+            icon: Eye,
+            label: "Oversight",
+            path: "/admin/oversight",
+          },
         ];
       case "notary":
         return [
           { icon: FileSignature, label: "Notary Acts", path: "/notary-acts" },
           { icon: BookOpen, label: "Journal", path: "/notary-journal/manager" },
+          { icon: ShieldAlert, label: "Risk Handling", path: "/notary-risk" },
         ];
       case "dispatcher":
         return [{ icon: CalendarDays, label: "Scheduling", path: "/planning" }];
       default:
-        return [{ icon: BookOpen, label: "Journal", path: "/notary-journal/manager" }];
+        return [
+          { icon: BookOpen, label: "Journal", path: "/notary-journal/manager" },
+        ];
     }
   }, [user?.role]);
 
@@ -150,6 +160,28 @@ export const DashboardLayout = () => {
                   )}
                 </NavLink>
               )}
+
+              <NavLink
+                to="/notary-journal"
+                end
+                className={({ isActive }) =>
+                  `py-3.5 text-sm font-bold uppercase tracking-widest transition-colors relative ${
+                    isActive
+                      ? "text-[#c4a484]"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`
+                }
+              >
+                {({ isActive }) => (
+                  <>
+                    Dashboard
+                    {isActive && (
+                      <span className="absolute bottom-0 left-0 w-full h-[2px] bg-[#c4a484]" />
+                    )}
+                  </>
+                )}
+              </NavLink>
+
               <NavLink
                 to="/notary-journal/manager"
                 className={({ isActive }) =>
