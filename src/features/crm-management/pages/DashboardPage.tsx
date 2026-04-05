@@ -8,12 +8,18 @@ import { HolidayBanner } from "../components/HolidayBanner";
 import { IssueCards } from "../components/IssueCards";
 import { useDashboardData } from "../hooks";
 
+/**
+ * Main CRM Dashboard Page.
+ * Acts as a Smart Component, utilizing useDashboardData hook to manage logic,
+ * and passing data down to Dumb Components for rendering.
+ */
 export const CrmDashboard: React.FC = () => {
   const {
     metrics,
     topClients,
     issues,
     isLoading,
+    error,
     customerPct,
     revenuePct,
     jobsPct,
@@ -21,6 +27,34 @@ export const CrmDashboard: React.FC = () => {
     holiday,
   } = useDashboardData();
 
+  // 1. Error State Fallback UI
+  // Displayed if any API request fails during the initial load
+  if (error) {
+    return (
+      <div className="flex flex-col min-h-screen bg-[#f8f9fa] font-sans">
+        <CRMHeader currentTab="dashboard" />
+        <div className="flex flex-1 items-center justify-center p-8">
+          <div className="flex flex-col items-center max-w-md text-center bg-white p-8 rounded-2xl shadow-sm border border-red-100">
+            <div className="w-12 h-12 bg-red-50 text-red-500 rounded-full flex items-center justify-center mb-4">
+              <span className="text-2xl font-bold">!</span>
+            </div>
+            <h2 className="text-lg font-bold text-slate-900 mb-2">
+              Connection Error
+            </h2>
+            <p className="text-sm text-slate-500 mb-6">{error}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 bg-[#1a1a1a] text-white text-sm font-bold rounded-lg hover:bg-black transition-colors"
+            >
+              Try Again
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 2. Main Render (Loading & Success States)
   return (
     <div className="flex flex-col min-h-screen bg-[#f8f9fa] font-sans">
       <CRMHeader currentTab="dashboard" />
@@ -45,6 +79,7 @@ export const CrmDashboard: React.FC = () => {
             </Link>
           </div>
 
+          {/* Conditional Rendering: Show spinner while fetching, else show dashboard grid */}
           {isLoading ? (
             <div className="flex h-64 items-center justify-center rounded-xl bg-white border border-slate-100 shadow-sm">
               <div className="text-slate-500 font-medium flex items-center gap-2">
@@ -54,6 +89,7 @@ export const CrmDashboard: React.FC = () => {
             </div>
           ) : (
             <>
+              {/* Top Row: KPI Cards with derived percentages */}
               <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:mb-6 lg:grid-cols-3 lg:gap-6">
                 <KPICard
                   title="TOTAL CUSTOMERS"
@@ -131,6 +167,7 @@ export const CrmDashboard: React.FC = () => {
                 </div>
               </div>
 
+              {/* Middle Row: Charts & Top Clients */}
               <div className="mb-4 grid grid-cols-1 gap-4 lg:mb-6 lg:grid-cols-10 lg:gap-6">
                 <div className="lg:col-span-7">
                   <RevenueChart />

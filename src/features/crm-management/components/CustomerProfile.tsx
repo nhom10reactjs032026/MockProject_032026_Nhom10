@@ -11,6 +11,10 @@ interface CustomerProfileProps {
   };
 }
 
+/**
+ * Renders the overview profile layout for a single customer.
+ * Contains basic information, annual performance stats, and recent milestones.
+ */
 export const CustomerProfile = ({
   customer = {
     name: "Global Logistics Corp",
@@ -21,6 +25,7 @@ export const CustomerProfile = ({
 }: CustomerProfileProps) => {
   return (
     <div className="animate-in fade-in duration-500">
+      {/* Profile Header Block */}
       <div className="mb-6 flex flex-col items-start justify-between gap-4 md:mb-8 md:flex-row md:items-center md:gap-0">
         <div>
           <div className="mb-2 flex flex-wrap items-center gap-3 md:mb-3">
@@ -46,7 +51,9 @@ export const CustomerProfile = ({
         </Button>
       </div>
 
+      {/* Main Stats Grid */}
       <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2">
+        {/* Info Card */}
         <Card className="border-slate-100 shadow-sm">
           <CardHeader className="pb-6">
             <CardTitle className="text-xl font-bold text-slate-900">
@@ -54,6 +61,7 @@ export const CustomerProfile = ({
             </CardTitle>
           </CardHeader>
           <CardContent>
+            {/* ... Data points ... */}
             <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2 sm:gap-y-8">
               <div>
                 <p className="mb-2 text-[10px] font-bold uppercase tracking-wider text-slate-500">
@@ -101,6 +109,7 @@ export const CustomerProfile = ({
           </CardContent>
         </Card>
 
+        {/* Performance Highlight Card with Dark Theme */}
         <Card className="relative overflow-hidden border-none bg-[#1a1a1a] shadow-sm">
           <CardHeader className="pb-6">
             <CardTitle className="text-[15px] font-normal text-white">
@@ -132,6 +141,7 @@ export const CustomerProfile = ({
               </div>
             </div>
 
+            {/* Decorative Bar Chart Element */}
             <div className="flex h-28 w-28 items-end justify-center gap-2 rounded-2xl bg-white/10 p-4">
               <div className="h-2/5 w-4 rounded-t-sm bg-white/20"></div>
               <div className="h-3/4 w-4 rounded-t-sm bg-white/20"></div>
@@ -142,6 +152,7 @@ export const CustomerProfile = ({
         </Card>
       </div>
 
+      {/* Activity Timeline Section */}
       <Card className="border-slate-100 shadow-sm">
         <CardHeader className="pb-6">
           <CardTitle className="text-xl font-bold text-slate-900">
@@ -150,6 +161,7 @@ export const CustomerProfile = ({
         </CardHeader>
         <CardContent>
           <div className="relative ml-2 space-y-8 border-l-2 border-slate-100 pb-4">
+            {/* Map over static milestone array */}
             {[
               {
                 title: "Contract Renewed - Enterprise Tier",

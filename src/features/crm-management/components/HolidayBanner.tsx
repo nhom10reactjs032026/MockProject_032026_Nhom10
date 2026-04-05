@@ -2,6 +2,10 @@ import React from "react";
 import { Calendar, Info } from "lucide-react";
 import type { HolidayAnnouncement } from "../types";
 
+/**
+ * Top banner to broadcast system-wide holiday schedules.
+ * Conditionally renders only if announcement data is provided.
+ */
 export const HolidayBanner: React.FC<{ data?: HolidayAnnouncement }> = ({
   data,
 }) => {

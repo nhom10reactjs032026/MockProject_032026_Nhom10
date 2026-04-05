@@ -5,6 +5,7 @@ import { CustomerProfile } from "../components/CustomerProfile";
 import { ContactsTable } from "../components/ContactsTable";
 import { useCustomerDetail } from "../hooks";
 
+// Configuration for available navigation tabs
 const TABS = [
   "Profile",
   "Contacts",
@@ -15,6 +16,10 @@ const TABS = [
   "Notes & Documents",
 ];
 
+/**
+ * Customer Detail Page.
+ * Uses a tabbed interface to display various detailed information about a single customer.
+ */
 export const CustomerDetailPage = () => {
   const { id } = useParams();
   const [activeTab, setActiveTab] = useState("Profile");
@@ -27,6 +32,8 @@ export const CustomerDetailPage = () => {
   return (
     <div className="flex min-h-screen flex-col bg-[#f8f9fa] font-sans">
       <CRMHeader currentTab="customers" />
+
+      {/* Breadcrumb Navigation */}
       <div className="bg-white border-b border-slate-200">
         <div className="mx-auto max-w-[1200px] px-8 py-4 text-xs font-medium text-slate-500">
           <span className="cursor-pointer hover:text-slate-800">
@@ -37,6 +44,7 @@ export const CustomerDetailPage = () => {
         </div>
       </div>
 
+      {/* Tabbed Navigation Bar */}
       <div className="flex-1 overflow-y-auto">
         <div className="mx-auto max-w-[1200px] px-8 py-8">
           <div className="mb-6 border-b border-slate-200 md:mb-8">
@@ -57,6 +65,7 @@ export const CustomerDetailPage = () => {
             </div>
           </div>
 
+          {/* Tab Content Rendering */}
           {isLoading ? (
             <div className="flex h-64 items-center justify-center rounded-xl bg-white border border-slate-100 shadow-sm">
               <div className="text-slate-500 font-medium flex items-center gap-2">
@@ -66,6 +75,7 @@ export const CustomerDetailPage = () => {
             </div>
           ) : (
             <>
+              {/* Render specific component based on active tab */}
               {activeTab === "Profile" && (
                 <CustomerProfile customer={profileData} />
               )}
@@ -73,6 +83,7 @@ export const CustomerDetailPage = () => {
                 <ContactsTable contacts={contactsData} />
               )}
 
+              {/* Placeholder for unimplemented tabs */}
               {!["Profile", "Contacts"].includes(activeTab) && (
                 <div className="rounded-xl border border-slate-200 bg-white p-16 text-center shadow-sm">
                   <p className="font-medium text-slate-500">
