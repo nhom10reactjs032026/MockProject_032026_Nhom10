@@ -1,7 +1,4 @@
-
-import { Navigate, Route, Routes, useParams } from "react-router-dom";
-
-import { Outlet, createBrowserRouter } from "react-router-dom";
+import { Navigate, Outlet, createBrowserRouter, useParams } from "react-router-dom";
 import { HomePage } from "../pages/HomePage";
 import  {LoginPage}  from "../pages/LoginPage";
 import { ErrorPage } from "../pages/ErrorPage";
@@ -74,37 +71,35 @@ function LegacySealDetailRedirect({ kind }: { kind: "e" | "p" }) {
   );
 }
 
-export default function AppRoutes() {
-  return (
-    <Routes>
-      <Route path="/" element={<Navigate to="/admin/seals" replace />} />
 
-      {/* Public route */}
-      <Route path="/account/login" element={<LoginPage />} />
 
-      {/* Protected routes */}
-      <Route element={<ProtectedRoute allowedRoles={["user", "admin", "notary"]} />}>
-        <Route path="/security" element={<AccessControlAuthorizationPage />} />
-        <Route path="/seals" element={<Navigate to="/admin/seals" replace />} />
-        <Route path="/seals/e/:id" element={<LegacySealDetailRedirect kind="e" />} />
-        <Route path="/seals/p/:id" element={<LegacySealDetailRedirect kind="p" />} />
-        <Route path="/usage" element={<UsageHistoryPage />} />
-      </Route>
 
-      <Route path="*" element={<Navigate to="/admin/seals" replace />} />
-    </Routes>
-  );
-}
+
+
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <Outlet />,
     errorElement: <ErrorPage />,
     children: [
+
       // PUBLIC ROUTES
       { index: true, element: <HomePage /> },
       { path: "planning", element: <PlanSchedulingPage /> },
       { path: "account/login", element: <LoginPage /> },
+
+      {
+        path: "/profile",
+        element: <div className="p-20 text-center font-bold">👤 THÔNG TIN CÁ NHÂN (USER/ADMIN/NOTARY)</div>,
+      },
+      {
+        path: "/history",
+        element: <div className="p-20 text-center font-bold">📝 LỊCH SỬ GIAO DỊCH</div>,
+      },
+      {
+        path: "/crm/customers/:id",
+        element: <CustomerDetailPage />,
+      },
 
       // USER ROUTES (Dành cho người dùng đã đăng nhập)
       {
