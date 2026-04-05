@@ -26,10 +26,11 @@ import {
   ActSetupPage,
   ActSignersPage,
   ActExecutionPage,
-  ActCertificatePage,
   ActJournalPage,
   ActStatusPage,
 } from "../features/notary-act";
+
+import { ActCertificateWrapper as ActCertificatePage } from "@/features/notary-act/pages/ActCertificateWrapper";
 import { ActExportPage } from "@/features/notary-act/pages/ActExportPage";
 
 // CRM Management Feature

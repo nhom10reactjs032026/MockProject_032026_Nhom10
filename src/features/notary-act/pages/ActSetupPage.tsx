@@ -9,6 +9,7 @@ import {
   ArrowRight,
   ArrowLeft
 } from 'lucide-react';
+import { ActMenu } from '../components/overview/ActMenu';
 
 export const ActSetupPage = () => {
   const { id } = useParams();
@@ -32,7 +33,7 @@ export const ActSetupPage = () => {
     <div className="animate-in fade-in duration-500 bg-[#f8fbff]/30 min-h-screen pb-12">
       <div className="max-w-[1400px] mx-auto py-8">
         {/* Header exact match with the screenshot */}
-        <div className="mb-6">
+        {/* <div className="mb-6">
           <div className="flex items-center gap-8 border-b border-gray-100 px-8 mb-6 overflow-x-auto whitespace-nowrap">
             {tabs.map((tab) => {
               const isActive = location.pathname === tab.path;
@@ -57,7 +58,8 @@ export const ActSetupPage = () => {
             <span>›</span>
             <span className="text-blue-600">SET UP</span>
           </div>
-        </div>
+        </div> */}
+                        <ActMenu/>
 
         {/* Form Container */}
         <div className="px-8 max-w-5xl">
