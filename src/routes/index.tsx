@@ -9,8 +9,10 @@ import { NotaryManagementPage, NotaryDetailsPage } from "@/features/notary-profi
 // Notary Journal Feature
 import {
   NotaryJournalDashboard,
-  JournalEntryDetail
+  JournalEntryDetail,
+  JournalManagerPage,
 } from "../features/notarial-journal";
+import { DashboardLayout as JournalLayout } from "../components/layout/DashboardLayout";
 
 // Notary Act Feature
 import { 
@@ -87,7 +89,7 @@ export const router = createBrowserRouter([
         element: <ProtectedRoute allowedRoles={["admin"]} />,
         children: [
           {
-            element: <AdminLayout />,
+            element: <JournalLayout />,
             children: [
               {
                 path: "dashboard",
@@ -121,11 +123,15 @@ export const router = createBrowserRouter([
       // 5. NOTARY JOURNAL FEATURE
       {
         path: "notary-journal",
-        element: <Outlet />,
+        element: <JournalLayout />,
         children: [
           {
             index: true,
             element: <NotaryJournalDashboard />,
+          },
+          {
+            path: "manager",
+            element: <JournalManagerPage />,
           },
           {
             path: "registry",

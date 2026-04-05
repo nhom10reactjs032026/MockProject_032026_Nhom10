@@ -26,61 +26,61 @@ export const NotaryDetailsPage = () => {
   };
 
   return (
-    <div className="animate-in fade-in duration-500">
-      <div className="max-w-[1400px] mx-auto py-8 px-4 sm:px-6 lg:px-8">
+    <div className="animate-in fade-in duration-500 font-['Plus_Jakarta_Sans']">
+      <div className="max-w-[1400px] mx-auto py-8 px-4 sm:px-6 lg:px-8 bg-transparent">
         {/* Breadcrumbs / Back button */}
-        <div className="flex items-center gap-2 mb-6 text-sm">
-          <Link to="/admin/notaries" className="text-slate-800 font-bold hover:underline underline-offset-4">
+        <div className="flex items-center gap-2 mb-6 text-xs font-bold uppercase tracking-widest text-[#c4a484]/70">
+          <Link to="/admin/notaries" className="hover:text-[#c4a484] transition-colors">
             Notary Profile
           </Link>
-          <span className="text-gray-400">/</span>
-          <span className="text-gray-500 font-medium">{notaryData.name}</span>
+          <span className="opacity-60 text-sm">/</span>
+          <span className="opacity-80 text-[#c4a484]">{notaryData.name}</span>
         </div>
 
         {/* Profile Summary Header */}
-        <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm mb-6 relative overflow-hidden">
+        <div className="bg-white rounded-sm p-8 border border-[#ebebeb] shadow-sm mb-6 relative overflow-hidden">
           <div className="flex flex-col lg:flex-row justify-between items-start gap-6">
             <div className="flex items-center gap-6">
-              <Avatar className="h-24 w-24 border-4 border-gray-50 shadow-sm">
+              <Avatar className="h-24 w-24 border border-[#ebebeb] shadow-sm rounded-sm">
                  <AvatarImage src="" />
-                 <AvatarFallback className="bg-gray-100 text-gray-400 text-2xl font-bold">ND</AvatarFallback>
+                 <AvatarFallback className="bg-[#fdf6ef] text-[#c4a484] text-2xl font-bold rounded-sm">ND</AvatarFallback>
               </Avatar>
               
               <div className="space-y-2">
                 <div className="flex items-center gap-3">
                    <h1 className="text-3xl font-bold text-slate-800 tracking-tight">{notaryData.name}</h1>
-                   <Badge className="bg-emerald-50 text-emerald-600 border-none px-3 font-semibold uppercase text-[10px]">
+                   <Badge className="bg-emerald-50 text-emerald-600 border-none px-3 font-semibold uppercase text-[10px] rounded-sm tracking-widest">
                      {notaryData.status}
                    </Badge>
-                   <Badge className="bg-lime-500 text-white border-none px-3 font-bold text-[10px] space-x-1">
+                   <Badge className="bg-[#c4a484] text-white border-none px-3 font-bold text-[10px] space-x-1 rounded-sm tracking-widest">
                      <span>Rating:</span> {notaryData.rating}/{notaryData.totalRating}
                    </Badge>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-y-2 gap-x-8 text-sm text-slate-400 font-medium">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-y-2 gap-x-8 text-sm text-slate-400 font-medium tracking-wide">
                   <div className="flex items-center gap-2">
                     <span className="opacity-60">ID:</span>
-                    <span className="text-slate-500">{notaryData.commissionNumber}</span>
+                    <span className="text-slate-500 font-bold">{notaryData.commissionNumber}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="opacity-60">Email:</span>
-                    <span className="text-slate-500">{notaryData.email}</span>
+                    <span className="text-slate-500 font-bold">{notaryData.email}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="opacity-60">Phone:</span>
-                    <span className="text-slate-500">{notaryData.phone}</span>
+                    <span className="text-slate-500 font-bold">{notaryData.phone}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="opacity-60">Address:</span>
-                    <span className="text-slate-500">{notaryData.address}</span>
+                    <span className="text-slate-500 font-bold">{notaryData.address}</span>
                   </div>
                 </div>
               </div>
             </div>
 
             <div className="w-full lg:w-auto flex justify-end">
-              <Button variant="outline" className="text-rose-400 border-rose-100 hover:bg-rose-50 hover:text-rose-500 px-6 font-bold h-11 border-2">
-                Deactive
+              <Button variant="outline" className="text-rose-400 border-rose-100 hover:bg-rose-50 hover:text-rose-500 px-6 font-bold h-11 border-2 uppercase tracking-widest text-xs rounded-sm">
+                Deactivate
               </Button>
             </div>
           </div>
@@ -88,7 +88,7 @@ export const NotaryDetailsPage = () => {
 
         {/* Tabs Navigation */}
         <Tabs defaultValue="legal-commission" className="space-y-6">
-          <TabsList className="bg-transparent border-b border-gray-100 w-full justify-start h-auto rounded-none p-0 gap-8">
+          <TabsList className="bg-transparent border-b border-[#ebebeb] w-full justify-start h-auto rounded-none p-0 gap-8">
             <TabsTrigger value="overview" className="tab-trigger">Overview</TabsTrigger>
             <TabsTrigger value="personal" className="tab-trigger">Personal Information</TabsTrigger>
             <TabsTrigger value="legal-commission" className="tab-trigger">Legal & Commission</TabsTrigger>
@@ -108,13 +108,13 @@ export const NotaryDetailsPage = () => {
             <NotaryLegalCommission />
           </TabsContent>
           <TabsContent value="bond-insurance">
-            <div className="bg-white p-20 text-center rounded-3xl border border-dashed border-gray-200 text-gray-400 italic">SC_005 Coming soon...</div>
+            <div className="bg-white p-20 text-center rounded-sm border border-[#ebebeb] text-[#c4a484] italic font-medium mt-6">SC_005 Coming soon...</div>
           </TabsContent>
         </Tabs>
 
         <style>{`
           .tab-trigger {
-            @apply relative pb-4 px-1 rounded-none data-[state=active]:bg-transparent data-[state=active]:text-blue-600 data-[state=active]:font-bold data-[state=active]:shadow-none font-medium text-slate-400 capitalize transition-all border-b-2 border-transparent data-[state=active]:border-blue-600;
+            @apply relative pb-4 px-1 rounded-none data-[state=active]:bg-transparent data-[state=active]:text-[#c4a484] data-[state=active]:font-bold data-[state=active]:shadow-none font-bold text-muted-foreground uppercase tracking-widest text-[11px] transition-all border-b-2 border-transparent data-[state=active]:border-[#c4a484];
           }
         `}</style>
       </div>

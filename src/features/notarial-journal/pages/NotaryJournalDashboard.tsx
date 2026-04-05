@@ -5,69 +5,14 @@ import { RegionalChartSummary } from "../components/RegionalChartSummary";
 import { mockStats } from "../data/mockData";
 import { Button } from "@/components/ui/button";
 import { Download, Plus } from "lucide-react";
-import { Header } from "../../../components/layout/Header";
-import { Footer } from "../../../components/layout/Footer";
-import { Link } from "react-router-dom";
-import { useState } from "react";
-import { JournalManagerTab } from "../components/JournalManagerTab";
 
 export const NotaryJournalDashboard = () => {
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'journal-manager'>('dashboard');
-
   return (
-    <div className="min-h-screen bg-[#f8f8f8] flex flex-col pt-20 transition-colors duration-500 font-['Plus_Jakarta_Sans']">
-      <Header />
-
-      {/* Hero Banner Section */}
-      <section className="relative h-96 flex flex-col items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-black/60 z-10" />
-          <img
-            src="https://images.unsplash.com/photo-1497366858526-0766cadbe8fa?auto=format&fit=crop&q=80&w=2301"
-            alt="Banner"
-            className="w-full h-full object-cover"
-          />
-        </div>
-
-        <div className="relative z-20 text-center space-y-4 px-6 md:container mx-auto">
-          <h1 className="text-4xl sm:text-5xl font-bold text-white uppercase tracking-tight">
-            Notary Journal Dashboard
-          </h1>
-          <nav className="flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-widest text-white">
-            <Link to="/" className="hover:text-[#c4a484] transition-colors">
-              Home
-            </Link>
-            <span className="opacity-60 text-sm">/</span>
-            <span className="opacity-80">Notary Journal Dashboard</span>
-          </nav>
-        </div>
-      </section>
-
-      {/* Tabs Menu */}
-      <div className="bg-white border-b border-[#ebebeb]">
-        <div className="max-w-7xl mx-auto px-6 flex items-center gap-8">
-          <button 
-            onClick={() => setActiveTab('dashboard')}
-            className={`py-4 text-sm font-bold uppercase tracking-widest transition-colors relative ${activeTab === 'dashboard' ? 'text-[#c4a484]' : 'text-muted-foreground hover:text-foreground'}`}
-          >
-            Dashboard
-            {activeTab === 'dashboard' && <span className="absolute bottom-0 left-0 w-full h-[2px] bg-[#c4a484]"></span>}
-          </button>
-          <button 
-            onClick={() => setActiveTab('journal-manager')}
-            className={`py-4 text-sm font-bold uppercase tracking-widest transition-colors relative ${activeTab === 'journal-manager' ? 'text-[#c4a484]' : 'text-muted-foreground hover:text-foreground'}`}
-          >
-            Journal Manager
-            {activeTab === 'journal-manager' && <span className="absolute bottom-0 left-0 w-full h-[2px] bg-[#c4a484]"></span>}
-          </button>
-        </div>
-      </div>
+    <div className="transition-colors duration-500 font-['Plus_Jakarta_Sans']">
 
       {/* Main Content Section */}
-      <section className="py-12 px-6 flex-1">
-        <div className="max-w-7xl mx-auto">
-          {activeTab === 'dashboard' ? (
-            <div className="space-y-8">
+      <section className="py-8 px-6 flex-1">
+        <div className="max-w-7xl mx-auto space-y-8">
           {/* Header Area */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
@@ -123,14 +68,8 @@ export const NotaryJournalDashboard = () => {
           <RecentComplianceLogs />
 
           <RegionalChartSummary />
-            </div>
-          ) : (
-            <JournalManagerTab />
-          )}
         </div>
       </section>
-
-      <Footer />
     </div>
   );
 };
