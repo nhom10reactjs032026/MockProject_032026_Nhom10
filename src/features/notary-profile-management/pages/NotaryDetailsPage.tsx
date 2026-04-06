@@ -30,7 +30,7 @@ import { NotaryPersonalInfo } from "../components/details/tabs/NotaryPersonalInf
 import { NotaryLegalCommission } from "../components/details/tabs/NotaryLegalCommission";
 import { NotaryBondInsurance } from "../components/details/tabs/NotaryBondInsurance";
 import { NotaryServiceCapability } from "../components/details/tabs/NotaryServiceCapability";
-import { NotaryDocuments } from "../components/details/tabs/NatoryDocuments";
+import { NotaryDocuments } from "../components/details/tabs/NotaryDocuments";
 
 export const NotaryDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -119,10 +119,10 @@ export const NotaryDetailsPage = () => {
                   <h1 className="text-[32px] font-bold text-slate-900 tracking-tight">
                     {notary.firstName} {notary.lastName}
                   </h1>
-                  <Badge 
+                  <Badge
                     className={`${
-                      isActive 
-                        ? "bg-emerald-500 hover:bg-emerald-600" 
+                      isActive
+                        ? "bg-emerald-500 hover:bg-emerald-600"
                         : "bg-slate-400 hover:bg-slate-500"
                     } text-white border-none px-4 py-1 rounded-full font-bold text-xs transition-colors`}
                   >
@@ -148,7 +148,9 @@ export const NotaryDetailsPage = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <MapPin size={16} className="text-slate-300" />
-                    <span>{notary.city}, {notary.state}</span>
+                    <span>
+                      {notary.city}, {notary.state}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -215,37 +217,50 @@ export const NotaryDetailsPage = () => {
           </TabsContent>
           <TabsContent value="audit">
             <div className="bg-white p-12 rounded-3xl border border-dashed border-slate-200 text-center">
-              <p className="text-slate-400 font-medium italic">Audit history coming soon...</p>
+              <p className="text-slate-400 font-medium italic">
+                Audit history coming soon...
+              </p>
             </div>
           </TabsContent>
         </Tabs>
 
         {/* Deactivation Confirmation Dialog */}
-        <Dialog open={isDeactivateDialogOpen} onOpenChange={setIsDeactivateDialogOpen}>
+        <Dialog
+          open={isDeactivateDialogOpen}
+          onOpenChange={setIsDeactivateDialogOpen}
+        >
           <DialogContent className="rounded-3xl p-8 max-w-md">
             <DialogHeader className="space-y-4">
               <div className="w-16 h-16 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-2">
                 <Ban size={32} />
               </div>
-              <DialogTitle className="text-2xl font-bold text-center text-slate-900">Confirm Deactivation</DialogTitle>
+              <DialogTitle className="text-2xl font-bold text-center text-slate-900">
+                Confirm Deactivation
+              </DialogTitle>
               <DialogDescription className="text-center text-slate-500 text-base leading-relaxed">
-                Are you sure you want to deactivate <span className="font-bold text-slate-900">{notary.firstName} {notary.lastName}</span>? This action will restrict their access to the platform.
+                Are you sure you want to deactivate{" "}
+                <span className="font-bold text-slate-900">
+                  {notary.firstName} {notary.lastName}
+                </span>
+                ? This action will restrict their access to the platform.
               </DialogDescription>
             </DialogHeader>
             <DialogFooter className="flex flex-col sm:flex-row gap-3 mt-8 sm:justify-center">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={() => setIsDeactivateDialogOpen(false)}
                 className="rounded-xl h-12 px-8 font-bold border-slate-200 order-2 sm:order-1"
               >
                 Cancel
               </Button>
-              <Button 
+              <Button
                 onClick={handleDeactivate}
                 disabled={updateNotary.isPending}
                 className="bg-rose-500 hover:bg-rose-600 text-white rounded-xl h-12 px-10 font-bold shadow-lg shadow-rose-100 order-1 sm:order-2"
               >
-                {updateNotary.isPending ? <Loader2 className="animate-spin mr-2" /> : null}
+                {updateNotary.isPending ? (
+                  <Loader2 className="animate-spin mr-2" />
+                ) : null}
                 Confirm Deactivate
               </Button>
             </DialogFooter>
