@@ -20,7 +20,7 @@ import { NotaryPersonalInfo } from "../components/details/tabs/NotaryPersonalInf
 import { NotaryLegalCommission } from "../components/details/tabs/NotaryLegalCommission";
 import { NotaryBondInsurance } from "../components/details/tabs/NotaryBondInsurance";
 import { NotaryServiceCapability } from "../components/details/tabs/NotaryServiceCapability";
-import { NotaryDocuments } from "../components/details/tabs/NatoryDocuments";
+import { NotaryDocuments } from "../components/details/tabs/NotaryDocuments";
 export const NotaryDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
   const { data: notary, isLoading } = useNotaryDetail(id || "");
