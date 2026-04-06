@@ -1,0 +1,21 @@
+id,title,description,reported_by,reported_at,seal_id,certificate_id
+1,Key Leak,Private key file found on a shared office drive.,1,2024-03-01,NULL,1
+2,Cert Expired,Digital certificate reached end of life unexpectedly.,2,2024-03-05,NULL,2
+3,Seal Damaged,"Rubber stamp surface torn, print is illegible.",3,2024-03-10,3,NULL
+4,Physical Seal Lost,Left the physical seal at a client's residence.,4,2024-02-10,4,NULL
+5,Total Bag Theft,Backpack stolen (contained laptop & physical seal).,5,2024-02-05,5,5
+6,Office Burglary,"Notary office broken into, all tools taken.",6,2024-02-18,6,6
+7,Data Breach,Cloud storage containing backup keys compromised.,7,2024-03-01 13:00,7,7
+8,Physical Seal Lost,Rubber stamp lost during office relocation.,8,2024-03-08 09:40,8,8
+9,Compromised Pass:,Notary's password found in a public leak database.,9,2024-03-12 16:20,9,9
+10,Incorrect ID Data,Seal engraved with wrong commission number.,10,2024-03-15 11:30,10,10
+11,Laptop Hijacked,Remote access trojan found on signing laptop.,11,2024-04-01 07:50,11,11
+12,Storage Lost,External drive with certificate backup lost.,12,2024-04-08 14:10,12,12
+13,Key Misuse,Assistant used notary's key without permission.,13,2024-04-12 10:00,13,13
+14,Burglary,"Notary office broken into, seals taken.",14,2024-04-18 23:30,14,14
+15,Vulnerability Exp.,Zero-day exploit found in digital signing software.,15,2024-04-20 09:15,15,15
+16,Accidental Delete,Private key file permanently deleted by mistake.,16,2024-05-01 13:45,16,16
+17,Social Eng.,Notary tricked into sharing MFA code.,17,2024-05-08 15:20,17,17
+18,Fire Damage,Server room fire destroyed physical backup keys.,18,2024-05-12 04:00,18,18
+19,Bad Update,OS update corrupted the secure enclave.,19,2024-05-18 10:30,19,19
+20,Insider Threat,Former employee suspected of copying private keys.,20,2024-05-22 17:00,20,20

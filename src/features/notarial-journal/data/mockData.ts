@@ -1,0 +1,75 @@
+import { BookOpen, AlertCircle, BadgeCheck, Users } from "lucide-react";
+
+export const mockStats = [
+  {
+    title: "Total Journal Entries",
+    value: "12,842",
+    change: "+12.5%",
+    trend: "up",
+    icon: BookOpen,
+    iconColor: "text-[#c4a484]",
+    iconBg: "bg-[#c4a484]/10",
+    changeBg: "bg-[#c4a484]/10",
+    changeText: "text-[#c4a484]",
+  },
+  {
+    title: "Incomplete Entries",
+    value: "145",
+    change: "+5%",
+    trend: "down",
+    icon: AlertCircle,
+    iconColor: "text-red-500",
+    iconBg: "bg-red-50",
+    changeBg: "bg-red-50",
+    changeText: "text-red-600",
+  },
+  {
+    title: "Active Notaries",
+    value: "84",
+    change: "+2.1%",
+    trend: "up",
+    icon: Users,
+    iconColor: "text-[#c4a484]",
+    iconBg: "bg-[#c4a484]/10",
+    changeBg: "bg-[#c4a484]/10",
+    changeText: "text-[#c4a484]",
+  },
+  {
+    title: "Compliance Rate",
+    value: "98.4%",
+    change: "Overall",
+    trend: "neutral",
+    icon: BadgeCheck,
+    iconColor: "text-foreground",
+    iconBg: "bg-secondary/50",
+    changeBg: "bg-transparent",
+    changeText: "text-muted-foreground",
+  },
+] as const;
+
+export const mockLogs = [
+  {
+    id: "#JR-8921-TX",
+    notaryInitials: "JW",
+    notaryName: "James Wilson",
+    state: "Texas",
+    date: "Oct 24, 2023",
+    status: "Compliant",
+  },
+  {
+    id: "#JR-8920-CA",
+    notaryInitials: "SL",
+    notaryName: "Sarah Lopez",
+    state: "California",
+    date: "Oct 23, 2023",
+    status: "Missing Signature",
+  },
+  {
+    id: "#JR-8919-NY",
+    notaryInitials: "MR",
+    notaryName: "Michael Reed",
+    state: "New York",
+    date: "Oct 22, 2023",
+    status: "Compliant",
+  },
+];
