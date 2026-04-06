@@ -21,4 +21,6 @@ export interface ActFilters {
   type?: string;
   status?: string;
   dateRange?: string;
+  state?: string;
+  risk?: string;
 }

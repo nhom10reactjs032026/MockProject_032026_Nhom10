@@ -94,30 +94,86 @@ export const ActFilters = ({ filters, setFilters }: ActFiltersProps) => {
           </div>
         </div>
       </div>
+      
+      {/* Second filter row for State and Risk */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+        {/* State */}
+        <div>
+          <label className="block text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2">
+            State
+          </label>
+          <select
+            className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-700 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white cursor-pointer"
+            value={filters.state || ''}
+            onChange={(e) => setFilters({ ...filters, state: e.target.value })}
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
+              backgroundPosition: `right 0.5rem center`,
+              backgroundRepeat: `no-repeat`,
+              backgroundSize: `1.5em 1.5em`,
+            }}
+          >
+            <option value="">All States</option>
+            <option value="California">California</option>
+            <option value="Texas">Texas</option>
+            <option value="Florida">Florida</option>
+            <option value="New York">New York</option>
+          </select>
+        </div>
 
-      <div className="flex justify-between items-center pt-2 mt-2 border-t border-gray-100">
-        <div className="flex gap-2">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-xs font-medium text-blue-700">
-            State: All States
-            <button className="text-blue-500 hover:text-blue-800 focus:outline-none">
-              <X size={14} />
-            </button>
-          </span>
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-xs font-medium text-blue-700">
-            Risk: Low to High
-            <button className="text-blue-500 hover:text-blue-800 focus:outline-none">
-              <X size={14} />
-            </button>
-          </span>
+        {/* Risk */}
+        <div>
+          <label className="block text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2">
+            Risk
+          </label>
+          <select
+            className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-700 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white cursor-pointer"
+            value={filters.risk || ''}
+            onChange={(e) => setFilters({ ...filters, risk: e.target.value })}
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
+              backgroundPosition: `right 0.5rem center`,
+              backgroundRepeat: `no-repeat`,
+              backgroundSize: `1.5em 1.5em`,
+            }}
+          >
+            <option value="">All Risks</option>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="flex justify-between items-center pt-2 mt-2 border-t border-gray-100 min-h-[40px]">
+        <div className="flex gap-2 flex-wrap">
+          {filters.state && (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-xs font-medium text-blue-700">
+              State: {filters.state}
+              <button onClick={() => setFilters({ ...filters, state: undefined })} className="text-blue-500 hover:text-blue-800 focus:outline-none">
+                <X size={14} />
+              </button>
+            </span>
+          )}
+          {filters.risk && (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-xs font-medium text-blue-700">
+              Risk: {filters.risk}
+              <button onClick={() => setFilters({ ...filters, risk: undefined })} className="text-blue-500 hover:text-blue-800 focus:outline-none">
+                <X size={14} />
+              </button>
+            </span>
+          )}
         </div>
         
-        <button 
-          onClick={() => setFilters({})}
-          className="text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1 transition-colors"
-        >
+        {Object.keys(filters).some(k => filters[k as keyof FiltersType]) && (
+          <button 
+            onClick={() => setFilters({})}
+            className="text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1 transition-colors"
+          >
           <X size={16} />
-          Clear All Filters
-        </button>
+            Clear All Filters
+          </button>
+        )}
       </div>
     </div>
   );

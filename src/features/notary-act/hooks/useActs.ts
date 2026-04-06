@@ -25,6 +25,12 @@ export const useActs = () => {
     if (filters.status) {
       result = result.filter(act => act.status === filters.status);
     }
+    if (filters.state) {
+      result = result.filter(act => act.state === filters.state);
+    }
+    if (filters.risk) {
+      result = result.filter(act => act.risk === filters.risk);
+    }
 
     return result;
   }, [filters]);
