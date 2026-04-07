@@ -6,6 +6,7 @@ export interface SidebarNavItem {
   label: string;
   path: string;
   end?: boolean;
+  isActive?: (path: string) => boolean;
 }
 
 interface SidebarProps {
@@ -62,15 +63,16 @@ export const Sidebar = ({
                 to={item.path}
                 end={item.end}
                 title={collapsed ? item.label : undefined}
-                className={({ isActive }) =>
-                  `flex items-center gap-3 rounded-sm transition-all group border-l-2
+                className={({ isActive: isLinkActive }) => {
+                  const active = item.isActive ? item.isActive(window.location.pathname) : isLinkActive;
+                  return `flex items-center gap-3 rounded-sm transition-all group border-l-2
                   ${collapsed ? "justify-center px-0 py-3" : "px-3 py-2.5"}
                   ${
-                    isActive
+                    active
                       ? "bg-[#fdf6ef] text-[#c4a484] border-[#c4a484]"
                       : "text-muted-foreground hover:text-foreground hover:bg-[#f8f8f8] border-transparent"
-                  }`
-                }
+                  }`;
+                }}
               >
                 <Icon className="w-4 h-4 shrink-0" />
                 {!collapsed && (
@@ -127,13 +129,14 @@ export const Sidebar = ({
                 to={item.path}
                 end={item.end}
                 onClick={onCloseMobile}
-                className={({ isActive }) =>
-                  `flex items-center gap-3 px-3 py-2.5 text-sm font-semibold rounded-sm transition-all border-l-2 ${
-                    isActive
+                className={({ isActive: isLinkActive }) => {
+                  const active = item.isActive ? item.isActive(window.location.pathname) : isLinkActive;
+                  return `flex items-center gap-3 px-3 py-2.5 text-sm font-semibold rounded-sm transition-all border-l-2 ${
+                    active
                       ? "bg-[#fdf6ef] text-[#c4a484] border-[#c4a484]"
                       : "text-muted-foreground hover:text-foreground hover:bg-[#f8f8f8] border-transparent"
-                  }`
-                }
+                  }`;
+                }}
               >
                 <Icon className="w-4 h-4 shrink-0" />
                 <span>{item.label}</span>

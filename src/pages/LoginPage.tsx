@@ -20,7 +20,7 @@ export const LoginPage = () => {
 
   useEffect(() => {
     if (isAuthenticated && user) {
-      if (user.role === "admin") navigate("/admin/dashboard");
+      if (user.role === "admin") navigate("/admin/notaries");
       else if (user.role === "notary") navigate("/notary-acts");
       else if (user.role === "dispatcher") navigate("/planning");
       else navigate("/history");
@@ -44,7 +44,7 @@ export const LoginPage = () => {
       });
 
       // Redirect based on role
-      if (user.role === "admin") navigate("/admin/dashboard");
+      if (user.role === "admin") navigate("/admin/notaries");
       else if (user.role === "notary") navigate("/notary-acts");
       else if (user.role === "dispatcher") navigate("/planning");
       else navigate("/history");
