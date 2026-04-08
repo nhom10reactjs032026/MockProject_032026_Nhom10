@@ -1,35 +1,31 @@
-// import { useContext } from "react";
-// import { ActContext } from "../context/ActContext";
-
-// export const useAct = () => {
-//   const context = useContext(ActContext);
-
-//   if (!context) {
-//     throw new Error("useAct must be used inside ActProvider");
-//   }
-
-//   return context;
-
-import { useState, useEffect } from "react";
-import type { Act } from "../types/act.types";
+import { useReducer, useEffect } from "react";
 import { mockActs } from "../api/mockData";
 
-export const useAct = (id: string | undefined) => {
-  const [act, setAct] = useState<Act | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+const actReducer = (state: any, action: any) => {
+  switch (action.type) {
+    case "SET_ACT_INFO": return { ...state, ...action.payload };
+    case "SET_VENUE": return { ...state, venue: action.payload };
+    case "SET_DATE": return { ...state, date: action.payload };
+    case "SET_SIGNERS": return { ...state, signers: action.payload };
+    case "SET_ACT_TYPE": return { ...state, actType: action.payload };
+    case "SET_STATE": return { ...state, state: action.payload };
+    case "SET_SEAL_TYPE": return { ...state, sealType: action.payload };
+    case "FINALIZE": return { ...state, status: 'finalized' };
+    default: return state;
+  }
+};
 
-  useEffect(() => {
-    if (!id) return;
-    setIsLoading(true);
-    // Simulate network delay
-    const timer = setTimeout(() => {
-      const foundAct = mockActs.find((a) => a.id === id) || mockActs[0];
-      setAct(foundAct);
-      setIsLoading(false);
-    }, 400);
+const initialState = {
+  venue: '',
+  date: '',
+  signers: [],
+  actType: '',
+  state: '',
+  sealType: 'physical'
+};
 
-    return () => clearTimeout(timer);
-  }, [id]);
+export const useAct = () => { 
+  const [state, dispatch] = useReducer(actReducer, initialState);
 
-  return { act, isLoading };
+  return { state, dispatch };
 };
