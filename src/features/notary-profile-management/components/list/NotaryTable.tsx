@@ -12,13 +12,26 @@ import { Eye, Pencil, Trash2, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
 
 interface NotaryTableProps {
   notaries: Notary[];
   isLoading: boolean;
+  onDelete?: (id: string) => Promise<void>;
 }
 
-export const NotaryTable = ({ notaries, isLoading }: NotaryTableProps) => {
+export const NotaryTable = ({ notaries, isLoading, onDelete }: NotaryTableProps) => {
   if (isLoading) {
     return (
       <div className="bg-white rounded-[2rem] border border-gray-100 p-32 flex flex-col items-center justify-center space-y-4 shadow-sm">
@@ -40,20 +53,31 @@ export const NotaryTable = ({ notaries, isLoading }: NotaryTableProps) => {
     );
   }
 
+  const tableHeaders = [
+    { label: "Notary ID", className: "pl-10 w-32" },
+    { label: "Image" },
+    { label: "Name" },
+    { label: "Capability" },
+    { label: "State" },
+    { label: "Expiry" },
+    { label: "Branch" },
+    { label: "Status" },
+    { label: "Actions", className: "text-right pr-10" },
+  ];
+
   return (
     <div className="rounded-[2.5rem] border border-gray-100 bg-white overflow-hidden shadow-sm">
       <Table>
         <TableHeader>
           <TableRow className="bg-slate-50/70 hover:bg-slate-50/70 h-16 border-b border-gray-100">
-            <TableHead className="font-bold text-slate-400 uppercase text-[11px] tracking-widest pl-10 w-32">Notary ID</TableHead>
-            <TableHead className="font-bold text-slate-400 uppercase text-[11px] tracking-widest">Image</TableHead>
-            <TableHead className="font-bold text-slate-400 uppercase text-[11px] tracking-widest">Name</TableHead>
-            <TableHead className="font-bold text-slate-400 uppercase text-[11px] tracking-widest">Capability</TableHead>
-            <TableHead className="font-bold text-slate-400 uppercase text-[11px] tracking-widest">State</TableHead>
-            <TableHead className="font-bold text-slate-400 uppercase text-[11px] tracking-widest">Expiry</TableHead>
-            <TableHead className="font-bold text-slate-400 uppercase text-[11px] tracking-widest">Branch</TableHead>
-            <TableHead className="font-bold text-slate-400 uppercase text-[11px] tracking-widest">Status</TableHead>
-            <TableHead className="font-bold text-slate-400 uppercase text-[11px] tracking-widest text-right pr-10">Actions</TableHead>
+            {tableHeaders.map((header) => (
+              <TableHead 
+                key={header.label} 
+                className={`font-bold text-slate-400 uppercase text-[11px] tracking-widest ${header.className || ""}`}
+              >
+                {header.label}
+              </TableHead>
+            ))}
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -105,18 +129,48 @@ export const NotaryTable = ({ notaries, isLoading }: NotaryTableProps) => {
                 </Badge>
               </TableCell>
               <TableCell className="text-right pr-10">
-                  <div className="flex justify-end gap-3 translate-x-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+                  <div className="flex justify-end gap-3 transition-all duration-300">
                     <Link to={`/admin/notaries/${notary.id}`}>
                       <Button variant="ghost" size="icon" className="h-11 w-11 text-blue-500 hover:text-blue-600 hover:bg-blue-50 rounded-2xl transition-all shadow-sm">
                         <Eye size={20} />
                       </Button>
                     </Link>
-                  <Button variant="ghost" size="icon" className="h-11 w-11 text-emerald-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-2xl transition-all shadow-sm">
-                    <Pencil size={20} />
-                  </Button>
-                  <Button variant="ghost" size="icon" className="h-11 w-11 text-rose-400 hover:text-rose-600 hover:bg-rose-50 rounded-2xl transition-all shadow-sm">
-                    <Trash2 size={20} />
-                  </Button>
+                    
+                    {onDelete && (
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-11 w-11 text-rose-400 hover:text-rose-600 hover:bg-rose-50 rounded-2xl transition-all shadow-sm">
+                            <Trash2 size={20} />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent className="rounded-[2rem] border-none shadow-2xl p-8">
+                          <AlertDialogHeader>
+                            <AlertDialogTitle className="text-2xl font-bold text-slate-800">
+                              Delete this notary?
+                            </AlertDialogTitle>
+                            <AlertDialogDescription className="text-slate-500 font-medium">
+                              This action cannot be undone. This will permanently delete the
+                              notary profile and all associated data.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter className="mt-6 gap-3">
+                            <AlertDialogCancel className="rounded-xl border-slate-100 font-bold h-12 px-6">
+                              Cancel
+                            </AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={async () => {
+                                if (onDelete) {
+                                  await onDelete(notary.id);
+                                }
+                              }}
+                              className="rounded-xl bg-rose-500 hover:bg-rose-600 font-bold h-12 px-6 shadow-lg shadow-rose-100 transition-all active:scale-95"
+                            >
+                              Confirm Delete
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    )}
                 </div>
               </TableCell>
             </TableRow>

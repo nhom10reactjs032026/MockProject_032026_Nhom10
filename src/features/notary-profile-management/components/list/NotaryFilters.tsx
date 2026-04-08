@@ -52,10 +52,10 @@ export const NotaryFilters = ({ filters, onFilterChange }: NotaryFiltersProps) =
             value={filters.status || 'all'} 
             onValueChange={(val) => onFilterChange('status', val)}
           >
-            <SelectTrigger className="bg-slate-50/50 border-gray-100 text-slate-600 shadow-none h-11 rounded-xl px-4 focus:ring-2 ring-blue-500/20 transition-all">
+            <SelectTrigger className="w-full bg-slate-50/50 border-gray-100 text-slate-600 shadow-none h-11 rounded-xl px-4 focus:ring-2 ring-blue-500/20 transition-all">
               <SelectValue placeholder="All Statuses" />
             </SelectTrigger>
-            <SelectContent className="rounded-xl border-gray-100 shadow-xl">
+            <SelectContent position="popper" className="rounded-xl border-gray-100 shadow-xl mt-1">
               <SelectItem value="all">All Statuses</SelectItem>
               <SelectItem value="Active">Active</SelectItem>
               <SelectItem value="Expired">Expired</SelectItem>
@@ -69,10 +69,10 @@ export const NotaryFilters = ({ filters, onFilterChange }: NotaryFiltersProps) =
             value={filters.state || 'all'} 
             onValueChange={(val) => onFilterChange('state', val)}
           >
-            <SelectTrigger className="bg-slate-50/50 border-gray-100 text-slate-600 shadow-none h-11 rounded-xl px-4 focus:ring-2 ring-blue-500/20 transition-all">
+            <SelectTrigger className="w-full bg-slate-50/50 border-gray-100 text-slate-600 shadow-none h-11 rounded-xl px-4 focus:ring-2 ring-blue-500/20 transition-all">
               <SelectValue placeholder="All States" />
             </SelectTrigger>
-            <SelectContent className="rounded-xl border-gray-100 shadow-xl">
+            <SelectContent position="popper" className="rounded-xl border-gray-100 shadow-xl mt-1">
               <SelectItem value="all">All States</SelectItem>
               <SelectItem value="California">California</SelectItem>
               <SelectItem value="Texas">Texas</SelectItem>
@@ -90,10 +90,10 @@ export const NotaryFilters = ({ filters, onFilterChange }: NotaryFiltersProps) =
             value={filters.serviceType || 'all'} 
             onValueChange={(val) => onFilterChange('serviceType', val)}
           >
-            <SelectTrigger className="bg-slate-50/50 border-gray-100 text-slate-600 shadow-none h-11 rounded-xl px-4 focus:ring-2 ring-blue-500/20 transition-all">
+            <SelectTrigger className="w-full bg-slate-50/50 border-gray-100 text-slate-600 shadow-none h-11 rounded-xl px-4 focus:ring-2 ring-blue-500/20 transition-all">
               <SelectValue placeholder="All Types" />
             </SelectTrigger>
-            <SelectContent className="rounded-xl border-gray-100 shadow-xl">
+            <SelectContent position="popper" className="rounded-xl border-gray-100 shadow-xl mt-1">
               <SelectItem value="all">All Types</SelectItem>
               <SelectItem value="RON">RON</SelectItem>
               <SelectItem value="Mobile Notary">Mobile Notary</SelectItem>

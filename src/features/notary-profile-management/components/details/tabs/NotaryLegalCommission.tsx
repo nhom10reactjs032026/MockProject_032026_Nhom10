@@ -36,6 +36,17 @@ import {
   AlertCircle,
   FileX2,
 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import { CommissionForm } from "../modals/CommissionForm";
 import type { Commission } from "../../../types/notary.types";
@@ -165,13 +176,10 @@ export const NotaryLegalCommission = ({
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm("Delete this record permanently?")) {
-      try {
-        await deleteMutation.mutateAsync({ notaryId, commissionId: id });
-        toast.success("Record removed");
-      } catch (error) {
-        toast.error("Deletion failed");
-      }
+    try {
+      await deleteMutation.mutateAsync({ notaryId, commissionId: id });
+    } catch (error) {
+      throw error; // Let the AlertDialog handler catch it
     }
   };
 
@@ -368,14 +376,46 @@ export const NotaryLegalCommission = ({
                       >
                         <Pencil size={18} />
                       </Button>
-                      <Button
-                        onClick={() => handleDelete(comm.id)}
-                        variant="ghost"
-                        size="icon"
-                        className="h-9 w-9 text-rose-400 hover:bg-rose-50 rounded-xl"
-                      >
-                        <Trash2 size={18} />
-                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-9 w-9 text-rose-400 hover:bg-rose-50 rounded-xl"
+                          >
+                            <Trash2 size={18} />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent className="rounded-3xl border-none shadow-2xl p-8">
+                          <AlertDialogHeader>
+                            <AlertDialogTitle className="text-2xl font-bold text-slate-900">
+                              Remove Commission Record?
+                            </AlertDialogTitle>
+                            <AlertDialogDescription className="text-slate-500 font-medium">
+                              This action will permanently delete this legal commission
+                              record. This cannot be undone.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter className="mt-8 gap-3">
+                            <AlertDialogCancel className="rounded-xl border-slate-100 font-bold h-12 px-6">
+                              Keep Record
+                            </AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={async () => {
+                                try {
+                                  await handleDelete(comm.id);
+                                  toast.success("Record removed successfully");
+                                } catch (error) {
+                                  toast.error("Deletion failed. Please try again.");
+                                }
+                              }}
+                              className="rounded-xl bg-rose-500 hover:bg-rose-600 font-bold h-12 px-6 shadow-lg shadow-rose-100 transition-all active:scale-95"
+                            >
+                              Delete Permanently
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
                   </TableCell>
                 </TableRow>

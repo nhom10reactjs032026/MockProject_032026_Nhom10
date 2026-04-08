@@ -156,3 +156,11 @@ export const deleteCommission = async (notaryId: string, commissionId: string): 
 
   notary.commissions = notary.commissions.filter(c => c.id !== commissionId);
 };
+
+export const deleteNotary = async (id: string): Promise<void> => {
+  await new Promise((resolve) => setTimeout(resolve, 500));
+  const index = MOCK_NOTARIES.findIndex(n => n.id === id);
+  if (index !== -1) {
+    MOCK_NOTARIES.splice(index, 1);
+  }
+};

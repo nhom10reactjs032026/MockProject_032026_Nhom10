@@ -6,7 +6,8 @@ import {
   createNotary,
   addCommission,
   updateCommission,
-  deleteCommission
+  deleteCommission,
+  deleteNotary
 } from '../api/notary.service';
 import type { Notary, NotaryFilters, Commission } from '../types/notary.types';
 
@@ -78,6 +79,16 @@ export const useDeleteCommission = () => {
       deleteCommission(notaryId, commissionId),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['notary-detail', variables.notaryId] });
+    },
+  });
+};
+
+export const useDeleteNotary = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => deleteNotary(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notaries'] });
     },
   });
 };
