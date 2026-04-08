@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Card from "../../../components/ui/Card";
 import Badge from "../../../components/ui/Badge";
@@ -30,6 +30,7 @@ export default function SealRegistryPage() {
   const [notaryFilter, setNotaryFilter] = useState<string>("All");
   const [typeFilter, setTypeFilter] = useState<string>("All");
   const [statusFilter, setStatusFilter] = useState<string>("All");
+  const [query, setQuery] = useState<string>("");
 
   // pagination
   const [page, setPage] = useState(1);
@@ -54,20 +55,24 @@ export default function SealRegistryPage() {
   const statuses = useMemo(() => ["All", "Active", "Expired", "Revoked"], []);
 
   const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
     return rows.filter((r) => {
       if (stateFilter !== "All" && r.state !== stateFilter) return false;
       if (notaryFilter !== "All" && r.notary !== notaryFilter) return false;
       if (typeFilter !== "All" && r.type !== typeFilter) return false;
       if (statusFilter !== "All" && r.status !== statusFilter) return false;
+      if (q) {
+        const haystack = `${r.id} ${r.notary} ${r.state} ${r.type} ${r.status}`.toLowerCase();
+        if (!haystack.includes(q)) return false;
+      }
       return true;
     });
-  }, [rows, stateFilter, notaryFilter, typeFilter, statusFilter]);
+  }, [rows, stateFilter, notaryFilter, typeFilter, statusFilter, query]);
 
   // reset page về 1 mỗi khi filter đổi
-  useMemo(() => {
+  useEffect(() => {
     setPage(1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stateFilter, notaryFilter, typeFilter, statusFilter]);
+  }, [stateFilter, notaryFilter, typeFilter, statusFilter, query]);
 
   const total = filtered.length;
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
@@ -86,6 +91,7 @@ export default function SealRegistryPage() {
     setNotaryFilter("All");
     setTypeFilter("All");
     setStatusFilter("All");
+    setQuery("");
     setPage(1);
   };
 
@@ -162,6 +168,13 @@ export default function SealRegistryPage() {
         <div className="flex flex-wrap items-center gap-3">
           <div className="text-xs font-semibold text-slate-400">FILTERS:</div>
 
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search by ID / notary / state…"
+            className="h-9 w-64 max-w-full rounded-lg border border-slate-200 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-blue-500"
+          />
+
           <Select value={stateFilter} onChange={(e) => setStateFilter(e.target.value)}>
             {states.map((x) => (
               <option key={x} value={x}>
@@ -224,9 +237,16 @@ export default function SealRegistryPage() {
             {pagedRows.map((r, idx) => (
               <tr key={r.id} className={idx % 2 ? "bg-white" : "bg-slate-50/30"}>
                 <td className="px-5 py-4">
+                  {(() => {
+                    const to =
+                      r.type === "Physical"
+                        ? `/admin/seals/p/${r.id}`
+                        : `/admin/seals/e/${r.id}`;
+
+                    return (
                   <Link
                     className="text-blue-600 hover:underline"
-                    to={`/admin/seals/e/${r.id}`}
+                    to={to}
                     onClick={() => {
                       localStorage.setItem("lastSelectedSealId", r.id);
                       window.dispatchEvent(new Event("lastSealChanged"));
@@ -234,6 +254,8 @@ export default function SealRegistryPage() {
                   >
                     {r.id}
                   </Link>
+                    );
+                  })()}
                 </td>
                 <td className="px-5 py-4">{r.notary}</td>
                 <td className="px-5 py-4">{r.state}</td>
