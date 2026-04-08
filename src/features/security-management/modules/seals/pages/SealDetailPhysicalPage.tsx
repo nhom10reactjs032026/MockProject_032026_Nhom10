@@ -1,15 +1,33 @@
 import { NavLink, useNavigate, useParams } from "react-router-dom";
+import { useMemo, useState } from "react";
 import {Card} from "../../../../../components/ui/card";
 import Badge from "../../../components/ui/Badge";
 import Button from "../../../components/ui/Button";
 import { getSealDetail } from "../../../data/seals";
+import ConfirmDialog from "../../../components/ui/ConfirmDialog";
+import { setSealStatusOverride } from "../../../data/seal-status-store";
+import { toast } from "sonner";
 
 export default function SealDetailPhysicalPage() {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
   const sealId = id ?? "";
-  const seal = sealId ? getSealDetail(sealId) : undefined;
+  const seal = useMemo(
+    () => (sealId ? getSealDetail(sealId) : undefined),
+    [sealId, refreshKey]
+  );
+
+  const suspend = () => {
+    if (!seal) return;
+    setSealStatusOverride(seal.id, "Revoked");
+    window.dispatchEvent(new Event("sealStatusChanged"));
+    setRefreshKey((k) => k + 1);
+    toast.success("Seal suspended (mock)");
+  };
 
   return (
     <div className="animate-in fade-in duration-500 font-['Plus_Jakarta_Sans']">
@@ -177,10 +195,23 @@ export default function SealDetailPhysicalPage() {
               </div>
 
               <div className="flex flex-col gap-2">
-                <Button variant="danger" onClick={() => alert(`Suspend physical seal: P_${seal.id}`)}>
+                <ConfirmDialog
+                  open={confirmOpen}
+                  title={`Suspend seal ${seal.id}?`}
+                  description="This will disable the seal for future use (mock action)."
+                  confirmText="Suspend"
+                  danger
+                  onClose={() => setConfirmOpen(false)}
+                  onConfirm={suspend}
+                />
+
+                <Button variant="danger" onClick={() => setConfirmOpen(true)}>
                   Lock / Suspend
                 </Button>
-                <Button variant="primary" onClick={() => alert(`Replace physical seal: P_${seal.id}`)}>
+                <Button
+                  variant="primary"
+                  onClick={() => navigate(`/admin/seals/${seal.id}/replacement`)}
+                >
                   Replace
                 </Button>
               </div>

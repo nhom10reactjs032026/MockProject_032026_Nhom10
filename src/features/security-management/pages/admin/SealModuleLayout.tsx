@@ -4,6 +4,7 @@ export const SealModuleLayout = () => {
     // List of horizontal tabs (Admin side)
     const tabs = [
         { label: "Dashboard", path: "" },
+        { label: "Registry", path: "registry" },
         { label: "Technical", path: "technical" },
         { label: "Risk Handling", path: "risk-handling" },
     ];

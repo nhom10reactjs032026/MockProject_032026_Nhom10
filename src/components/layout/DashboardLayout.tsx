@@ -4,14 +4,12 @@ import { Sidebar } from "./Sidebar";
 import { TopBar } from "./TopBar";
 import Footer from "./Footer";
 import {
-  LayoutDashboard,
   BookOpen,
   Users,
   Stamp,
   FileSignature,
   CalendarDays,
   ShieldCheck,
-  History,
   AlertTriangle,
   Bell,
   Key,
